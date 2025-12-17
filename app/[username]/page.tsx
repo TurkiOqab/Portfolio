@@ -1,0 +1,112 @@
+import { createClient } from '@/app/lib/supabase/server'
+import { notFound } from 'next/navigation'
+import Navbar from '@/app/components/Navbar'
+import Hero from '@/app/components/Hero'
+import Projects from '@/app/components/Projects'
+import Footer from '@/app/components/Footer'
+
+interface PageProps {
+    params: Promise<{ username: string }>
+}
+
+export default async function PortfolioPage({ params }: PageProps) {
+    const { username } = await params
+    const supabase = await createClient()
+
+    // Fetch profile with portfolio
+    const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('username', username.toLowerCase())
+        .single()
+
+    if (!profile) {
+        notFound()
+    }
+
+    // Fetch portfolio for this user
+    const { data: portfolio } = await supabase
+        .from('portfolios')
+        .select('*')
+        .eq('user_id', profile.id)
+        .single()
+
+    if (!portfolio) {
+        // User exists but hasn't completed onboarding
+        return (
+            <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+                <div className="text-center">
+                    <h1 className="text-2xl font-bold text-white mb-2">Portfolio Coming Soon</h1>
+                    <p className="text-zinc-400">@{username} is setting up their portfolio</p>
+                </div>
+            </div>
+        )
+    }
+
+    // Fetch projects
+    const { data: projects } = await supabase
+        .from('projects')
+        .select('*')
+        .eq('portfolio_id', portfolio.id)
+        .order('display_order', { ascending: true })
+
+    // Transform data for components
+    const portfolioData = {
+        name: portfolio.name,
+        title: portfolio.title || '',
+        bio: portfolio.bio || '',
+        skills: portfolio.skills || [],
+        projects: (projects || []).map(p => ({
+            id: p.id,
+            title: p.title,
+            description: p.description || '',
+            tags: p.tags || [],
+            liveUrl: p.live_url || undefined,
+            githubUrl: p.github_url || undefined,
+        })),
+        contact: portfolio.contact || { email: '' },
+    }
+
+    return (
+        <>
+            <Navbar />
+            <main>
+                <Hero
+                    name={portfolioData.name}
+                    title={portfolioData.title}
+                    bio={portfolioData.bio}
+                    skills={portfolioData.skills}
+                />
+                <Projects projects={portfolioData.projects} />
+            </main>
+            <Footer contact={portfolioData.contact} name={portfolioData.name} />
+        </>
+    )
+}
+
+// Generate metadata for SEO
+export async function generateMetadata({ params }: PageProps) {
+    const { username } = await params
+    const supabase = await createClient()
+
+    const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('username', username.toLowerCase())
+        .single()
+
+    if (!profile) {
+        return { title: 'Not Found | DevFolio' }
+    }
+
+    const { data: portfolio } = await supabase
+        .from('portfolios')
+        .select('name, title, bio')
+        .eq('user_id', profile.id)
+        .single()
+
+    return {
+        title: portfolio ? `${portfolio.name} | DevFolio` : `@${username} | DevFolio`,
+        description: portfolio?.bio || `Check out ${username}'s portfolio on DevFolio`,
+    }
+}

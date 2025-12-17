@@ -1,9 +1,11 @@
 "use client";
 
+export const dynamic = 'force-dynamic';
+
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { createClient } from "@/app/lib/supabase/client";
 import { PortfolioData, defaultPortfolioData } from "../types";
-import { savePortfolioData, getPortfolioData } from "../lib/storage";
 import NameStep from "./steps/NameStep";
 import BioStep from "./steps/BioStep";
 import SkillsStep from "./steps/SkillsStep";
@@ -14,18 +16,75 @@ const TOTAL_STEPS = 5;
 
 export default function OnboardingPage() {
     const router = useRouter();
+    const supabase = createClient();
     const [currentStep, setCurrentStep] = useState(1);
     const [data, setData] = useState<PortfolioData>(defaultPortfolioData);
     const [isLoading, setIsLoading] = useState(true);
+    const [isSaving, setIsSaving] = useState(false);
+    const [userId, setUserId] = useState<string | null>(null);
+    const [username, setUsername] = useState<string | null>(null);
+    const [saveError, setSaveError] = useState<string | null>(null);
 
     useEffect(() => {
-        // Load existing data if available
-        const existingData = getPortfolioData();
-        if (existingData.name) {
-            setData(existingData);
-        }
-        setIsLoading(false);
-    }, []);
+        const loadUserData = async () => {
+            // Get current user
+            const { data: { user } } = await supabase.auth.getUser();
+
+            if (!user) {
+                router.push("/login");
+                return;
+            }
+
+            setUserId(user.id);
+
+            // Get username
+            const { data: profile } = await supabase
+                .from("profiles")
+                .select("username")
+                .eq("id", user.id)
+                .single();
+
+            if (profile) {
+                setUsername(profile.username);
+            }
+
+            // Check if portfolio exists
+            const { data: portfolio } = await supabase
+                .from("portfolios")
+                .select("*")
+                .eq("user_id", user.id)
+                .single();
+
+            if (portfolio) {
+                // Load existing portfolio data
+                const { data: projects } = await supabase
+                    .from("projects")
+                    .select("*")
+                    .eq("portfolio_id", portfolio.id)
+                    .order("display_order");
+
+                setData({
+                    name: portfolio.name || "",
+                    title: portfolio.title || "",
+                    bio: portfolio.bio || "",
+                    skills: portfolio.skills || [],
+                    projects: (projects || []).map(p => ({
+                        id: p.id,
+                        title: p.title,
+                        description: p.description || "",
+                        tags: p.tags || [],
+                        liveUrl: p.live_url || undefined,
+                        githubUrl: p.github_url || undefined,
+                    })),
+                    contact: portfolio.contact || { email: "" },
+                });
+            }
+
+            setIsLoading(false);
+        };
+
+        loadUserData();
+    }, [router, supabase]);
 
     const updateData = (updates: Partial<PortfolioData>) => {
         setData((prev) => ({ ...prev, ...updates }));
@@ -56,14 +115,67 @@ export default function OnboardingPage() {
         }
     };
 
+    const saveToDatabase = async () => {
+        if (!userId) return;
+
+        setIsSaving(true);
+
+        try {
+            // Upsert portfolio
+            const { data: portfolio, error: portfolioError } = await supabase
+                .from("portfolios")
+                .upsert({
+                    user_id: userId,
+                    name: data.name,
+                    title: data.title,
+                    bio: data.bio,
+                    skills: data.skills,
+                    contact: data.contact,
+                    updated_at: new Date().toISOString(),
+                }, {
+                    onConflict: "user_id",
+                })
+                .select()
+                .single();
+
+            if (portfolioError) throw portfolioError;
+
+            if (portfolio && data.projects.length > 0) {
+                // Delete existing projects
+                await supabase
+                    .from("projects")
+                    .delete()
+                    .eq("portfolio_id", portfolio.id);
+
+                // Insert new projects
+                const projectsToInsert = data.projects.map((p, index) => ({
+                    portfolio_id: portfolio.id,
+                    title: p.title,
+                    description: p.description,
+                    tags: p.tags,
+                    live_url: p.liveUrl || null,
+                    github_url: p.githubUrl || null,
+                    display_order: index,
+                }));
+
+                await supabase.from("projects").insert(projectsToInsert);
+            }
+
+            router.push("/dashboard");
+        } catch (error) {
+            console.error("Error saving portfolio:", error);
+            const err = error as { message?: string };
+            setSaveError(err.message || "Failed to save portfolio. Please try again.");
+            setIsSaving(false);
+        }
+    };
+
     const nextStep = () => {
         if (!canProceed()) return;
         if (currentStep < TOTAL_STEPS) {
             setCurrentStep((prev) => prev + 1);
         } else {
-            // Save and go to export page
-            savePortfolioData(data);
-            router.push("/export");
+            saveToDatabase();
         }
     };
 
@@ -114,11 +226,16 @@ export default function OnboardingPage() {
                             style={{ width: `${(currentStep / TOTAL_STEPS) * 100}%` }}
                         />
                     </div>
+                    {username && (
+                        <p className="text-xs text-zinc-500 mt-2 text-center">
+                            Your portfolio will be live at: <span className="text-violet-400">devfolio.com/{username}</span>
+                        </p>
+                    )}
                 </div>
             </div>
 
             {/* Step Content */}
-            <div className="flex-1 flex items-center justify-center pt-24 pb-24 px-6">
+            <div className="flex-1 flex items-center justify-center pt-28 pb-24 px-6">
                 <div className="w-full max-w-2xl">
                     {currentStep === 1 && (
                         <NameStep data={data} updateData={updateData} />
@@ -141,6 +258,14 @@ export default function OnboardingPage() {
             {/* Navigation */}
             <div className="fixed bottom-0 left-0 right-0 bg-zinc-900/80 backdrop-blur-md border-t border-zinc-800/50">
                 <div className="max-w-3xl mx-auto px-6 py-4">
+                    {/* Save Error Message */}
+                    {saveError && (
+                        <div className="text-center mb-3 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
+                            <span className="text-sm text-red-400">
+                                {saveError}
+                            </span>
+                        </div>
+                    )}
                     {/* Validation Message */}
                     {getValidationMessage() && (
                         <div className="text-center mb-3">
@@ -159,10 +284,22 @@ export default function OnboardingPage() {
                         </button>
                         <button
                             onClick={nextStep}
-                            disabled={!canProceed()}
-                            className="px-8 py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white font-medium rounded-full hover:from-violet-500 hover:to-purple-500 transition-all duration-300 shadow-lg shadow-purple-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled={!canProceed() || isSaving}
+                            className="px-8 py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white font-medium rounded-full hover:from-violet-500 hover:to-purple-500 transition-all duration-300 shadow-lg shadow-purple-500/25 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                         >
-                            {currentStep === TOTAL_STEPS ? "Finish →" : "Continue →"}
+                            {isSaving ? (
+                                <>
+                                    <svg className="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                                    </svg>
+                                    Saving...
+                                </>
+                            ) : currentStep === TOTAL_STEPS ? (
+                                "Publish Portfolio →"
+                            ) : (
+                                "Continue →"
+                            )}
                         </button>
                     </div>
                 </div>

@@ -56,7 +56,7 @@ export default function Footer({ contact, name }: FooterProps) {
                 </svg>
             ),
         },
-    ].filter(Boolean) as { name: string; href: string; icon: JSX.Element }[];
+    ].filter(Boolean) as { name: string; href: string; icon: React.ReactNode }[];
 
     return (
         <footer
