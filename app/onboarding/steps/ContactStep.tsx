@@ -16,7 +16,7 @@ export default function ContactStep({ data, updateData }: StepProps) {
 
     return (
         <div className="space-y-8">
-            <div className="text-center">
+            <div className="text-center mb-6">
                 <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
                     How can people{" "}
                     <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
@@ -90,10 +90,10 @@ export default function ContactStep({ data, updateData }: StepProps) {
                     </div>
                 </div>
 
-                {/* Twitter/X */}
+                {/* X */}
                 <div>
                     <label className="block text-sm font-medium text-zinc-300 mb-2">
-                        Twitter / X
+                        X
                     </label>
                     <div className="relative">
                         <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500">
@@ -105,7 +105,7 @@ export default function ContactStep({ data, updateData }: StepProps) {
                             type="url"
                             value={data.contact.twitter || ""}
                             onChange={(e) => updateContact("twitter", e.target.value)}
-                            placeholder="https://twitter.com/username"
+                            placeholder="https://x.com/username"
                             className="w-full pl-12 pr-4 py-4 bg-zinc-900 border border-zinc-800 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all"
                         />
                     </div>
