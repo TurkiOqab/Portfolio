@@ -61,11 +61,8 @@ export default function Footer({ contact, name }: FooterProps) {
     return (
         <footer
             id="contact"
-            className="bg-zinc-950 border-t border-zinc-800/50 relative overflow-hidden"
+            className="border-t border-zinc-800/50"
         >
-            {/* Background Gradient */}
-            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-96 h-96 bg-violet-600/10 rounded-full blur-3xl" />
-
             <div className="max-w-6xl mx-auto px-6 py-16 relative z-10">
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                     {/* Left Side - CTA */}

@@ -14,18 +14,7 @@ interface ProjectsProps {
 
 export default function Projects({ projects }: ProjectsProps) {
     return (
-        <section id="projects" className="py-24 bg-zinc-950 relative">
-            {/* Background Pattern */}
-            <div className="absolute inset-0 opacity-5">
-                <div
-                    className="h-full w-full"
-                    style={{
-                        backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
-                        backgroundSize: "40px 40px",
-                    }}
-                />
-            </div>
-
+        <section id="projects" className="py-24 relative">
             <div className="max-w-6xl mx-auto px-6 relative z-10">
                 {/* Section Header */}
                 <div className="text-center mb-16">
