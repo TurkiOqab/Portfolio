@@ -7,7 +7,7 @@ interface EducationSectionProps {
 export default function EducationSection({ education }: EducationSectionProps) {
     if (!education || education.length === 0) return null
 
-    // Sort by degree level priority (higher degrees first)
+    // Sort by degree level priority (oldest/lower degrees at bottom)
     const degreeOrder: Record<string, number> = {
         'PhD': 1,
         'Master\'s': 2,
@@ -31,30 +31,36 @@ export default function EducationSection({ education }: EducationSectionProps) {
                 <h2 className="text-3xl md:text-4xl font-bold text-white mb-12 text-center">
                     Education
                 </h2>
-                <div className="space-y-6">
-                    {sortedEducation.map((edu) => (
-                        <div
-                            key={edu.id}
-                            className="p-6 bg-zinc-900/50 border border-zinc-800 rounded-2xl hover:border-violet-500/30 transition-all"
-                        >
-                            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                <div className="relative">
+                    {/* Timeline line */}
+                    <div className="absolute left-2 top-2 bottom-2 w-px bg-zinc-700" />
+
+                    <div className="space-y-8">
+                        {sortedEducation.map((edu) => (
+                            <div
+                                key={edu.id}
+                                className="relative pl-8"
+                            >
+                                {/* Timeline dot */}
+                                <div className="absolute left-0 top-1.5 w-4 h-4 rounded-full bg-violet-500 border-2 border-zinc-950" />
+
                                 <div>
                                     <h3 className="text-xl font-semibold text-white">
                                         {edu.institution}
                                     </h3>
-                                    <p className="text-violet-400">
+                                    <p className="text-violet-400 mt-1">
                                         {edu.degreeLevel}
                                         {edu.degreeName && ` in ${edu.degreeName}`}
                                     </p>
+                                    {edu.gpa && (
+                                        <p className="text-zinc-500 text-sm mt-1">
+                                            GPA: {edu.gpa}
+                                        </p>
+                                    )}
                                 </div>
-                                {edu.gpa && (
-                                    <div className="text-zinc-400 text-sm md:text-right">
-                                        <span className="text-zinc-300">GPA:</span> {edu.gpa}
-                                    </div>
-                                )}
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
             </div>
         </section>
