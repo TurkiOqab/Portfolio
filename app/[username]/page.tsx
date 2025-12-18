@@ -2,6 +2,8 @@ import { createClient } from '@/app/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import Navbar from '@/app/components/Navbar'
 import Hero from '@/app/components/Hero'
+import EducationSection from '@/app/components/Education'
+import ExperienceSection from '@/app/components/Experience'
 import Projects from '@/app/components/Projects'
 import Footer from '@/app/components/Footer'
 
@@ -56,6 +58,8 @@ export default async function PortfolioPage({ params }: PageProps) {
         title: portfolio.title || '',
         bio: portfolio.bio || '',
         skills: portfolio.skills || [],
+        education: portfolio.education || [],
+        experience: portfolio.experience || [],
         projects: (projects || []).map(p => ({
             id: p.id,
             title: p.title,
@@ -77,6 +81,8 @@ export default async function PortfolioPage({ params }: PageProps) {
                     bio={portfolioData.bio}
                     skills={portfolioData.skills}
                 />
+                <EducationSection education={portfolioData.education} />
+                <ExperienceSection experience={portfolioData.experience} />
                 <Projects projects={portfolioData.projects} />
             </main>
             <Footer contact={portfolioData.contact} name={portfolioData.name} />
