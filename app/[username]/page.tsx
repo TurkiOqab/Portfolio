@@ -72,21 +72,37 @@ export default async function PortfolioPage({ params }: PageProps) {
     }
 
     return (
-        <>
-            <Navbar />
-            <main>
-                <Hero
-                    name={portfolioData.name}
-                    title={portfolioData.title}
-                    bio={portfolioData.bio}
-                    skills={portfolioData.skills}
-                />
-                <EducationSection education={portfolioData.education} />
-                <ExperienceSection experience={portfolioData.experience} />
-                <Projects projects={portfolioData.projects} />
-            </main>
-            <Footer contact={portfolioData.contact} name={portfolioData.name} />
-        </>
+        <div className="min-h-screen bg-zinc-950 relative overflow-hidden">
+            {/* Global Background Effects */}
+            <div className="fixed inset-0 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 z-0" />
+            <div className="fixed top-1/4 left-1/4 w-96 h-96 bg-violet-600/20 rounded-full blur-3xl animate-pulse z-0 pointer-events-none" />
+            <div className="fixed bottom-1/4 right-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl animate-pulse z-0 pointer-events-none" />
+
+            {/* Grid Pattern */}
+            <div
+                className="fixed inset-0 opacity-10 z-0 pointer-events-none"
+                style={{
+                    backgroundImage: `linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)`,
+                    backgroundSize: '60px 60px',
+                }}
+            />
+
+            <div className="relative z-10">
+                <Navbar />
+                <main>
+                    <Hero
+                        name={portfolioData.name}
+                        title={portfolioData.title}
+                        bio={portfolioData.bio}
+                        skills={portfolioData.skills}
+                    />
+                    <EducationSection education={portfolioData.education} />
+                    <ExperienceSection experience={portfolioData.experience} />
+                    <Projects projects={portfolioData.projects} />
+                </main>
+                <Footer contact={portfolioData.contact} name={portfolioData.name} />
+            </div>
+        </div>
     )
 }
 

@@ -22,7 +22,7 @@ export default function EducationSection({ education }: EducationSectionProps) {
     })
 
     return (
-        <section className="py-20 px-6 bg-zinc-900/30" id="education">
+        <section className="py-20 px-6" id="education">
             <div className="max-w-4xl mx-auto">
                 <h2 className="text-3xl md:text-4xl font-bold text-white mb-12 text-center">
                     Education
