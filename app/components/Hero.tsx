@@ -9,21 +9,8 @@ export default function Hero({ name, title, bio, skills }: HeroProps) {
     return (
         <section
             id="home"
-            className="min-h-screen flex items-center justify-center relative overflow-hidden pt-16"
+            className="min-h-screen flex items-center justify-center relative pt-16"
         >
-            {/* Background Effects */}
-            <div className="absolute inset-0 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950" />
-            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-violet-600/20 rounded-full blur-3xl animate-pulse" />
-            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl animate-pulse delay-1000" />
-
-            {/* Grid Pattern */}
-            <div
-                className="absolute inset-0 opacity-10"
-                style={{
-                    backgroundImage: `linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)`,
-                    backgroundSize: "60px 60px",
-                }}
-            />
 
             <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
                 {/* Main Heading */}
