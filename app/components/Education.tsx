@@ -1,7 +1,9 @@
 import { Education } from '@/app/types'
+import { ThemeConfig } from '../lib/themes'
 
 interface EducationSectionProps {
     education: Education[]
+    theme: ThemeConfig
 }
 
 function formatDate(dateStr?: string): string {
@@ -11,7 +13,7 @@ function formatDate(dateStr?: string): string {
     return `${months[parseInt(month) - 1]} ${year}`
 }
 
-export default function EducationSection({ education }: EducationSectionProps) {
+export default function EducationSection({ education, theme }: EducationSectionProps) {
     if (!education || education.length === 0) return null
 
     // Sort by end date (most recent first, oldest at bottom)
@@ -38,7 +40,7 @@ export default function EducationSection({ education }: EducationSectionProps) {
                                 className="relative pl-8"
                             >
                                 {/* Timeline dot */}
-                                <div className="absolute left-0 top-1.5 w-4 h-4 rounded-full bg-violet-500 border-2 border-zinc-950" />
+                                <div className={`absolute left-0 top-1.5 w-4 h-4 rounded-full ${theme.timelineDot} border-2 border-zinc-950`} />
 
                                 <div>
                                     <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-1">
@@ -53,7 +55,7 @@ export default function EducationSection({ education }: EducationSectionProps) {
                                             </span>
                                         )}
                                     </div>
-                                    <p className="text-violet-400 mt-1">
+                                    <p className={`${theme.textAccent} mt-1`}>
                                         {edu.degreeLevel}
                                         {edu.degreeName && ` in ${edu.degreeName}`}
                                     </p>

@@ -1,5 +1,6 @@
 import { createClient } from '@/app/lib/supabase/server'
 import { notFound } from 'next/navigation'
+import { getTheme } from '@/app/lib/themes'
 import Navbar from '@/app/components/Navbar'
 import Hero from '@/app/components/Hero'
 import EducationSection from '@/app/components/Education'
@@ -45,6 +46,9 @@ export default async function PortfolioPage({ params }: PageProps) {
         )
     }
 
+    // Get theme
+    const theme = getTheme(portfolio.theme || 'violet')
+
     // Fetch projects
     const { data: projects } = await supabase
         .from('projects')
@@ -75,8 +79,8 @@ export default async function PortfolioPage({ params }: PageProps) {
         <div className="min-h-screen bg-zinc-950 relative overflow-hidden">
             {/* Global Background Effects */}
             <div className="fixed inset-0 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 z-0" />
-            <div className="fixed top-1/4 left-1/4 w-96 h-96 bg-violet-600/20 rounded-full blur-3xl animate-pulse z-0 pointer-events-none" />
-            <div className="fixed bottom-1/4 right-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl animate-pulse z-0 pointer-events-none" />
+            <div className={`fixed top-1/4 left-1/4 w-96 h-96 ${theme.orb1} rounded-full blur-3xl animate-pulse z-0 pointer-events-none`} />
+            <div className={`fixed bottom-1/4 right-1/4 w-96 h-96 ${theme.orb2} rounded-full blur-3xl animate-pulse z-0 pointer-events-none`} />
 
             {/* Grid Pattern */}
             <div
@@ -88,19 +92,20 @@ export default async function PortfolioPage({ params }: PageProps) {
             />
 
             <div className="relative z-10">
-                <Navbar />
+                <Navbar theme={theme} />
                 <main>
                     <Hero
                         name={portfolioData.name}
                         title={portfolioData.title}
                         bio={portfolioData.bio}
                         skills={portfolioData.skills}
+                        theme={theme}
                     />
-                    <EducationSection education={portfolioData.education} />
-                    <ExperienceSection experience={portfolioData.experience} />
-                    <Projects projects={portfolioData.projects} />
+                    <EducationSection education={portfolioData.education} theme={theme} />
+                    <ExperienceSection experience={portfolioData.experience} theme={theme} />
+                    <Projects projects={portfolioData.projects} theme={theme} />
                 </main>
-                <Footer contact={portfolioData.contact} name={portfolioData.name} />
+                <Footer contact={portfolioData.contact} name={portfolioData.name} theme={theme} />
             </div>
         </div>
     )

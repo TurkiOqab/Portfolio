@@ -1,4 +1,5 @@
 import { Project } from "../types";
+import { ThemeConfig } from "../lib/themes";
 
 const gradientClasses = [
     "from-violet-600 via-purple-600 to-pink-600",
@@ -10,20 +11,21 @@ const gradientClasses = [
 
 interface ProjectsProps {
     projects: Project[];
+    theme: ThemeConfig;
 }
 
-export default function Projects({ projects }: ProjectsProps) {
+export default function Projects({ projects, theme }: ProjectsProps) {
     return (
         <section id="projects" className="py-24 relative">
             <div className="max-w-6xl mx-auto px-6 relative z-10">
                 {/* Section Header */}
                 <div className="text-center mb-16">
-                    <span className="text-violet-400 text-sm font-medium tracking-widest uppercase mb-4 block">
+                    <span className={`${theme.textAccent} text-sm font-medium tracking-widest uppercase mb-4 block`}>
                         Featured Work
                     </span>
                     <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
                         My{" "}
-                        <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
+                        <span className={`bg-gradient-to-r ${theme.primaryGradient} bg-clip-text text-transparent`}>
                             Projects
                         </span>
                     </h2>
@@ -39,7 +41,7 @@ export default function Projects({ projects }: ProjectsProps) {
                         {projects.map((project, index) => (
                             <div
                                 key={project.id}
-                                className="group relative bg-zinc-900/50 border border-zinc-800/50 rounded-2xl overflow-hidden hover:border-violet-500/30 transition-all duration-500 hover:-translate-y-2"
+                                className="group relative bg-zinc-900/50 border border-zinc-800/50 rounded-2xl overflow-hidden hover:border-zinc-600/50 transition-all duration-500 hover:-translate-y-2"
                             >
                                 {/* Project Image Placeholder */}
                                 <div

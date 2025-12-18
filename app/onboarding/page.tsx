@@ -13,8 +13,9 @@ import EducationStep from "./steps/EducationStep";
 import ExperienceStep from "./steps/ExperienceStep";
 import ProjectsStep from "./steps/ProjectsStep";
 import ContactStep from "./steps/ContactStep";
+import ThemeStep from "./steps/ThemeStep";
 
-const TOTAL_STEPS = 7;
+const TOTAL_STEPS = 8;
 
 export default function OnboardingPage() {
     const router = useRouter();
@@ -81,6 +82,7 @@ export default function OnboardingPage() {
                         githubUrl: p.github_url || undefined,
                     })),
                     contact: portfolio.contact || { email: "" },
+                    theme: portfolio.theme || "violet",
                 });
             }
 
@@ -157,6 +159,7 @@ export default function OnboardingPage() {
                     education: data.education,
                     experience: data.experience,
                     contact: data.contact,
+                    theme: data.theme,
                     updated_at: new Date().toISOString(),
                 }, {
                     onConflict: "user_id",
@@ -233,6 +236,7 @@ export default function OnboardingPage() {
         "Work experience",
         "Showcase your work",
         "How can people reach you?",
+        "Choose your style",
     ];
 
     return (
@@ -298,6 +302,9 @@ export default function OnboardingPage() {
                     )}
                     {currentStep === 7 && (
                         <ContactStep data={data} updateData={updateData} />
+                    )}
+                    {currentStep === 8 && (
+                        <ThemeStep data={data} updateData={updateData} />
                     )}
                 </div>
             </div>

@@ -1,7 +1,9 @@
 import { WorkExperience } from '@/app/types'
+import { ThemeConfig } from '../lib/themes'
 
 interface ExperienceSectionProps {
     experience: WorkExperience[]
+    theme: ThemeConfig
 }
 
 function formatDate(dateStr: string): string {
@@ -11,7 +13,7 @@ function formatDate(dateStr: string): string {
     return `${months[parseInt(month) - 1]} ${year}`
 }
 
-export default function ExperienceSection({ experience }: ExperienceSectionProps) {
+export default function ExperienceSection({ experience, theme }: ExperienceSectionProps) {
     if (!experience || experience.length === 0) return null
 
     // Sort by start date (most recent first)
@@ -38,7 +40,7 @@ export default function ExperienceSection({ experience }: ExperienceSectionProps
                                 className="relative pl-8"
                             >
                                 {/* Timeline dot */}
-                                <div className="absolute left-0 top-1.5 w-4 h-4 rounded-full bg-violet-500 border-2 border-zinc-950" />
+                                <div className={`absolute left-0 top-1.5 w-4 h-4 rounded-full ${theme.timelineDot} border-2 border-zinc-950`} />
 
                                 <div>
                                     <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-1">
@@ -55,7 +57,7 @@ export default function ExperienceSection({ experience }: ExperienceSectionProps
                                             )}
                                         </span>
                                     </div>
-                                    <p className="text-violet-400 mt-1">{exp.company}</p>
+                                    <p className={`${theme.textAccent} mt-1`}>{exp.company}</p>
                                     {exp.duties && (
                                         <p className="text-zinc-500 text-sm mt-2 leading-relaxed whitespace-pre-line">
                                             {exp.duties}

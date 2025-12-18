@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { ContactInfo } from "../types";
+import { ThemeConfig } from "../lib/themes";
 
 interface FooterProps {
     contact: ContactInfo;
     name: string;
+    theme: ThemeConfig;
 }
 
-export default function Footer({ contact, name }: FooterProps) {
+export default function Footer({ contact, name, theme }: FooterProps) {
     const currentYear = new Date().getFullYear();
 
     const socialLinks = [
@@ -68,7 +70,7 @@ export default function Footer({ contact, name }: FooterProps) {
                     <div>
                         <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
                             Let&apos;s work{" "}
-                            <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
+                            <span className={`bg-gradient-to-r ${theme.primaryGradient} bg-clip-text text-transparent`}>
                                 together
                             </span>
                         </h2>
@@ -79,7 +81,7 @@ export default function Footer({ contact, name }: FooterProps) {
                         {contact.email && (
                             <a
                                 href={`mailto:${contact.email}`}
-                                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white font-medium rounded-full hover:from-violet-500 hover:to-purple-500 transition-all duration-300 shadow-lg shadow-purple-500/25"
+                                className={`inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r ${theme.primaryGradient} text-white font-medium rounded-full hover:opacity-90 transition-all duration-300 shadow-lg ${theme.shadowColor}`}
                             >
                                 <svg
                                     className="w-5 h-5"
@@ -132,14 +134,14 @@ export default function Footer({ contact, name }: FooterProps) {
                         <div className="flex items-center gap-4">
                             <Link
                                 href="/onboarding"
-                                className="text-zinc-500 hover:text-violet-400 text-sm transition-colors"
+                                className={`text-zinc-500 hover:${theme.textAccent} text-sm transition-colors`}
                             >
                                 Edit Portfolio
                             </Link>
                             <p className="text-zinc-500 text-sm">
                                 Built with{" "}
-                                <span className="text-violet-400">Next.js</span> &{" "}
-                                <span className="text-violet-400">Tailwind CSS</span>
+                                <span className={theme.textAccent}>Next.js</span> &{" "}
+                                <span className={theme.textAccent}>Tailwind CSS</span>
                             </p>
                         </div>
                     </div>

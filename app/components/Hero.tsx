@@ -1,11 +1,14 @@
+import { ThemeConfig } from "../lib/themes";
+
 interface HeroProps {
     name: string;
     title: string;
     bio: string;
     skills: string[];
+    theme: ThemeConfig;
 }
 
-export default function Hero({ name, title, bio, skills }: HeroProps) {
+export default function Hero({ name, title, bio, skills, theme }: HeroProps) {
     return (
         <section
             id="home"
@@ -16,14 +19,14 @@ export default function Hero({ name, title, bio, skills }: HeroProps) {
                 {/* Main Heading */}
                 <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-6 tracking-tight">
                     Hi, I&apos;m{" "}
-                    <span className="bg-gradient-to-r from-violet-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                    <span className={`bg-gradient-to-r ${theme.primaryGradient} bg-clip-text text-transparent`}>
                         {name || "Your Name"}
                     </span>
                 </h1>
 
                 {/* Title */}
                 {title && (
-                    <p className="text-2xl md:text-3xl text-violet-400 font-medium mb-4">
+                    <p className={`text-2xl md:text-3xl ${theme.textAccent} font-medium mb-4`}>
                         {title}
                     </p>
                 )}
@@ -39,7 +42,7 @@ export default function Hero({ name, title, bio, skills }: HeroProps) {
                         {skills.map((skill) => (
                             <span
                                 key={skill}
-                                className="px-4 py-2 bg-zinc-800/50 border border-zinc-700/50 rounded-full text-sm text-zinc-300 backdrop-blur-sm hover:border-violet-500/50 transition-colors duration-300"
+                                className={`px-4 py-2 bg-zinc-800/50 border border-zinc-700/50 rounded-full text-sm text-zinc-300 backdrop-blur-sm hover:border-current ${theme.textAccent} transition-colors duration-300`}
                             >
                                 {skill}
                             </span>
@@ -51,7 +54,7 @@ export default function Hero({ name, title, bio, skills }: HeroProps) {
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                     <a
                         href="#projects"
-                        className="group px-8 py-4 bg-gradient-to-r from-violet-600 to-purple-600 text-white font-medium rounded-full hover:from-violet-500 hover:to-purple-500 transition-all duration-300 shadow-lg shadow-purple-500/25 flex items-center gap-2"
+                        className={`group px-8 py-4 bg-gradient-to-r ${theme.primaryGradient} text-white font-medium rounded-full hover:opacity-90 transition-all duration-300 shadow-lg ${theme.shadowColor} flex items-center gap-2`}
                     >
                         View My Work
                         <svg

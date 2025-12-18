@@ -45,6 +45,7 @@ export interface PortfolioData {
     experience: WorkExperience[];
     projects: Project[];
     contact: ContactInfo;
+    theme: string;
 }
 
 // Default empty portfolio for new users
@@ -62,4 +63,5 @@ export const defaultPortfolioData: PortfolioData = {
         linkedin: "",
         twitter: "",
     },
+    theme: "violet",
 };

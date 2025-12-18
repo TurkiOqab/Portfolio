@@ -2,8 +2,13 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { ThemeConfig } from "../lib/themes";
 
-export default function Navbar() {
+interface NavbarProps {
+  theme: ThemeConfig;
+}
+
+export default function Navbar({ theme }: NavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navLinks = [
@@ -18,7 +23,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link href="/" className="text-2xl font-bold text-white">
-            <span className="bg-gradient-to-r from-violet-400 to-purple-500 bg-clip-text text-transparent">
+            <span className={`bg-gradient-to-r ${theme.primaryGradient} bg-clip-text text-transparent`}>
               Portfolio
             </span>
           </Link>
@@ -29,7 +34,7 @@ export default function Navbar() {
               <a
                 key={link.name}
                 href={link.href}
-                className="text-lg font-semibold bg-gradient-to-r from-violet-300 to-purple-400 bg-clip-text text-transparent hover:from-white hover:to-white transition-all duration-300"
+                className={`text-lg font-semibold ${theme.textAccent} hover:text-white transition-all duration-300`}
               >
                 {link.name}
               </a>
@@ -75,7 +80,7 @@ export default function Navbar() {
                   key={link.name}
                   href={link.href}
                   onClick={() => setIsMenuOpen(false)}
-                  className="text-lg font-semibold bg-gradient-to-r from-violet-300 to-purple-400 bg-clip-text text-transparent"
+                  className={`text-lg font-semibold ${theme.textAccent}`}
                 >
                   {link.name}
                 </a>
