@@ -27,12 +27,6 @@ export default async function DashboardPage() {
         .eq('user_id', user.id)
         .single()
 
-    // Get projects count
-    const { count: projectCount } = await supabase
-        .from('projects')
-        .select('*', { count: 'exact', head: true })
-        .eq('portfolio_id', portfolio?.id || '')
-
     const portfolioUrl = profile ? `/${profile.username}` : null
 
     // If no portfolio, redirect to onboarding
@@ -41,9 +35,23 @@ export default async function DashboardPage() {
     }
 
     return (
-        <div className="min-h-screen bg-zinc-950">
+        <div className="min-h-screen bg-zinc-950 relative overflow-hidden">
+            {/* Global Background Effects */}
+            <div className="fixed inset-0 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 z-0" />
+            <div className="fixed top-1/4 left-1/4 w-96 h-96 bg-violet-600/20 rounded-full blur-3xl animate-pulse z-0 pointer-events-none" />
+            <div className="fixed bottom-1/4 right-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl animate-pulse z-0 pointer-events-none" />
+
+            {/* Grid Pattern */}
+            <div
+                className="fixed inset-0 opacity-10 z-0 pointer-events-none"
+                style={{
+                    backgroundImage: `linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)`,
+                    backgroundSize: '60px 60px',
+                }}
+            />
+
             {/* Header */}
-            <header className="bg-zinc-900/50 border-b border-zinc-800">
+            <header className="relative z-10 bg-zinc-900/50 border-b border-zinc-800 backdrop-blur-md">
                 <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
                     <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
                         DevFolio
@@ -62,7 +70,7 @@ export default async function DashboardPage() {
                 </div>
             </header>
 
-            <main className="max-w-6xl mx-auto px-6 py-12">
+            <main className="relative z-10 max-w-6xl mx-auto px-6 py-12">
                 {/* Welcome Section */}
                 <div className="mb-12">
                     <h1 className="text-3xl font-bold text-white mb-2">
@@ -74,9 +82,9 @@ export default async function DashboardPage() {
                 </div>
 
                 {/* Portfolio Status */}
-                <div className="grid md:grid-cols-3 gap-6 mb-12">
+                <div className="grid md:grid-cols-2 gap-6 mb-12">
                     {/* Live Status */}
-                    <div className="p-6 bg-zinc-900/50 border border-zinc-800 rounded-2xl">
+                    <div className="p-6 bg-zinc-900/50 border border-zinc-800 rounded-2xl backdrop-blur-sm">
                         <div className="flex items-center gap-3 mb-4">
                             <div className={`w-3 h-3 rounded-full ${portfolio.is_published ? 'bg-emerald-500' : 'bg-zinc-500'}`} />
                             <span className="text-sm text-zinc-400">
@@ -89,18 +97,17 @@ export default async function DashboardPage() {
                         </p>
                     </div>
 
-                    {/* Projects */}
-                    <div className="p-6 bg-zinc-900/50 border border-zinc-800 rounded-2xl">
-                        <div className="text-4xl font-bold text-white mb-2">{projectCount || 0}</div>
-                        <h3 className="text-xl font-semibold text-white mb-1">Projects</h3>
-                        <p className="text-zinc-400 text-sm">Showcased in your portfolio</p>
-                    </div>
-
-                    {/* Skills */}
-                    <div className="p-6 bg-zinc-900/50 border border-zinc-800 rounded-2xl">
-                        <div className="text-4xl font-bold text-white mb-2">{portfolio.skills?.length || 0}</div>
-                        <h3 className="text-xl font-semibold text-white mb-1">Skills</h3>
-                        <p className="text-zinc-400 text-sm">Listed on your profile</p>
+                    {/* Portfolio Views */}
+                    <div className="p-6 bg-zinc-900/50 border border-zinc-800 rounded-2xl backdrop-blur-sm">
+                        <div className="flex items-center gap-3 mb-4">
+                            <svg className="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                            <span className="text-sm text-zinc-400">Views</span>
+                        </div>
+                        <div className="text-4xl font-bold text-white mb-1">—</div>
+                        <p className="text-zinc-400 text-sm">Portfolio views coming soon</p>
                     </div>
                 </div>
 
