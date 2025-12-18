@@ -76,7 +76,14 @@ export default function SignupPage() {
         })
 
         if (authError) {
-            setError(authError.message)
+            // Check for duplicate email error
+            if (authError.message.toLowerCase().includes('already registered') ||
+                authError.message.toLowerCase().includes('already been registered') ||
+                authError.message.toLowerCase().includes('user already exists')) {
+                setError('This email is already registered. Please sign in instead.')
+            } else {
+                setError(authError.message)
+            }
             setIsLoading(false)
             return
         }
