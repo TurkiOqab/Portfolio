@@ -27,36 +27,44 @@ export default function ExperienceSection({ experience }: ExperienceSectionProps
                 <h2 className="text-3xl md:text-4xl font-bold text-white mb-12 text-center">
                     Work Experience
                 </h2>
-                <div className="space-y-6">
-                    {sortedExperience.map((exp) => (
-                        <div
-                            key={exp.id}
-                            className="p-6 bg-zinc-900/50 border border-zinc-800 rounded-2xl hover:border-violet-500/30 transition-all"
-                        >
-                            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-2 mb-3">
+                <div className="relative">
+                    {/* Timeline line */}
+                    <div className="absolute left-2 top-2 bottom-2 w-px bg-zinc-700" />
+
+                    <div className="space-y-8">
+                        {sortedExperience.map((exp) => (
+                            <div
+                                key={exp.id}
+                                className="relative pl-8"
+                            >
+                                {/* Timeline dot */}
+                                <div className="absolute left-0 top-1.5 w-4 h-4 rounded-full bg-violet-500 border-2 border-zinc-950" />
+
                                 <div>
-                                    <h3 className="text-xl font-semibold text-white">
-                                        {exp.title}
-                                    </h3>
-                                    <p className="text-violet-400">{exp.company}</p>
-                                </div>
-                                <div className="text-zinc-400 text-sm md:text-right whitespace-nowrap">
-                                    {formatDate(exp.startDate)}
-                                    {' — '}
-                                    {exp.isPresent ? (
-                                        <span className="text-emerald-400">Present</span>
-                                    ) : (
-                                        formatDate(exp.endDate || '')
+                                    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-1">
+                                        <h3 className="text-xl font-semibold text-white">
+                                            {exp.title}
+                                        </h3>
+                                        <span className="text-zinc-500 text-sm whitespace-nowrap">
+                                            {formatDate(exp.startDate)}
+                                            {' — '}
+                                            {exp.isPresent ? (
+                                                <span className="text-emerald-400">Present</span>
+                                            ) : (
+                                                formatDate(exp.endDate || '')
+                                            )}
+                                        </span>
+                                    </div>
+                                    <p className="text-violet-400 mt-1">{exp.company}</p>
+                                    {exp.duties && (
+                                        <p className="text-zinc-500 text-sm mt-2 leading-relaxed whitespace-pre-line">
+                                            {exp.duties}
+                                        </p>
                                     )}
                                 </div>
                             </div>
-                            {exp.duties && (
-                                <p className="text-zinc-400 text-sm leading-relaxed whitespace-pre-line">
-                                    {exp.duties}
-                                </p>
-                            )}
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
             </div>
         </section>

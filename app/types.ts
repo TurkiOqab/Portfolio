@@ -14,6 +14,8 @@ export interface Education {
     institution: string;
     degreeLevel: string; // e.g., "Bachelor's", "Master's", "PhD"
     degreeName: string; // e.g., "Computer Science"
+    startDate?: string;
+    endDate?: string;
     gpa?: string;
 }
 

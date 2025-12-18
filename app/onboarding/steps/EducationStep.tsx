@@ -23,6 +23,8 @@ const emptyEducation: Omit<Education, "id"> = {
     institution: "",
     degreeLevel: "",
     degreeName: "",
+    startDate: "",
+    endDate: "",
     gpa: "",
 };
 
@@ -139,6 +141,35 @@ export default function EducationStep({ data, updateData }: StepProps) {
                             }
                             placeholder="3.8 / 4.0"
                             className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 transition-all"
+                        />
+                    </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label className="block text-sm font-medium text-zinc-300 mb-2">
+                            Start Date
+                        </label>
+                        <input
+                            type="month"
+                            value={currentEducation.startDate || ""}
+                            onChange={(e) =>
+                                setCurrentEducation((prev) => ({ ...prev, startDate: e.target.value }))
+                            }
+                            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white focus:outline-none focus:border-violet-500 transition-all"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-zinc-300 mb-2">
+                            End Date / Expected
+                        </label>
+                        <input
+                            type="month"
+                            value={currentEducation.endDate || ""}
+                            onChange={(e) =>
+                                setCurrentEducation((prev) => ({ ...prev, endDate: e.target.value }))
+                            }
+                            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white focus:outline-none focus:border-violet-500 transition-all"
                         />
                     </div>
                 </div>

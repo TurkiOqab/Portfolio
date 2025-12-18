@@ -4,25 +4,21 @@ interface EducationSectionProps {
     education: Education[]
 }
 
+function formatDate(dateStr?: string): string {
+    if (!dateStr) return ''
+    const [year, month] = dateStr.split('-')
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    return `${months[parseInt(month) - 1]} ${year}`
+}
+
 export default function EducationSection({ education }: EducationSectionProps) {
     if (!education || education.length === 0) return null
 
-    // Sort by degree level priority (oldest/lower degrees at bottom)
-    const degreeOrder: Record<string, number> = {
-        'PhD': 1,
-        'Master\'s': 2,
-        'Bachelor\'s': 3,
-        'Associate\'s': 4,
-        'Bootcamp': 5,
-        'High School': 6,
-        'Self-Taught': 7,
-        'Other': 8,
-    }
-
+    // Sort by end date (most recent first, oldest at bottom)
     const sortedEducation = [...education].sort((a, b) => {
-        const orderA = degreeOrder[a.degreeLevel] || 10
-        const orderB = degreeOrder[b.degreeLevel] || 10
-        return orderA - orderB
+        const dateA = a.endDate || '0000-00'
+        const dateB = b.endDate || '0000-00'
+        return dateB.localeCompare(dateA)
     })
 
     return (
@@ -45,9 +41,18 @@ export default function EducationSection({ education }: EducationSectionProps) {
                                 <div className="absolute left-0 top-1.5 w-4 h-4 rounded-full bg-violet-500 border-2 border-zinc-950" />
 
                                 <div>
-                                    <h3 className="text-xl font-semibold text-white">
-                                        {edu.institution}
-                                    </h3>
+                                    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-1">
+                                        <h3 className="text-xl font-semibold text-white">
+                                            {edu.institution}
+                                        </h3>
+                                        {(edu.startDate || edu.endDate) && (
+                                            <span className="text-zinc-500 text-sm whitespace-nowrap">
+                                                {formatDate(edu.startDate)}
+                                                {edu.startDate && edu.endDate && ' — '}
+                                                {formatDate(edu.endDate)}
+                                            </span>
+                                        )}
+                                    </div>
                                     <p className="text-violet-400 mt-1">
                                         {edu.degreeLevel}
                                         {edu.degreeName && ` in ${edu.degreeName}`}
