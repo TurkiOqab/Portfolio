@@ -61,7 +61,6 @@ export default function Footer({ contact, name }: FooterProps) {
     return (
         <footer
             id="contact"
-            className="border-t border-zinc-800/50"
         >
             <div className="max-w-6xl mx-auto px-6 py-16 relative z-10">
                 <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -125,7 +124,7 @@ export default function Footer({ contact, name }: FooterProps) {
                 </div>
 
                 {/* Bottom Bar */}
-                <div className="mt-16 pt-8 border-t border-zinc-800/50">
+                <div className="mt-16 pt-8">
                     <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                         <p className="text-zinc-500 text-sm">
                             © {currentYear} {name || "Portfolio"}. All rights reserved.
