@@ -7,7 +7,7 @@ interface StepProps {
     updateData: (updates: Partial<PortfolioData>) => void;
 }
 
-const MIN_BIO_LENGTH = 50;
+const MIN_BIO_LENGTH = 20;
 const MAX_BIO_LENGTH = 300;
 
 export default function BioStep({ data, updateData }: StepProps) {
@@ -39,8 +39,8 @@ export default function BioStep({ data, updateData }: StepProps) {
                     placeholder="A passionate developer crafting beautiful digital experiences with modern technologies..."
                     rows={6}
                     className={`w-full px-4 py-4 bg-zinc-900 border rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-1 transition-all text-lg resize-none ${bioLength > 0 && !isValid
-                            ? "border-amber-500/50 focus:border-amber-500 focus:ring-amber-500"
-                            : "border-zinc-800 focus:border-violet-500 focus:ring-violet-500"
+                        ? "border-amber-500/50 focus:border-amber-500 focus:ring-amber-500"
+                        : "border-zinc-800 focus:border-violet-500 focus:ring-violet-500"
                         }`}
                 />
                 <div className="mt-2 flex justify-between items-center">

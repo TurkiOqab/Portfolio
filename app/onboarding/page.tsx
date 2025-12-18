@@ -95,7 +95,9 @@ export default function OnboardingPage() {
             case 1:
                 return data.name.trim().length > 0 && data.title.trim().length > 0;
             case 2:
-                return data.bio.trim().length >= 50;
+                return data.bio.trim().length >= 20;
+            case 3:
+                return data.skills.length >= 3;
             default:
                 return true;
         }
@@ -108,7 +110,10 @@ export default function OnboardingPage() {
                 if (!data.title.trim()) return "Please enter your professional title";
                 return null;
             case 2:
-                if (data.bio.trim().length < 50) return `Bio must be at least 50 characters (${data.bio.trim().length}/50)`;
+                if (data.bio.trim().length < 20) return `Bio must be at least 20 characters (${data.bio.trim().length}/20)`;
+                return null;
+            case 3:
+                if (data.skills.length < 3) return `Please add at least 3 skills (${data.skills.length}/3)`;
                 return null;
             default:
                 return null;
@@ -208,7 +213,20 @@ export default function OnboardingPage() {
     ];
 
     return (
-        <div className="min-h-screen bg-zinc-950 flex flex-col">
+        <div className="min-h-screen bg-zinc-950 flex flex-col relative overflow-hidden">
+            {/* Global Background Effects */}
+            <div className="fixed inset-0 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 z-0" />
+            <div className="fixed top-1/4 left-1/4 w-96 h-96 bg-violet-600/30 rounded-full blur-3xl animate-pulse z-0 pointer-events-none" />
+            <div className="fixed bottom-1/4 right-1/4 w-96 h-96 bg-purple-600/30 rounded-full blur-3xl animate-pulse z-0 pointer-events-none" />
+
+            {/* Grid Pattern */}
+            <div
+                className="fixed inset-0 opacity-20 z-0 pointer-events-none"
+                style={{
+                    backgroundImage: `linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)`,
+                    backgroundSize: '60px 60px',
+                }}
+            />
             {/* Progress Bar */}
             <div className="fixed top-0 left-0 right-0 z-50 bg-zinc-900/80 backdrop-blur-md border-b border-zinc-800/50">
                 <div className="max-w-3xl mx-auto px-6 py-4">
@@ -235,7 +253,7 @@ export default function OnboardingPage() {
             </div>
 
             {/* Step Content */}
-            <div className="flex-1 flex items-center justify-center pt-28 pb-24 px-6">
+            <div className="flex-1 flex items-center justify-center pt-28 pb-24 px-6 relative z-10">
                 <div className="w-full max-w-2xl">
                     {currentStep === 1 && (
                         <NameStep data={data} updateData={updateData} />
@@ -256,7 +274,7 @@ export default function OnboardingPage() {
             </div>
 
             {/* Navigation */}
-            <div className="fixed bottom-0 left-0 right-0 bg-zinc-900/80 backdrop-blur-md border-t border-zinc-800/50">
+            <div className="fixed bottom-0 left-0 right-0 bg-zinc-900/80 backdrop-blur-md border-t border-zinc-800/50 z-50">
                 <div className="max-w-3xl mx-auto px-6 py-4">
                     {/* Save Error Message */}
                     {saveError && (
