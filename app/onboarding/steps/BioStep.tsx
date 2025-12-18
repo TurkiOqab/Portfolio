@@ -43,14 +43,7 @@ export default function BioStep({ data, updateData }: StepProps) {
                         : "border-zinc-800 focus:border-violet-500 focus:ring-violet-500"
                         }`}
                 />
-                <div className="mt-2 flex justify-between items-center">
-                    <p className={`text-sm ${!isValid ? "text-amber-400" : "text-green-400"
-                        }`}>
-                        {!isValid
-                            ? `${remaining} more characters needed (minimum ${MIN_BIO_LENGTH})`
-                            : `✓ Minimum reached`
-                        }
-                    </p>
+                <div className="mt-2 flex justify-end items-center">
                     <p className={`text-sm ${bioLength > MAX_BIO_LENGTH ? "text-red-400" : "text-zinc-500"
                         }`}>
                         {bioLength}/{MAX_BIO_LENGTH}

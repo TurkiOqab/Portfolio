@@ -79,14 +79,6 @@ export default function ProjectsStep({ data, updateData, onSkip }: StepProps) {
                     </span>
                 </h1>
                 <p className="text-zinc-400 text-lg">Add your best projects</p>
-                {data.projects.length === 0 && onSkip && (
-                    <button
-                        onClick={onSkip}
-                        className="mt-4 text-sm text-violet-400 hover:text-violet-300 underline underline-offset-4 transition-colors"
-                    >
-                        Skip for now — I&apos;ll add projects later
-                    </button>
-                )}
             </div>
 
             {/* Project Form */}

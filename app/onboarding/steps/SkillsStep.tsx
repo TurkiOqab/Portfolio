@@ -21,6 +21,12 @@ const SUGGESTED_SKILLS = [
     "AWS",
     "Docker",
     "Git",
+    "OpenAI",
+    "LangChain",
+    "Machine Learning",
+    "TensorFlow",
+    "LLM",
+    "RAG",
 ];
 
 export default function SkillsStep({ data, updateData }: StepProps) {

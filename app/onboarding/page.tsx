@@ -98,6 +98,8 @@ export default function OnboardingPage() {
                 return data.bio.trim().length >= 20;
             case 3:
                 return data.skills.length >= 3;
+            case 4:
+                return data.projects.length >= 1;
             default:
                 return true;
         }
@@ -114,6 +116,9 @@ export default function OnboardingPage() {
                 return null;
             case 3:
                 if (data.skills.length < 3) return `Please add at least 3 skills (${data.skills.length}/3)`;
+                return null;
+            case 4:
+                if (data.projects.length < 1) return "Add a project or skip to continue";
                 return null;
             default:
                 return null;
@@ -300,25 +305,35 @@ export default function OnboardingPage() {
                         >
                             ← Back
                         </button>
-                        <button
-                            onClick={nextStep}
-                            disabled={!canProceed() || isSaving}
-                            className="px-8 py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white font-medium rounded-full hover:from-violet-500 hover:to-purple-500 transition-all duration-300 shadow-lg shadow-purple-500/25 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                        >
-                            {isSaving ? (
-                                <>
-                                    <svg className="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                                    </svg>
-                                    Saving...
-                                </>
-                            ) : currentStep === TOTAL_STEPS ? (
-                                "Publish Portfolio →"
-                            ) : (
-                                "Continue →"
+                        <div className="flex items-center gap-3">
+                            {currentStep === 4 && data.projects.length === 0 && (
+                                <button
+                                    onClick={skipStep}
+                                    className="px-6 py-3 text-zinc-400 hover:text-white border border-zinc-700 rounded-full transition-colors"
+                                >
+                                    Skip for now
+                                </button>
                             )}
-                        </button>
+                            <button
+                                onClick={nextStep}
+                                disabled={!canProceed() || isSaving}
+                                className="px-8 py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white font-medium rounded-full hover:from-violet-500 hover:to-purple-500 transition-all duration-300 shadow-lg shadow-purple-500/25 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                            >
+                                {isSaving ? (
+                                    <>
+                                        <svg className="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                                        </svg>
+                                        Saving...
+                                    </>
+                                ) : currentStep === TOTAL_STEPS ? (
+                                    "Publish Portfolio →"
+                                ) : (
+                                    "Continue →"
+                                )}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
