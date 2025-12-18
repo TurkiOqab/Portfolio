@@ -9,10 +9,12 @@ import { PortfolioData, defaultPortfolioData } from "../types";
 import NameStep from "./steps/NameStep";
 import BioStep from "./steps/BioStep";
 import SkillsStep from "./steps/SkillsStep";
+import EducationStep from "./steps/EducationStep";
+import ExperienceStep from "./steps/ExperienceStep";
 import ProjectsStep from "./steps/ProjectsStep";
 import ContactStep from "./steps/ContactStep";
 
-const TOTAL_STEPS = 5;
+const TOTAL_STEPS = 7;
 
 export default function OnboardingPage() {
     const router = useRouter();
@@ -68,6 +70,8 @@ export default function OnboardingPage() {
                     title: portfolio.title || "",
                     bio: portfolio.bio || "",
                     skills: portfolio.skills || [],
+                    education: portfolio.education || [],
+                    experience: portfolio.experience || [],
                     projects: (projects || []).map(p => ({
                         id: p.id,
                         title: p.title,
@@ -99,6 +103,10 @@ export default function OnboardingPage() {
             case 3:
                 return data.skills.length >= 3;
             case 4:
+                return data.education.length >= 1;
+            case 5:
+                return data.experience.length >= 1;
+            case 6:
                 return data.projects.length >= 1;
             default:
                 return true;
@@ -118,6 +126,12 @@ export default function OnboardingPage() {
                 if (data.skills.length < 3) return `Please add at least 3 skills (${data.skills.length}/3)`;
                 return null;
             case 4:
+                if (data.education.length < 1) return "Add education or skip to continue";
+                return null;
+            case 5:
+                if (data.experience.length < 1) return "Add experience or skip to continue";
+                return null;
+            case 6:
                 if (data.projects.length < 1) return "Add a project or skip to continue";
                 return null;
             default:
@@ -140,6 +154,8 @@ export default function OnboardingPage() {
                     title: data.title,
                     bio: data.bio,
                     skills: data.skills,
+                    education: data.education,
+                    experience: data.experience,
                     contact: data.contact,
                     updated_at: new Date().toISOString(),
                 }, {
@@ -213,6 +229,8 @@ export default function OnboardingPage() {
         "Let's get started",
         "Tell us about yourself",
         "What are your skills?",
+        "Your education",
+        "Work experience",
         "Showcase your work",
         "How can people reach you?",
     ];
@@ -270,9 +288,15 @@ export default function OnboardingPage() {
                         <SkillsStep data={data} updateData={updateData} />
                     )}
                     {currentStep === 4 && (
-                        <ProjectsStep data={data} updateData={updateData} onSkip={skipStep} />
+                        <EducationStep data={data} updateData={updateData} />
                     )}
                     {currentStep === 5 && (
+                        <ExperienceStep data={data} updateData={updateData} />
+                    )}
+                    {currentStep === 6 && (
+                        <ProjectsStep data={data} updateData={updateData} />
+                    )}
+                    {currentStep === 7 && (
                         <ContactStep data={data} updateData={updateData} />
                     )}
                 </div>
@@ -306,14 +330,16 @@ export default function OnboardingPage() {
                             ← Back
                         </button>
                         <div className="flex items-center gap-3">
-                            {currentStep === 4 && data.projects.length === 0 && (
-                                <button
-                                    onClick={skipStep}
-                                    className="px-6 py-3 text-zinc-400 hover:text-white border border-zinc-700 rounded-full transition-colors"
-                                >
-                                    Skip for now
-                                </button>
-                            )}
+                            {((currentStep === 4 && data.education.length === 0) ||
+                                (currentStep === 5 && data.experience.length === 0) ||
+                                (currentStep === 6 && data.projects.length === 0)) && (
+                                    <button
+                                        onClick={skipStep}
+                                        className="px-6 py-3 text-zinc-400 hover:text-white border border-zinc-700 rounded-full transition-colors"
+                                    >
+                                        Skip for now
+                                    </button>
+                                )}
                             <button
                                 onClick={nextStep}
                                 disabled={!canProceed() || isSaving}

@@ -9,6 +9,24 @@ export interface Project {
     githubUrl?: string;
 }
 
+export interface Education {
+    id: string;
+    institution: string;
+    degreeLevel: string; // e.g., "Bachelor's", "Master's", "PhD"
+    degreeName: string; // e.g., "Computer Science"
+    gpa?: string;
+}
+
+export interface WorkExperience {
+    id: string;
+    company: string;
+    title: string;
+    startDate: string;
+    endDate?: string;
+    isPresent: boolean;
+    duties: string;
+}
+
 export interface ContactInfo {
     email: string;
     github?: string;
@@ -21,6 +39,8 @@ export interface PortfolioData {
     title: string; // e.g., "Full-Stack Developer"
     bio: string;
     skills: string[];
+    education: Education[];
+    experience: WorkExperience[];
     projects: Project[];
     contact: ContactInfo;
 }
@@ -31,6 +51,8 @@ export const defaultPortfolioData: PortfolioData = {
     title: "",
     bio: "",
     skills: [],
+    education: [],
+    experience: [],
     projects: [],
     contact: {
         email: "",

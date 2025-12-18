@@ -20,6 +20,8 @@ create table public.portfolios (
   title text,
   bio text,
   skills text[] default '{}',
+  education jsonb default '[]',
+  experience jsonb default '[]',
   contact jsonb default '{}',
   theme text default 'default',
   is_published boolean default true,
