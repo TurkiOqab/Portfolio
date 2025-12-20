@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { getTheme } from '@/app/lib/themes'
 import { getFont } from '@/app/lib/fonts'
 import ProfileAvatar from '@/app/components/ProfileAvatar'
+import CopyLinkButton from '@/app/components/CopyLinkButton'
 
 export const dynamic = 'force-dynamic'
 
@@ -64,6 +65,17 @@ export default async function DashboardPage() {
                         DevFolio
                     </Link>
                     <div className="flex items-center gap-4">
+                        {portfolioUrl && (
+                            <Link
+                                href={portfolioUrl}
+                                className={`flex items-center gap-2 text-sm ${theme.textAccent} hover:text-white transition-colors`}
+                            >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                                View Portfolio
+                            </Link>
+                        )}
                         <span className="text-sm text-zinc-400 hidden sm:block">{user.email}</span>
                         <Link
                             href="/dashboard/settings"
@@ -142,13 +154,10 @@ export default async function DashboardPage() {
                             <div className={`flex-1 px-4 py-3 bg-zinc-800/50 rounded-xl ${theme.textAccent} font-mono`}>
                                 devfolio.com{portfolioUrl}
                             </div>
-                            <Link
-                                href={portfolioUrl}
-                                target="_blank"
+                            <CopyLinkButton
+                                url={portfolioUrl}
                                 className={`px-6 py-3 ${theme.accentColor} ${theme.accentColorHover} text-white font-medium rounded-xl transition-colors`}
-                            >
-                                View Portfolio
-                            </Link>
+                            />
                         </div>
                     </div>
                 )}
