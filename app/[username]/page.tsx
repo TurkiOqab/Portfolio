@@ -79,6 +79,8 @@ export default async function PortfolioPage({ params }: PageProps) {
             tags: p.tags || [],
             liveUrl: p.live_url || undefined,
             githubUrl: p.github_url || undefined,
+            startDate: p.start_date || undefined,
+            endDate: p.end_date || undefined,
         })),
         contact: portfolio.contact || { email: '' },
     }

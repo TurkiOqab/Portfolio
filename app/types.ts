@@ -7,6 +7,8 @@ export interface Project {
     tags: string[];
     liveUrl?: string;
     githubUrl?: string;
+    startDate?: string;
+    endDate?: string;
 }
 
 export interface Education {

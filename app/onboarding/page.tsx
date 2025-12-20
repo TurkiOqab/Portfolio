@@ -85,6 +85,8 @@ export default function OnboardingPage() {
                         tags: p.tags || [],
                         liveUrl: p.live_url || undefined,
                         githubUrl: p.github_url || undefined,
+                        startDate: p.start_date || undefined,
+                        endDate: p.end_date || undefined,
                     })),
                     contact: portfolio.contact || { email: "" },
                     theme: portfolio.theme || "violet",
@@ -203,6 +205,8 @@ export default function OnboardingPage() {
                     tags: p.tags,
                     live_url: p.liveUrl || null,
                     github_url: p.githubUrl || null,
+                    start_date: p.startDate || null,
+                    end_date: p.endDate || null,
                     display_order: index,
                 }));
 

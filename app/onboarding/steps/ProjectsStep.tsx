@@ -3,6 +3,50 @@
 import { useState } from "react";
 import { PortfolioData, Project } from "../../types";
 import { isValidProjectUrl } from "@/app/lib/validation";
+import {
+    SiReact,
+    SiNextdotjs,
+    SiTypescript,
+    SiJavascript,
+    SiPython,
+    SiNodedotjs,
+    SiTailwindcss,
+    SiMongodb,
+    SiPostgresql,
+    SiVuedotjs,
+    SiAngular,
+    SiSvelte,
+    SiRust,
+    SiGo,
+    SiRedis,
+    SiGraphql,
+    SiSupabase,
+    SiFlutter,
+    SiSwift,
+    SiKotlin,
+    SiDjango,
+    SiExpress,
+    SiPrisma,
+    SiDocker,
+    SiKubernetes,
+    SiAmazonwebservices,
+    SiFirebase,
+    SiOpenai,
+    SiThreedotjs,
+    SiElectron,
+    SiStripe,
+    SiShopify,
+    SiWordpress,
+    SiLaravel,
+    SiRubyonrails,
+    SiSpring,
+    SiDotnet,
+    SiMysql,
+    SiSqlite,
+    SiTensorflow,
+    SiPytorch,
+} from "react-icons/si";
+import { IconType } from "react-icons";
 
 interface StepProps {
     data: PortfolioData;
@@ -10,20 +54,88 @@ interface StepProps {
     onSkip?: () => void;
 }
 
+interface Tag {
+    name: string;
+    icon: IconType;
+    color: string;
+}
+
+// Available tags for projects (technologies commonly used in projects)
+const AVAILABLE_TAGS: Tag[] = [
+    // Frontend
+    { name: "React", icon: SiReact, color: "#61DAFB" },
+    { name: "Next.js", icon: SiNextdotjs, color: "#FFFFFF" },
+    { name: "Vue.js", icon: SiVuedotjs, color: "#4FC08D" },
+    { name: "Angular", icon: SiAngular, color: "#DD0031" },
+    { name: "Svelte", icon: SiSvelte, color: "#FF3E00" },
+    { name: "TypeScript", icon: SiTypescript, color: "#3178C6" },
+    { name: "JavaScript", icon: SiJavascript, color: "#F7DF1E" },
+    { name: "Tailwind CSS", icon: SiTailwindcss, color: "#06B6D4" },
+    { name: "Three.js", icon: SiThreedotjs, color: "#FFFFFF" },
+    { name: "Electron", icon: SiElectron, color: "#47848F" },
+
+    // Backend
+    { name: "Node.js", icon: SiNodedotjs, color: "#339933" },
+    { name: "Python", icon: SiPython, color: "#3776AB" },
+    { name: "Go", icon: SiGo, color: "#00ADD8" },
+    { name: "Rust", icon: SiRust, color: "#DEA584" },
+    { name: "Express", icon: SiExpress, color: "#FFFFFF" },
+    { name: "Django", icon: SiDjango, color: "#092E20" },
+    { name: "Laravel", icon: SiLaravel, color: "#FF2D20" },
+    { name: "Ruby on Rails", icon: SiRubyonrails, color: "#CC0000" },
+    { name: "Spring", icon: SiSpring, color: "#6DB33F" },
+    { name: ".NET", icon: SiDotnet, color: "#512BD4" },
+
+    // Mobile
+    { name: "Flutter", icon: SiFlutter, color: "#02569B" },
+    { name: "Swift", icon: SiSwift, color: "#F05138" },
+    { name: "Kotlin", icon: SiKotlin, color: "#7F52FF" },
+
+    // Databases
+    { name: "PostgreSQL", icon: SiPostgresql, color: "#4169E1" },
+    { name: "MongoDB", icon: SiMongodb, color: "#47A248" },
+    { name: "MySQL", icon: SiMysql, color: "#4479A1" },
+    { name: "SQLite", icon: SiSqlite, color: "#003B57" },
+    { name: "Redis", icon: SiRedis, color: "#DC382D" },
+    { name: "Supabase", icon: SiSupabase, color: "#3FCF8E" },
+    { name: "Prisma", icon: SiPrisma, color: "#2D3748" },
+    { name: "GraphQL", icon: SiGraphql, color: "#E10098" },
+    { name: "Firebase", icon: SiFirebase, color: "#FFCA28" },
+
+    // DevOps & Cloud
+    { name: "Docker", icon: SiDocker, color: "#2496ED" },
+    { name: "Kubernetes", icon: SiKubernetes, color: "#326CE5" },
+    { name: "AWS", icon: SiAmazonwebservices, color: "#FF9900" },
+
+    // AI/ML
+    { name: "OpenAI", icon: SiOpenai, color: "#412991" },
+    { name: "TensorFlow", icon: SiTensorflow, color: "#FF6F00" },
+    { name: "PyTorch", icon: SiPytorch, color: "#EE4C2C" },
+
+    // E-commerce & CMS
+    { name: "Stripe", icon: SiStripe, color: "#635BFF" },
+    { name: "Shopify", icon: SiShopify, color: "#7AB55C" },
+    { name: "WordPress", icon: SiWordpress, color: "#21759B" },
+];
+
+const MAX_TAGS = 5;
+
 const emptyProject: Omit<Project, "id"> = {
     title: "",
     description: "",
     tags: [],
     liveUrl: "",
     githubUrl: "",
+    startDate: "",
+    endDate: "",
 };
 
 export default function ProjectsStep({ data, updateData, onSkip }: StepProps) {
     const [currentProject, setCurrentProject] =
         useState<Omit<Project, "id">>(emptyProject);
-    const [tagInput, setTagInput] = useState("");
     const [isEditing, setIsEditing] = useState<string | null>(null);
     const [urlError, setUrlError] = useState<string | null>(null);
+    const [showTagMenu, setShowTagMenu] = useState(false);
 
     const addProject = () => {
         if (!currentProject.title.trim()) return;
@@ -56,6 +168,7 @@ export default function ProjectsStep({ data, updateData, onSkip }: StepProps) {
         }
 
         setCurrentProject(emptyProject);
+        setShowTagMenu(false);
     };
 
     const removeProject = (id: string) => {
@@ -65,14 +178,21 @@ export default function ProjectsStep({ data, updateData, onSkip }: StepProps) {
     const editProject = (project: Project) => {
         setCurrentProject(project);
         setIsEditing(project.id);
+        setShowTagMenu(false);
     };
 
-    const addTag = () => {
-        const tag = tagInput.trim();
-        if (tag && !currentProject.tags.includes(tag)) {
-            setCurrentProject((prev) => ({ ...prev, tags: [...prev.tags, tag] }));
+    const toggleTag = (tagName: string) => {
+        if (currentProject.tags.includes(tagName)) {
+            setCurrentProject((prev) => ({
+                ...prev,
+                tags: prev.tags.filter((t) => t !== tagName),
+            }));
+        } else if (currentProject.tags.length < MAX_TAGS) {
+            setCurrentProject((prev) => ({
+                ...prev,
+                tags: [...prev.tags, tagName],
+            }));
         }
-        setTagInput("");
     };
 
     const removeTag = (tag: string) => {
@@ -113,40 +233,95 @@ export default function ProjectsStep({ data, updateData, onSkip }: StepProps) {
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-zinc-300 mb-2">
-                            Tags
+                            Tech Stack
+                            <span className="text-zinc-500 font-normal ml-2">
+                                ({currentProject.tags.length}/{MAX_TAGS})
+                            </span>
                         </label>
-                        <div className="flex gap-2">
-                            <input
-                                type="text"
-                                value={tagInput}
-                                onChange={(e) => setTagInput(e.target.value)}
-                                onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addTag())}
-                                placeholder="React, Node.js..."
-                                className="flex-1 px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 transition-all"
-                            />
-                            <button
-                                onClick={addTag}
-                                className="px-3 py-3 bg-zinc-700 text-white rounded-xl hover:bg-zinc-600 transition-colors"
+                        <button
+                            type="button"
+                            onClick={() => setShowTagMenu(!showTagMenu)}
+                            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-left text-zinc-400 hover:border-zinc-600 transition-all flex items-center justify-between"
+                        >
+                            <span>
+                                {currentProject.tags.length === 0
+                                    ? "Select technologies..."
+                                    : `${currentProject.tags.length} selected`}
+                            </span>
+                            <svg
+                                className={`w-5 h-5 transition-transform ${showTagMenu ? "rotate-180" : ""}`}
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
                             >
-                                +
-                            </button>
-                        </div>
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
                     </div>
                 </div>
 
+                {/* Selected Tags */}
                 {currentProject.tags.length > 0 && (
                     <div className="flex flex-wrap gap-2">
-                        {currentProject.tags.map((tag) => (
-                            <span
-                                key={tag}
-                                className="inline-flex items-center gap-1 px-3 py-1 bg-violet-600/20 border border-violet-500/30 rounded-full text-sm text-violet-300"
-                            >
-                                {tag}
-                                <button onClick={() => removeTag(tag)} className="hover:text-white">
-                                    ×
-                                </button>
-                            </span>
-                        ))}
+                        {currentProject.tags.map((tag) => {
+                            const tagData = AVAILABLE_TAGS.find(t => t.name === tag);
+                            const Icon = tagData?.icon;
+
+                            return (
+                                <span
+                                    key={tag}
+                                    className="inline-flex items-center gap-2 px-3 py-1.5 bg-violet-600/20 border border-violet-500/30 rounded-full text-sm text-violet-300"
+                                >
+                                    {Icon && <Icon className="w-4 h-4" style={{ color: tagData?.color }} />}
+                                    {tag}
+                                    <button
+                                        onClick={() => removeTag(tag)}
+                                        className="w-4 h-4 flex items-center justify-center rounded-full bg-violet-500/30 hover:bg-violet-500/50 transition-colors text-xs"
+                                    >
+                                        ×
+                                    </button>
+                                </span>
+                            );
+                        })}
+                    </div>
+                )}
+
+                {/* Tag Selection Menu */}
+                {showTagMenu && (
+                    <div className="bg-zinc-800/50 border border-zinc-700 rounded-xl p-4 max-h-64 overflow-y-auto">
+                        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
+                            {AVAILABLE_TAGS.map((tag) => {
+                                const Icon = tag.icon;
+                                const selected = currentProject.tags.includes(tag.name);
+                                const disabled = !selected && currentProject.tags.length >= MAX_TAGS;
+
+                                return (
+                                    <button
+                                        key={tag.name}
+                                        type="button"
+                                        onClick={() => toggleTag(tag.name)}
+                                        disabled={disabled}
+                                        className={`
+                                            flex flex-col items-center justify-center gap-1.5 p-3 rounded-lg border transition-all duration-200
+                                            ${selected
+                                                ? "bg-violet-600/20 border-violet-500 ring-1 ring-violet-500/50"
+                                                : disabled
+                                                    ? "bg-zinc-900/30 border-zinc-800 opacity-40 cursor-not-allowed"
+                                                    : "bg-zinc-900/50 border-zinc-700 hover:border-zinc-600 hover:bg-zinc-800/50"
+                                            }
+                                        `}
+                                    >
+                                        <Icon
+                                            className="w-6 h-6 transition-transform duration-200"
+                                            style={{ color: selected ? tag.color : "#71717a" }}
+                                        />
+                                        <span className={`text-[10px] font-medium text-center leading-tight ${selected ? "text-white" : "text-zinc-400"}`}>
+                                            {tag.name}
+                                        </span>
+                                    </button>
+                                );
+                            })}
+                        </div>
                     </div>
                 )}
 
@@ -173,6 +348,35 @@ export default function ProjectsStep({ data, updateData, onSkip }: StepProps) {
                         <p className="text-red-400 text-sm">{urlError}</p>
                     </div>
                 )}
+
+                <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label className="block text-sm font-medium text-zinc-300 mb-2">
+                            Start Date
+                        </label>
+                        <input
+                            type="month"
+                            value={currentProject.startDate}
+                            onChange={(e) =>
+                                setCurrentProject((prev) => ({ ...prev, startDate: e.target.value }))
+                            }
+                            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 transition-all"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-zinc-300 mb-2">
+                            End Date
+                        </label>
+                        <input
+                            type="month"
+                            value={currentProject.endDate}
+                            onChange={(e) =>
+                                setCurrentProject((prev) => ({ ...prev, endDate: e.target.value }))
+                            }
+                            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 transition-all"
+                        />
+                    </div>
+                </div>
 
                 <div className="grid md:grid-cols-2 gap-4">
                     <div>
