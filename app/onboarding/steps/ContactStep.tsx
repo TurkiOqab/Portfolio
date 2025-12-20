@@ -1,17 +1,62 @@
 "use client";
 
+import { useState } from "react";
 import { PortfolioData } from "../../types";
+import { isValidSocialUrl, isValidProjectUrl } from "@/app/lib/validation";
 
 interface StepProps {
     data: PortfolioData;
     updateData: (updates: Partial<PortfolioData>) => void;
 }
 
+type SocialField = "github" | "linkedin" | "twitter";
+
 export default function ContactStep({ data, updateData }: StepProps) {
+    const [errors, setErrors] = useState<Record<string, string>>({});
+
     const updateContact = (field: keyof PortfolioData["contact"], value: string) => {
+        // Clear error when user starts typing
+        if (errors[field]) {
+            setErrors((prev) => {
+                const newErrors = { ...prev };
+                delete newErrors[field];
+                return newErrors;
+            });
+        }
+
         updateData({
             contact: { ...data.contact, [field]: value },
         });
+    };
+
+    const validateSocialUrl = (field: SocialField, value: string) => {
+        if (!value || value.trim() === "") {
+            // Clear error if field is empty (optional)
+            setErrors((prev) => {
+                const newErrors = { ...prev };
+                delete newErrors[field];
+                return newErrors;
+            });
+            return;
+        }
+
+        if (!isValidSocialUrl(value, field)) {
+            const platformNames: Record<SocialField, string> = {
+                github: "GitHub (github.com/username)",
+                linkedin: "LinkedIn (linkedin.com/in/username)",
+                twitter: "X/Twitter (x.com/username or twitter.com/username)",
+            };
+            setErrors((prev) => ({
+                ...prev,
+                [field]: `Please enter a valid ${platformNames[field]} URL`,
+            }));
+        } else {
+            setErrors((prev) => {
+                const newErrors = { ...prev };
+                delete newErrors[field];
+                return newErrors;
+            });
+        }
     };
 
     return (
@@ -63,10 +108,18 @@ export default function ContactStep({ data, updateData }: StepProps) {
                             type="url"
                             value={data.contact.github || ""}
                             onChange={(e) => updateContact("github", e.target.value)}
+                            onBlur={(e) => validateSocialUrl("github", e.target.value)}
                             placeholder="https://github.com/username"
-                            className="w-full pl-12 pr-4 py-4 bg-zinc-900 border border-zinc-800 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all"
+                            className={`w-full pl-12 pr-4 py-4 bg-zinc-900 border rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-1 transition-all ${
+                                errors.github
+                                    ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                                    : "border-zinc-800 focus:border-violet-500 focus:ring-violet-500"
+                            }`}
                         />
                     </div>
+                    {errors.github && (
+                        <p className="text-red-400 text-xs mt-1">{errors.github}</p>
+                    )}
                 </div>
 
                 {/* LinkedIn */}
@@ -84,10 +137,18 @@ export default function ContactStep({ data, updateData }: StepProps) {
                             type="url"
                             value={data.contact.linkedin || ""}
                             onChange={(e) => updateContact("linkedin", e.target.value)}
+                            onBlur={(e) => validateSocialUrl("linkedin", e.target.value)}
                             placeholder="https://linkedin.com/in/username"
-                            className="w-full pl-12 pr-4 py-4 bg-zinc-900 border border-zinc-800 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all"
+                            className={`w-full pl-12 pr-4 py-4 bg-zinc-900 border rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-1 transition-all ${
+                                errors.linkedin
+                                    ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                                    : "border-zinc-800 focus:border-violet-500 focus:ring-violet-500"
+                            }`}
                         />
                     </div>
+                    {errors.linkedin && (
+                        <p className="text-red-400 text-xs mt-1">{errors.linkedin}</p>
+                    )}
                 </div>
 
                 {/* X */}
@@ -105,10 +166,18 @@ export default function ContactStep({ data, updateData }: StepProps) {
                             type="url"
                             value={data.contact.twitter || ""}
                             onChange={(e) => updateContact("twitter", e.target.value)}
+                            onBlur={(e) => validateSocialUrl("twitter", e.target.value)}
                             placeholder="https://x.com/username"
-                            className="w-full pl-12 pr-4 py-4 bg-zinc-900 border border-zinc-800 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all"
+                            className={`w-full pl-12 pr-4 py-4 bg-zinc-900 border rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-1 transition-all ${
+                                errors.twitter
+                                    ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                                    : "border-zinc-800 focus:border-violet-500 focus:ring-violet-500"
+                            }`}
                         />
                     </div>
+                    {errors.twitter && (
+                        <p className="text-red-400 text-xs mt-1">{errors.twitter}</p>
+                    )}
                 </div>
             </div>
         </div>

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/app/lib/supabase/client'
+import { validatePassword } from '@/app/lib/validation'
 
 export default function SignupPage() {
     const router = useRouter()
@@ -21,15 +22,27 @@ export default function SignupPage() {
         }
 
         setUsernameStatus('checking')
-        const supabase = createClient()
 
-        const { data } = await supabase
-            .from('profiles')
-            .select('username')
-            .eq('username', value.toLowerCase())
-            .single()
+        try {
+            const supabase = createClient()
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('username')
+                .eq('username', value.toLowerCase())
+                .single()
 
-        setUsernameStatus(data ? 'taken' : 'available')
+            // PGRST116 means no rows found - username is available
+            if (error && error.code !== 'PGRST116') {
+                console.error('Error checking username:', error)
+                setUsernameStatus('available') // Assume available on error
+                return
+            }
+
+            setUsernameStatus(data ? 'taken' : 'available')
+        } catch (err) {
+            console.error('Failed to check username:', err)
+            setUsernameStatus('available') // Assume available on error
+        }
     }
 
     const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,8 +68,9 @@ export default function SignupPage() {
             return
         }
 
-        if (password.length < 6) {
-            setError('Password must be at least 6 characters')
+        const passwordError = validatePassword(password)
+        if (passwordError) {
+            setError(passwordError)
             return
         }
 
@@ -94,6 +108,7 @@ export default function SignupPage() {
             return
         }
 
+        setIsLoading(false)
         router.push('/onboarding')
         router.refresh()
     }
@@ -198,11 +213,11 @@ export default function SignupPage() {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
-                                minLength={6}
+                                minLength={8}
                                 className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all"
                                 placeholder="••••••••"
                             />
-                            <p className="text-zinc-500 text-xs mt-1">Minimum 6 characters</p>
+                            <p className="text-zinc-500 text-xs mt-1">Min 8 chars with uppercase, lowercase, and number</p>
                         </div>
 
                         <button

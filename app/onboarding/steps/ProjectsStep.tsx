@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { PortfolioData, Project } from "../../types";
+import { isValidProjectUrl } from "@/app/lib/validation";
 
 interface StepProps {
     data: PortfolioData;
@@ -22,9 +23,21 @@ export default function ProjectsStep({ data, updateData, onSkip }: StepProps) {
         useState<Omit<Project, "id">>(emptyProject);
     const [tagInput, setTagInput] = useState("");
     const [isEditing, setIsEditing] = useState<string | null>(null);
+    const [urlError, setUrlError] = useState<string | null>(null);
 
     const addProject = () => {
         if (!currentProject.title.trim()) return;
+
+        // Validate URLs before adding
+        setUrlError(null);
+        if (currentProject.liveUrl && !isValidProjectUrl(currentProject.liveUrl)) {
+            setUrlError("Please enter a valid URL for Live URL (https:// or http://)");
+            return;
+        }
+        if (currentProject.githubUrl && !isValidProjectUrl(currentProject.githubUrl)) {
+            setUrlError("Please enter a valid URL for GitHub URL (https:// or http://)");
+            return;
+        }
 
         const newProject: Project = {
             ...currentProject,
@@ -155,6 +168,12 @@ export default function ProjectsStep({ data, updateData, onSkip }: StepProps) {
                     />
                 </div>
 
+                {urlError && (
+                    <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl">
+                        <p className="text-red-400 text-sm">{urlError}</p>
+                    </div>
+                )}
+
                 <div className="grid md:grid-cols-2 gap-4">
                     <div>
                         <label className="block text-sm font-medium text-zinc-300 mb-2">
@@ -163,9 +182,10 @@ export default function ProjectsStep({ data, updateData, onSkip }: StepProps) {
                         <input
                             type="url"
                             value={currentProject.liveUrl}
-                            onChange={(e) =>
-                                setCurrentProject((prev) => ({ ...prev, liveUrl: e.target.value }))
-                            }
+                            onChange={(e) => {
+                                setUrlError(null);
+                                setCurrentProject((prev) => ({ ...prev, liveUrl: e.target.value }));
+                            }}
                             placeholder="https://myproject.com"
                             className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 transition-all"
                         />
@@ -177,12 +197,13 @@ export default function ProjectsStep({ data, updateData, onSkip }: StepProps) {
                         <input
                             type="url"
                             value={currentProject.githubUrl}
-                            onChange={(e) =>
+                            onChange={(e) => {
+                                setUrlError(null);
                                 setCurrentProject((prev) => ({
                                     ...prev,
                                     githubUrl: e.target.value,
-                                }))
-                            }
+                                }));
+                            }}
                             placeholder="https://github.com/user/repo"
                             className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 transition-all"
                         />

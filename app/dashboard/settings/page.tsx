@@ -72,20 +72,51 @@ export default function SettingsPage() {
 
     const handleDeleteAccount = async () => {
         setIsDeleting(true)
+        setMessage(null)
 
-        const { data: { user } } = await supabase.auth.getUser()
-        if (!user) return
+        try {
+            const { data: { user } } = await supabase.auth.getUser()
+            if (!user) {
+                setMessage({ type: 'error', text: 'Unable to verify user session' })
+                setIsDeleting(false)
+                return
+            }
 
-        // Delete portfolio and projects (cascade)
-        await supabase.from('portfolios').delete().eq('user_id', user.id)
+            // Delete portfolio and projects (cascade)
+            const { error: portfolioError } = await supabase
+                .from('portfolios')
+                .delete()
+                .eq('user_id', user.id)
 
-        // Delete profile
-        await supabase.from('profiles').delete().eq('id', user.id)
+            if (portfolioError) {
+                console.error('Failed to delete portfolio:', portfolioError)
+                throw new Error('Failed to delete portfolio data')
+            }
 
-        // Sign out
-        await supabase.auth.signOut()
+            // Delete profile
+            const { error: profileError } = await supabase
+                .from('profiles')
+                .delete()
+                .eq('id', user.id)
 
-        router.push('/')
+            if (profileError) {
+                console.error('Failed to delete profile:', profileError)
+                throw new Error('Failed to delete profile data')
+            }
+
+            // Sign out
+            await supabase.auth.signOut()
+
+            router.push('/')
+        } catch (error) {
+            console.error('Account deletion failed:', error)
+            setMessage({
+                type: 'error',
+                text: 'Failed to delete account. Please try again or contact support.'
+            })
+            setIsDeleting(false)
+            setShowDeleteConfirm(false)
+        }
     }
 
     if (isLoading) {
