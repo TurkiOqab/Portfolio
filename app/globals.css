@@ -50,3 +50,21 @@ html {
 .delay-1000 {
   animation-delay: 1000ms;
 }
+
+/* Skills marquee scroll animation */
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-33.333%);
+  }
+}
+
+.animate-scroll {
+  animation: scroll 25s linear infinite;
+}
+
+.animate-scroll:hover {
+  animation-play-state: paused;
+}

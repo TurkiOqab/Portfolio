@@ -2,6 +2,62 @@
 
 import { useState, useEffect } from "react";
 import { ThemeConfig } from "../lib/themes";
+import {
+    SiReact,
+    SiNextdotjs,
+    SiTypescript,
+    SiJavascript,
+    SiPython,
+    SiNodedotjs,
+    SiTailwindcss,
+    SiGit,
+    SiDocker,
+    SiAmazonwebservices,
+    SiFirebase,
+    SiMongodb,
+    SiPostgresql,
+    SiMysql,
+    SiHtml5,
+    SiCss3,
+    SiVuedotjs,
+    SiAngular,
+    SiSvelte,
+    SiRust,
+    SiGo,
+    SiKubernetes,
+    SiRedis,
+    SiGraphql,
+    SiSupabase,
+    SiVercel,
+    SiFigma,
+    SiFlutter,
+    SiSwift,
+    SiKotlin,
+    SiCplusplus,
+    SiC,
+    SiPhp,
+    SiRuby,
+    SiDjango,
+    SiFlask,
+    SiExpress,
+    SiNestjs,
+    SiPrisma,
+    SiTrpc,
+    SiVite,
+    SiWebpack,
+    SiJest,
+    SiCypress,
+    SiLinux,
+    SiNginx,
+    SiGithub,
+    SiGitlab,
+    SiBitbucket,
+    SiJira,
+    SiNotion,
+    SiSlack,
+    SiDiscord,
+} from "react-icons/si";
+import { FaCode } from "react-icons/fa";
 
 interface HeroProps {
     name: string;
@@ -9,6 +65,92 @@ interface HeroProps {
     bio: string;
     skills: string[];
     theme: ThemeConfig;
+}
+
+// Map skill names to official Simple Icons
+function SkillIcon({ skill }: { skill: string }) {
+    const iconClass = "w-6 h-6";
+    const s = skill.toLowerCase();
+
+    // React ecosystem
+    if (s.includes("react") && !s.includes("native")) return <SiReact className={iconClass} />;
+    if (s.includes("next")) return <SiNextdotjs className={iconClass} />;
+
+    // Languages
+    if (s.includes("typescript") || s === "ts") return <SiTypescript className={iconClass} />;
+    if (s.includes("javascript") || s === "js") return <SiJavascript className={iconClass} />;
+    if (s.includes("python")) return <SiPython className={iconClass} />;
+    if (s.includes("rust")) return <SiRust className={iconClass} />;
+    if (s.includes("go") || s === "golang") return <SiGo className={iconClass} />;
+    if (s.includes("c++") || s === "cpp") return <SiCplusplus className={iconClass} />;
+    if (s === "c" || s === "c lang") return <SiC className={iconClass} />;
+    if (s.includes("php")) return <SiPhp className={iconClass} />;
+    if (s.includes("ruby")) return <SiRuby className={iconClass} />;
+    if (s.includes("swift")) return <SiSwift className={iconClass} />;
+    if (s.includes("kotlin")) return <SiKotlin className={iconClass} />;
+
+    // Frontend frameworks
+    if (s.includes("vue")) return <SiVuedotjs className={iconClass} />;
+    if (s.includes("angular")) return <SiAngular className={iconClass} />;
+    if (s.includes("svelte")) return <SiSvelte className={iconClass} />;
+    if (s.includes("flutter")) return <SiFlutter className={iconClass} />;
+
+    // Styling
+    if (s.includes("tailwind")) return <SiTailwindcss className={iconClass} />;
+    if (s.includes("html")) return <SiHtml5 className={iconClass} />;
+    if (s.includes("css") && !s.includes("tailwind")) return <SiCss3 className={iconClass} />;
+
+    // Backend
+    if (s.includes("node")) return <SiNodedotjs className={iconClass} />;
+    if (s.includes("express")) return <SiExpress className={iconClass} />;
+    if (s.includes("nest")) return <SiNestjs className={iconClass} />;
+    if (s.includes("django")) return <SiDjango className={iconClass} />;
+    if (s.includes("flask")) return <SiFlask className={iconClass} />;
+
+    // Databases
+    if (s.includes("mongo")) return <SiMongodb className={iconClass} />;
+    if (s.includes("postgres")) return <SiPostgresql className={iconClass} />;
+    if (s.includes("mysql")) return <SiMysql className={iconClass} />;
+    if (s.includes("redis")) return <SiRedis className={iconClass} />;
+    if (s.includes("supabase")) return <SiSupabase className={iconClass} />;
+    if (s.includes("prisma")) return <SiPrisma className={iconClass} />;
+
+    // APIs
+    if (s.includes("graphql")) return <SiGraphql className={iconClass} />;
+    if (s.includes("trpc")) return <SiTrpc className={iconClass} />;
+
+    // DevOps & Cloud
+    if (s.includes("docker")) return <SiDocker className={iconClass} />;
+    if (s.includes("kubernetes") || s === "k8s") return <SiKubernetes className={iconClass} />;
+    if (s.includes("aws") || s.includes("amazon")) return <SiAmazonwebservices className={iconClass} />;
+    if (s.includes("firebase")) return <SiFirebase className={iconClass} />;
+    if (s.includes("vercel")) return <SiVercel className={iconClass} />;
+    if (s.includes("linux")) return <SiLinux className={iconClass} />;
+    if (s.includes("nginx")) return <SiNginx className={iconClass} />;
+
+    // Version control
+    if (s.includes("github")) return <SiGithub className={iconClass} />;
+    if (s.includes("gitlab")) return <SiGitlab className={iconClass} />;
+    if (s.includes("bitbucket")) return <SiBitbucket className={iconClass} />;
+    if (s.includes("git")) return <SiGit className={iconClass} />;
+
+    // Build tools
+    if (s.includes("vite")) return <SiVite className={iconClass} />;
+    if (s.includes("webpack")) return <SiWebpack className={iconClass} />;
+
+    // Testing
+    if (s.includes("jest")) return <SiJest className={iconClass} />;
+    if (s.includes("cypress")) return <SiCypress className={iconClass} />;
+
+    // Design & Productivity
+    if (s.includes("figma")) return <SiFigma className={iconClass} />;
+    if (s.includes("jira")) return <SiJira className={iconClass} />;
+    if (s.includes("notion")) return <SiNotion className={iconClass} />;
+    if (s.includes("slack")) return <SiSlack className={iconClass} />;
+    if (s.includes("discord")) return <SiDiscord className={iconClass} />;
+
+    // Default code icon
+    return <FaCode className={iconClass} />;
 }
 
 function TypeWriter({ texts, theme }: { texts: string[]; theme: ThemeConfig }) {
@@ -94,17 +236,20 @@ export default function Hero({ name, title, bio, skills, theme }: HeroProps) {
                     {bio || "A passionate developer crafting beautiful digital experiences."}
                 </p>
 
-                {/* Tech Stack Pills */}
+                {/* Scrolling Tech Stack */}
                 {skills.length > 0 && (
-                    <div className="flex flex-wrap justify-center gap-3 mb-12">
-                        {skills.map((skill) => (
-                            <span
-                                key={skill}
-                                className={`px-4 py-2 bg-zinc-800/50 border border-zinc-700/50 rounded-full text-sm text-zinc-300 backdrop-blur-sm hover:border-current ${theme.textAccent} transition-colors duration-300`}
-                            >
-                                {skill}
-                            </span>
-                        ))}
+                    <div className="relative w-full overflow-hidden mb-12">
+                        <div className="flex animate-scroll">
+                            {[...skills, ...skills, ...skills].map((skill, index) => (
+                                <div
+                                    key={`${skill}-${index}`}
+                                    className="flex items-center gap-3 px-8 text-zinc-400 whitespace-nowrap"
+                                >
+                                    <SkillIcon skill={skill} />
+                                    <span className="text-lg font-medium">{skill}</span>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 )}
 
