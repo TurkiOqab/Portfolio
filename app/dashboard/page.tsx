@@ -2,6 +2,7 @@ import { createClient } from '@/app/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { getTheme } from '@/app/lib/themes'
+import { getFont } from '@/app/lib/fonts'
 import ProfileAvatar from '@/app/components/ProfileAvatar'
 
 export const dynamic = 'force-dynamic'
@@ -36,11 +37,12 @@ export default async function DashboardPage() {
         redirect('/onboarding')
     }
 
-    // Get theme configuration
+    // Get theme and font configuration
     const theme = getTheme(portfolio.theme || 'violet')
+    const font = getFont(portfolio.font || 'inter')
 
     return (
-        <div className="min-h-screen bg-zinc-950 relative overflow-hidden">
+        <div className={`min-h-screen bg-zinc-950 relative overflow-hidden ${font.className}`}>
             {/* Global Background Effects */}
             <div className="fixed inset-0 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 z-0" />
             <div className={`fixed top-1/4 left-1/4 w-96 h-96 ${theme.orb1} rounded-full blur-3xl animate-pulse z-0 pointer-events-none`} />

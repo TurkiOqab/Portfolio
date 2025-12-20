@@ -60,11 +60,17 @@ export default function Navbar({ theme, isOwner = false }: NavbarProps) {
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className={`p-2 rounded-lg ${theme.textAccent} hover:text-white hover:bg-zinc-800/50 transition-all duration-300`}
+                  className={`flex items-center gap-1 px-3 py-2 rounded-lg ${theme.textAccent} hover:text-white hover:bg-zinc-800/50 transition-all duration-300`}
                   title="Menu"
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                  <span className="text-sm font-medium">Menu</span>
+                  <svg
+                    className={`w-4 h-4 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
 

@@ -1,6 +1,7 @@
 import { createClient } from '@/app/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import { getTheme } from '@/app/lib/themes'
+import { getFont } from '@/app/lib/fonts'
 import Navbar from '@/app/components/Navbar'
 import Hero from '@/app/components/Hero'
 import EducationSection from '@/app/components/Education'
@@ -52,8 +53,9 @@ export default async function PortfolioPage({ params }: PageProps) {
         )
     }
 
-    // Get theme
+    // Get theme and font
     const theme = getTheme(portfolio.theme || 'violet')
+    const font = getFont(portfolio.font || 'inter')
 
     // Fetch projects
     const { data: projects } = await supabase
@@ -82,7 +84,7 @@ export default async function PortfolioPage({ params }: PageProps) {
     }
 
     return (
-        <div className="min-h-screen bg-zinc-950 relative overflow-hidden">
+        <div className={`min-h-screen bg-zinc-950 relative overflow-hidden ${font.className}`}>
             {/* Global Background Effects */}
             <div className="fixed inset-0 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 z-0" />
             <div className={`fixed top-1/4 left-1/4 w-96 h-96 ${theme.orb1} rounded-full blur-3xl animate-pulse z-0 pointer-events-none`} />

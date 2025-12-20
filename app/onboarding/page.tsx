@@ -88,6 +88,7 @@ export default function OnboardingPage() {
                     })),
                     contact: portfolio.contact || { email: "" },
                     theme: portfolio.theme || "violet",
+                    font: portfolio.font || "inter",
                 });
             }
 
@@ -177,6 +178,7 @@ export default function OnboardingPage() {
                     experience: data.experience,
                     contact: data.contact,
                     theme: data.theme,
+                    font: data.font,
                     updated_at: new Date().toISOString(),
                 }, {
                     onConflict: "user_id",

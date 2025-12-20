@@ -68,3 +68,15 @@ html {
 .animate-scroll:hover {
   animation-play-state: paused;
 }
+
+/* Font family classes */
+.font-inter { font-family: var(--font-inter), system-ui, sans-serif; }
+.font-space-grotesk { font-family: var(--font-space-grotesk), system-ui, sans-serif; }
+.font-syne { font-family: var(--font-syne), system-ui, sans-serif; }
+.font-outfit { font-family: var(--font-outfit), system-ui, sans-serif; }
+.font-plus-jakarta { font-family: var(--font-plus-jakarta), system-ui, sans-serif; }
+.font-dm-sans { font-family: var(--font-dm-sans), system-ui, sans-serif; }
+.font-bebas-neue { font-family: var(--font-bebas-neue), system-ui, sans-serif; }
+.font-source-code { font-family: var(--font-source-code), monospace; }
+.font-playfair { font-family: var(--font-playfair), serif; }
+.font-unbounded { font-family: var(--font-unbounded), system-ui, sans-serif; }

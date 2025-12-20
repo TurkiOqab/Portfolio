@@ -48,6 +48,7 @@ export interface PortfolioData {
     projects: Project[];
     contact: ContactInfo;
     theme: string;
+    font: string;
 }
 
 // Default empty portfolio for new users
@@ -66,4 +67,5 @@ export const defaultPortfolioData: PortfolioData = {
         twitter: "",
     },
     theme: "violet",
+    font: "inter",
 };

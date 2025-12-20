@@ -2,15 +2,16 @@
 
 import { PortfolioData } from "../../types";
 import { themeList, ThemeConfig, getTheme } from "../../lib/themes";
+import { fontList, FontConfig, getFont } from "../../lib/fonts";
 
 interface StepProps {
     data: PortfolioData;
     updateData: (updates: Partial<PortfolioData>) => void;
 }
 
-function LivePreview({ theme, name }: { theme: ThemeConfig; name: string }) {
+function LivePreview({ theme, font, name }: { theme: ThemeConfig; font: FontConfig; name: string }) {
     return (
-        <div className="relative bg-zinc-950 rounded-2xl overflow-hidden border border-zinc-800">
+        <div className={`relative bg-zinc-950 rounded-2xl overflow-hidden border border-zinc-800 ${font.className}`}>
             {/* Background orbs */}
             <div className={`absolute top-0 left-1/4 w-64 h-64 ${theme.orb1} rounded-full blur-3xl`} />
             <div className={`absolute bottom-0 right-1/4 w-64 h-64 ${theme.orb2} rounded-full blur-3xl`} />
@@ -95,12 +96,55 @@ function ThemePreview({ theme, isSelected, onClick }: {
     );
 }
 
+function FontPreview({ font, isSelected, onClick }: {
+    font: FontConfig;
+    isSelected: boolean;
+    onClick: () => void;
+}) {
+    return (
+        <button
+            onClick={onClick}
+            className={`relative p-4 rounded-xl border-2 transition-all duration-300 text-left ${isSelected
+                    ? 'border-violet-500 bg-violet-600/10 ring-1 ring-violet-500/50'
+                    : 'border-zinc-700 bg-zinc-900/50 hover:border-zinc-600'
+                }`}
+        >
+            {/* Selected indicator */}
+            {isSelected && (
+                <div className="absolute -top-2 -right-2 z-10">
+                    <div className="w-6 h-6 bg-violet-500 rounded-full flex items-center justify-center shadow-lg">
+                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+                </div>
+            )}
+
+            {/* Font preview */}
+            <div className={`${font.className} text-xl font-bold text-white mb-1 truncate`}>
+                Aa Bb Cc
+            </div>
+            <p className={`${font.className} text-xs text-zinc-400 mb-2 truncate`}>
+                {font.preview}
+            </p>
+
+            {/* Font info */}
+            <div>
+                <h3 className="font-medium text-white text-sm">{font.displayName}</h3>
+                <p className="text-xs text-zinc-500">{font.category}</p>
+            </div>
+        </button>
+    );
+}
+
 export default function ThemeStep({ data, updateData }: StepProps) {
     const selectedThemeId = data.theme || 'violet';
     const selectedTheme = getTheme(selectedThemeId);
+    const selectedFontId = data.font || 'inter';
+    const selectedFont = getFont(selectedFontId);
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-8">
             <div className="text-center">
                 <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
                     Choose your{" "}
@@ -109,21 +153,21 @@ export default function ThemeStep({ data, updateData }: StepProps) {
                     </span>
                 </h1>
                 <p className="text-zinc-400 text-lg">
-                    Pick a color theme that represents you
+                    Pick a color theme and font that represents you
                 </p>
             </div>
 
             {/* Live Preview */}
             <div className="transition-all duration-500">
                 <p className="text-sm text-zinc-500 mb-2 text-center">
-                    Preview: <span className={`font-medium ${selectedTheme.textAccent}`}>{selectedTheme.name}</span>
+                    Preview: <span className={`font-medium ${selectedTheme.textAccent}`}>{selectedTheme.name}</span> theme with <span className="font-medium text-violet-400">{selectedFont.displayName}</span> font
                 </p>
-                <LivePreview theme={selectedTheme} name={data.name} />
+                <LivePreview theme={selectedTheme} font={selectedFont} name={data.name} />
             </div>
 
             {/* Theme Selection Grid */}
             <div>
-                <p className="text-sm text-zinc-400 mb-3">Select a theme:</p>
+                <p className="text-sm text-zinc-400 mb-3">Select a color theme:</p>
                 <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
                     {themeList.map((theme) => (
                         <ThemePreview
@@ -131,6 +175,21 @@ export default function ThemeStep({ data, updateData }: StepProps) {
                             theme={theme}
                             isSelected={selectedThemeId === theme.id}
                             onClick={() => updateData({ theme: theme.id })}
+                        />
+                    ))}
+                </div>
+            </div>
+
+            {/* Font Selection Grid */}
+            <div>
+                <p className="text-sm text-zinc-400 mb-3">Select a font:</p>
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                    {fontList.map((font) => (
+                        <FontPreview
+                            key={font.id}
+                            font={font}
+                            isSelected={selectedFontId === font.id}
+                            onClick={() => updateData({ font: font.id })}
                         />
                     ))}
                 </div>
