@@ -16,6 +16,9 @@ export default async function PortfolioPage({ params }: PageProps) {
     const { username } = await params
     const supabase = await createClient()
 
+    // Get current logged-in user
+    const { data: { user: currentUser } } = await supabase.auth.getUser()
+
     // Fetch profile with portfolio
     const { data: profile } = await supabase
         .from('profiles')
@@ -26,6 +29,9 @@ export default async function PortfolioPage({ params }: PageProps) {
     if (!profile) {
         notFound()
     }
+
+    // Check if current user is the owner
+    const isOwner = currentUser?.id === profile.id
 
     // Fetch portfolio for this user
     const { data: portfolio } = await supabase
@@ -92,7 +98,7 @@ export default async function PortfolioPage({ params }: PageProps) {
             />
 
             <div className="relative z-10">
-                <Navbar theme={theme} />
+                <Navbar theme={theme} isOwner={isOwner} />
                 <main>
                     <Hero
                         name={portfolioData.name}
@@ -105,7 +111,7 @@ export default async function PortfolioPage({ params }: PageProps) {
                     <ExperienceSection experience={portfolioData.experience} theme={theme} />
                     <Projects projects={portfolioData.projects} theme={theme} />
                 </main>
-                <Footer contact={portfolioData.contact} name={portfolioData.name} theme={theme} />
+                <Footer contact={portfolioData.contact} name={portfolioData.name} theme={theme} cvUrl={portfolio.cv_url} />
             </div>
         </div>
     )

@@ -6,9 +6,10 @@ interface FooterProps {
     contact: ContactInfo;
     name: string;
     theme: ThemeConfig;
+    cvUrl?: string;
 }
 
-export default function Footer({ contact, name, theme }: FooterProps) {
+export default function Footer({ contact, name, theme, cvUrl }: FooterProps) {
     const currentYear = new Date().getFullYear();
 
     const socialLinks = [
@@ -78,27 +79,53 @@ export default function Footer({ contact, name, theme }: FooterProps) {
                             Have a project in mind? I&apos;d love to hear about it. Let&apos;s
                             create something amazing together.
                         </p>
-                        {contact.email && (
-                            <a
-                                href={`mailto:${contact.email}`}
-                                className={`inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r ${theme.primaryGradient} text-white font-medium rounded-full hover:opacity-90 transition-all duration-300 shadow-lg ${theme.shadowColor}`}
-                            >
-                                <svg
-                                    className="w-5 h-5"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
+                        <div className="flex flex-wrap items-center gap-3">
+                            {contact.email && (
+                                <a
+                                    href={`mailto:${contact.email}`}
+                                    className={`inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r ${theme.primaryGradient} text-white font-medium rounded-full hover:opacity-90 transition-all duration-300 shadow-lg ${theme.shadowColor}`}
                                 >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                                    />
-                                </svg>
-                                Get in Touch
-                            </a>
-                        )}
+                                    <svg
+                                        className="w-5 h-5"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                                        />
+                                    </svg>
+                                    Get in Touch
+                                </a>
+                            )}
+                            {cvUrl && (
+                                <a
+                                    href={cvUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    download
+                                    className="inline-flex items-center gap-2 px-6 py-3 border border-zinc-700 text-zinc-300 font-medium rounded-full hover:bg-zinc-800 hover:text-white hover:border-zinc-600 transition-all duration-300"
+                                >
+                                    <svg
+                                        className="w-5 h-5"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                        />
+                                    </svg>
+                                    Download CV
+                                </a>
+                            )}
+                        </div>
                     </div>
 
                     {/* Right Side - Social Links */}

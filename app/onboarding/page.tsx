@@ -13,9 +13,12 @@ import EducationStep from "./steps/EducationStep";
 import ExperienceStep from "./steps/ExperienceStep";
 import ProjectsStep from "./steps/ProjectsStep";
 import ContactStep from "./steps/ContactStep";
+import ProfilePictureStep from "./steps/ProfilePictureStep";
+import CVStep from "./steps/CVStep";
 import ThemeStep from "./steps/ThemeStep";
+import { isValidEmail } from "../lib/validation";
 
-const TOTAL_STEPS = 8;
+const TOTAL_STEPS = 10;
 
 export default function OnboardingPage() {
     const router = useRouter();
@@ -70,6 +73,8 @@ export default function OnboardingPage() {
                     name: portfolio.name || "",
                     title: portfolio.title || "",
                     bio: portfolio.bio || "",
+                    avatarUrl: portfolio.avatar_url || undefined,
+                    cvUrl: portfolio.cv_url || undefined,
                     skills: portfolio.skills || [],
                     education: portfolio.education || [],
                     experience: portfolio.experience || [],
@@ -110,6 +115,12 @@ export default function OnboardingPage() {
                 return data.experience.length >= 1;
             case 6:
                 return data.projects.length >= 1;
+            case 7:
+                return isValidEmail(data.contact.email);
+            case 8:
+                return !!data.avatarUrl; // Require profile picture or skip
+            case 9:
+                return !!data.cvUrl; // Require CV or skip
             default:
                 return true;
         }
@@ -136,6 +147,10 @@ export default function OnboardingPage() {
             case 6:
                 if (data.projects.length < 1) return "Add a project or skip to continue";
                 return null;
+            case 7:
+                if (!data.contact.email.trim()) return "Please enter your email address";
+                if (!isValidEmail(data.contact.email)) return "Please enter a valid email address";
+                return null;
             default:
                 return null;
         }
@@ -155,6 +170,8 @@ export default function OnboardingPage() {
                     name: data.name,
                     title: data.title,
                     bio: data.bio,
+                    avatar_url: data.avatarUrl || null,
+                    cv_url: data.cvUrl || null,
                     skills: data.skills,
                     education: data.education,
                     experience: data.experience,
@@ -236,6 +253,8 @@ export default function OnboardingPage() {
         "Work experience",
         "Showcase your work",
         "How can people reach you?",
+        "Add a photo",
+        "Upload your CV",
         "Choose your style",
     ];
 
@@ -303,7 +322,13 @@ export default function OnboardingPage() {
                     {currentStep === 7 && (
                         <ContactStep data={data} updateData={updateData} />
                     )}
-                    {currentStep === 8 && (
+                    {currentStep === 8 && userId && (
+                        <ProfilePictureStep data={data} updateData={updateData} userId={userId} />
+                    )}
+                    {currentStep === 9 && userId && (
+                        <CVStep data={data} updateData={updateData} userId={userId} />
+                    )}
+                    {currentStep === 10 && (
                         <ThemeStep data={data} updateData={updateData} />
                     )}
                 </div>
@@ -339,7 +364,9 @@ export default function OnboardingPage() {
                         <div className="flex items-center gap-3">
                             {((currentStep === 4 && data.education.length === 0) ||
                                 (currentStep === 5 && data.experience.length === 0) ||
-                                (currentStep === 6 && data.projects.length === 0)) && (
+                                (currentStep === 6 && data.projects.length === 0) ||
+                                (currentStep === 8 && !data.avatarUrl) ||
+                                (currentStep === 9 && !data.cvUrl)) && (
                                     <button
                                         onClick={skipStep}
                                         className="px-6 py-3 text-zinc-400 hover:text-white border border-zinc-700 rounded-full transition-colors"

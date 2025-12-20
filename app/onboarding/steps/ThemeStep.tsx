@@ -1,11 +1,61 @@
 "use client";
 
 import { PortfolioData } from "../../types";
-import { themeList, ThemeConfig } from "../../lib/themes";
+import { themeList, ThemeConfig, getTheme } from "../../lib/themes";
 
 interface StepProps {
     data: PortfolioData;
     updateData: (updates: Partial<PortfolioData>) => void;
+}
+
+function LivePreview({ theme, name }: { theme: ThemeConfig; name: string }) {
+    return (
+        <div className="relative bg-zinc-950 rounded-2xl overflow-hidden border border-zinc-800">
+            {/* Background orbs */}
+            <div className={`absolute top-0 left-1/4 w-64 h-64 ${theme.orb1} rounded-full blur-3xl`} />
+            <div className={`absolute bottom-0 right-1/4 w-64 h-64 ${theme.orb2} rounded-full blur-3xl`} />
+
+            {/* Content */}
+            <div className="relative z-10 p-8">
+                {/* Hero section mockup */}
+                <div className="text-center mb-6">
+                    <div className="w-16 h-16 bg-zinc-800 rounded-full mx-auto mb-4" />
+                    <h2 className={`text-2xl font-bold bg-gradient-to-r ${theme.primaryGradient} bg-clip-text text-transparent`}>
+                        {name || "Your Name"}
+                    </h2>
+                    <p className="text-zinc-400 text-sm mt-1">Full Stack Developer</p>
+                </div>
+
+                {/* Skills mockup */}
+                <div className="flex justify-center gap-2 mb-6">
+                    {["React", "Node.js", "TypeScript"].map((skill) => (
+                        <span
+                            key={skill}
+                            className={`px-3 py-1 text-xs rounded-full ${theme.accentColor}/20 ${theme.textAccent}`}
+                        >
+                            {skill}
+                        </span>
+                    ))}
+                </div>
+
+                {/* Experience timeline mockup */}
+                <div className="flex items-center gap-3">
+                    <div className={`w-3 h-3 ${theme.timelineDot} rounded-full`} />
+                    <div className="flex-1">
+                        <div className="h-2 w-24 bg-zinc-700 rounded mb-1" />
+                        <div className="h-1.5 w-16 bg-zinc-800 rounded" />
+                    </div>
+                </div>
+
+                {/* Button mockup */}
+                <div className="mt-6 flex justify-center">
+                    <div className={`px-6 py-2 bg-gradient-to-r ${theme.primaryGradient} rounded-lg ${theme.shadowColor} shadow-lg`}>
+                        <span className="text-white text-sm font-medium">Contact Me</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
 }
 
 function ThemePreview({ theme, isSelected, onClick }: {
@@ -16,15 +66,15 @@ function ThemePreview({ theme, isSelected, onClick }: {
     return (
         <button
             onClick={onClick}
-            className={`relative p-4 rounded-2xl border-2 transition-all duration-300 text-left ${isSelected
-                    ? 'border-white bg-zinc-800/50'
-                    : 'border-zinc-700 bg-zinc-900/50 hover:border-zinc-600'
+            className={`relative p-3 rounded-xl border-2 transition-all duration-300 text-left ${isSelected
+                    ? 'border-white bg-zinc-800/50 scale-105'
+                    : 'border-zinc-700 bg-zinc-900/50 hover:border-zinc-600 hover:scale-102'
                 }`}
         >
             {/* Selected indicator */}
             {isSelected && (
-                <div className="absolute top-3 right-3">
-                    <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
+                <div className="absolute -top-2 -right-2 z-10">
+                    <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-lg">
                         <svg className="w-4 h-4 text-zinc-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                         </svg>
@@ -32,39 +82,25 @@ function ThemePreview({ theme, isSelected, onClick }: {
                 </div>
             )}
 
-            {/* Theme preview card */}
-            <div className="mb-4 p-4 bg-zinc-950 rounded-xl overflow-hidden">
-                {/* Mini orbs */}
-                <div className="relative h-20">
-                    <div className={`absolute top-0 left-0 w-12 h-12 ${theme.orb1} rounded-full blur-xl`} />
-                    <div className={`absolute bottom-0 right-0 w-12 h-12 ${theme.orb2} rounded-full blur-xl`} />
-
-                    {/* Sample content */}
-                    <div className="relative z-10 flex flex-col items-center justify-center h-full">
-                        <div className={`h-2 w-16 bg-gradient-to-r ${theme.primaryGradient} rounded-full mb-2`} />
-                        <div className={`h-1.5 w-10 ${theme.textAccent} bg-current rounded-full opacity-50`} />
-                    </div>
-                </div>
-
-                {/* Timeline preview */}
-                <div className="mt-3 flex items-center gap-2">
-                    <div className={`w-2 h-2 ${theme.timelineDot} rounded-full`} />
-                    <div className="h-0.5 flex-1 bg-zinc-700 rounded-full" />
-                </div>
+            {/* Color swatches */}
+            <div className="flex gap-1 mb-2">
+                <div className={`w-6 h-6 rounded-full bg-gradient-to-r ${theme.primaryGradient}`} />
+                <div className={`w-6 h-6 rounded-full ${theme.orb1}`} />
+                <div className={`w-6 h-6 rounded-full ${theme.orb2}`} />
             </div>
 
             {/* Theme info */}
-            <h3 className="font-semibold text-white mb-1">{theme.name}</h3>
-            <p className="text-sm text-zinc-400">{theme.description}</p>
+            <h3 className="font-medium text-white text-sm">{theme.name}</h3>
         </button>
     );
 }
 
 export default function ThemeStep({ data, updateData }: StepProps) {
-    const selectedTheme = data.theme || 'violet';
+    const selectedThemeId = data.theme || 'violet';
+    const selectedTheme = getTheme(selectedThemeId);
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-6">
             <div className="text-center">
                 <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
                     Choose your{" "}
@@ -77,19 +113,30 @@ export default function ThemeStep({ data, updateData }: StepProps) {
                 </p>
             </div>
 
-            {/* Theme Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {themeList.map((theme) => (
-                    <ThemePreview
-                        key={theme.id}
-                        theme={theme}
-                        isSelected={selectedTheme === theme.id}
-                        onClick={() => updateData({ theme: theme.id })}
-                    />
-                ))}
+            {/* Live Preview */}
+            <div className="transition-all duration-500">
+                <p className="text-sm text-zinc-500 mb-2 text-center">
+                    Preview: <span className={`font-medium ${selectedTheme.textAccent}`}>{selectedTheme.name}</span>
+                </p>
+                <LivePreview theme={selectedTheme} name={data.name} />
             </div>
 
-            {/* Preview hint */}
+            {/* Theme Selection Grid */}
+            <div>
+                <p className="text-sm text-zinc-400 mb-3">Select a theme:</p>
+                <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+                    {themeList.map((theme) => (
+                        <ThemePreview
+                            key={theme.id}
+                            theme={theme}
+                            isSelected={selectedThemeId === theme.id}
+                            onClick={() => updateData({ theme: theme.id })}
+                        />
+                    ))}
+                </div>
+            </div>
+
+            {/* Hint */}
             <p className="text-center text-zinc-500 text-sm">
                 You can always change this later from your dashboard
             </p>

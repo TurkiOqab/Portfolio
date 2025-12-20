@@ -86,6 +86,19 @@ export function validatePassword(password: string): string | null {
 }
 
 /**
+ * Validates an email address
+ * @param email - The email to validate
+ * @returns true if valid, false otherwise
+ */
+export function isValidEmail(email: string): boolean {
+    if (!email || email.trim() === '') return false // Email is required
+
+    // RFC 5322 compliant email regex (simplified but robust)
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailPattern.test(email.trim())
+}
+
+/**
  * Validates a project/portfolio URL
  * Only allows http/https protocols
  * @param url - The URL to validate

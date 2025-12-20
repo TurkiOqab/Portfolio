@@ -40,6 +40,8 @@ export interface PortfolioData {
     name: string;
     title: string; // e.g., "Full-Stack Developer"
     bio: string;
+    avatarUrl?: string;
+    cvUrl?: string;
     skills: string[];
     education: Education[];
     experience: WorkExperience[];

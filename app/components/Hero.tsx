@@ -1,3 +1,6 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import { ThemeConfig } from "../lib/themes";
 
 interface HeroProps {
@@ -8,28 +11,83 @@ interface HeroProps {
     theme: ThemeConfig;
 }
 
+function TypeWriter({ texts, theme }: { texts: string[]; theme: ThemeConfig }) {
+    const [currentTextIndex, setCurrentTextIndex] = useState(0);
+    const [currentText, setCurrentText] = useState("");
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    useEffect(() => {
+        const fullText = texts[currentTextIndex];
+        const typingSpeed = isDeleting ? 100 : 200; // Slower typing
+        const pauseTime = 1500; // 1.5 second pause
+
+        if (!isDeleting && currentText === fullText) {
+            // Pause before deleting
+            const timeout = setTimeout(() => setIsDeleting(true), pauseTime);
+            return () => clearTimeout(timeout);
+        }
+
+        if (isDeleting && currentText === "") {
+            // Move to next text
+            setIsDeleting(false);
+            setCurrentTextIndex((prev) => (prev + 1) % texts.length);
+            return;
+        }
+
+        const timeout = setTimeout(() => {
+            if (isDeleting) {
+                setCurrentText(fullText.substring(0, currentText.length - 1));
+            } else {
+                setCurrentText(fullText.substring(0, currentText.length + 1));
+            }
+        }, typingSpeed);
+
+        return () => clearTimeout(timeout);
+    }, [currentText, isDeleting, currentTextIndex, texts]);
+
+    // Split the text to color only the name/title part
+    const hiPart = "Hi, I'm ";
+    const hasHiPrefix = texts[currentTextIndex].startsWith(hiPart);
+
+    if (hasHiPrefix) {
+        const displayedHi = currentText.substring(0, Math.min(currentText.length, hiPart.length));
+        const displayedName = currentText.substring(hiPart.length);
+        return (
+            <span>
+                <span className="text-white">{displayedHi}</span>
+                <span className={`bg-gradient-to-r ${theme.primaryGradient} bg-clip-text text-transparent`}>
+                    {displayedName}
+                </span>
+                <span className="animate-pulse text-white">|</span>
+            </span>
+        );
+    }
+
+    // For title without "Hi, I'm", show all in gradient
+    return (
+        <span className={`bg-gradient-to-r ${theme.primaryGradient} bg-clip-text text-transparent`}>
+            {currentText}
+            <span className="animate-pulse">|</span>
+        </span>
+    );
+}
+
 export default function Hero({ name, title, bio, skills, theme }: HeroProps) {
+    const typingTexts = [
+        `Hi, I'm ${name || "Your Name"}`,
+        title || "Developer"
+    ];
+
     return (
         <section
             id="home"
             className="min-h-screen flex items-center justify-center relative pt-16"
         >
-
             <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
-                {/* Main Heading */}
+                {/* Main Heading with Typewriter */}
                 <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-6 tracking-tight">
-                    Hi, I&apos;m{" "}
-                    <span className={`bg-gradient-to-r ${theme.primaryGradient} bg-clip-text text-transparent`}>
-                        {name || "Your Name"}
-                    </span>
+                    <TypeWriter texts={typingTexts} theme={theme} />
                 </h1>
-
-                {/* Title */}
-                {title && (
-                    <p className={`text-2xl md:text-3xl ${theme.textAccent} font-medium mb-4`}>
-                        {title}
-                    </p>
-                )}
 
                 {/* Bio */}
                 <p className="text-xl md:text-2xl text-zinc-400 mb-8 max-w-2xl mx-auto leading-relaxed">

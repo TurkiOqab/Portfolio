@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { PortfolioData } from "../../types";
-import { isValidSocialUrl, isValidProjectUrl } from "@/app/lib/validation";
+import { isValidSocialUrl, isValidEmail } from "@/app/lib/validation";
 
 interface StepProps {
     data: PortfolioData;
@@ -27,6 +27,29 @@ export default function ContactStep({ data, updateData }: StepProps) {
         updateData({
             contact: { ...data.contact, [field]: value },
         });
+    };
+
+    const validateEmail = (value: string) => {
+        if (!value || value.trim() === "") {
+            setErrors((prev) => ({
+                ...prev,
+                email: "Email address is required",
+            }));
+            return;
+        }
+
+        if (!isValidEmail(value)) {
+            setErrors((prev) => ({
+                ...prev,
+                email: "Please enter a valid email address",
+            }));
+        } else {
+            setErrors((prev) => {
+                const newErrors = { ...prev };
+                delete newErrors.email;
+                return newErrors;
+            });
+        }
     };
 
     const validateSocialUrl = (field: SocialField, value: string) => {
@@ -87,10 +110,18 @@ export default function ContactStep({ data, updateData }: StepProps) {
                             type="email"
                             value={data.contact.email}
                             onChange={(e) => updateContact("email", e.target.value)}
+                            onBlur={(e) => validateEmail(e.target.value)}
                             placeholder="hello@example.com"
-                            className="w-full pl-12 pr-4 py-4 bg-zinc-900 border border-zinc-800 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all"
+                            className={`w-full pl-12 pr-4 py-4 bg-zinc-900 border rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-1 transition-all ${
+                                errors.email
+                                    ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                                    : "border-zinc-800 focus:border-violet-500 focus:ring-violet-500"
+                            }`}
                         />
                     </div>
+                    {errors.email && (
+                        <p className="text-red-400 text-xs mt-1">{errors.email}</p>
+                    )}
                 </div>
 
                 {/* GitHub */}

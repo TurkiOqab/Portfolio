@@ -13,8 +13,12 @@ export default function SettingsPage() {
     const [isLoading, setIsLoading] = useState(true)
     const [isSaving, setIsSaving] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
+    const [isUpdatingEmail, setIsUpdatingEmail] = useState(false)
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+    const [showEmailEdit, setShowEmailEdit] = useState(false)
     const [username, setUsername] = useState('')
+    const [email, setEmail] = useState('')
+    const [newEmail, setNewEmail] = useState('')
     const [isPublished, setIsPublished] = useState(true)
     const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
 
@@ -25,6 +29,11 @@ export default function SettingsPage() {
             if (!user) {
                 router.push('/login')
                 return
+            }
+
+            // Set email from user auth
+            if (user.email) {
+                setEmail(user.email)
             }
 
             const { data: profile } = await supabase
@@ -68,6 +77,52 @@ export default function SettingsPage() {
         }
 
         setIsSaving(false)
+    }
+
+    const handleUpdateEmail = async () => {
+        if (!newEmail.trim()) {
+            setMessage({ type: 'error', text: 'Please enter a new email address' })
+            return
+        }
+
+        // Basic email validation
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        if (!emailPattern.test(newEmail)) {
+            setMessage({ type: 'error', text: 'Please enter a valid email address' })
+            return
+        }
+
+        if (newEmail === email) {
+            setMessage({ type: 'error', text: 'New email is the same as current email' })
+            return
+        }
+
+        setIsUpdatingEmail(true)
+        setMessage(null)
+
+        try {
+            const { error } = await supabase.auth.updateUser({ email: newEmail })
+
+            if (error) {
+                throw error
+            }
+
+            setMessage({
+                type: 'success',
+                text: 'Confirmation email sent! Please check both your old and new email addresses to confirm the change.'
+            })
+            setShowEmailEdit(false)
+            setNewEmail('')
+        } catch (error) {
+            console.error('Failed to update email:', error)
+            const err = error as { message?: string }
+            setMessage({
+                type: 'error',
+                text: err.message || 'Failed to update email. Please try again.'
+            })
+        }
+
+        setIsUpdatingEmail(false)
     }
 
     const handleDeleteAccount = async () => {
@@ -163,6 +218,59 @@ export default function SettingsPage() {
                             {username}
                         </div>
                         <p className="text-xs text-zinc-500 mt-1">Username cannot be changed</p>
+                    </div>
+
+                    <div className="mb-4">
+                        <label className="block text-sm text-zinc-400 mb-2">Email</label>
+                        {!showEmailEdit ? (
+                            <>
+                                <div className="flex items-center gap-3">
+                                    <div className="flex-1 px-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-xl text-zinc-300">
+                                        {email}
+                                    </div>
+                                    <button
+                                        onClick={() => {
+                                            setShowEmailEdit(true)
+                                            setNewEmail('')
+                                        }}
+                                        className="px-4 py-3 text-sm text-violet-400 hover:text-violet-300 border border-zinc-700 rounded-xl hover:border-violet-500/50 transition-colors"
+                                    >
+                                        Change
+                                    </button>
+                                </div>
+                            </>
+                        ) : (
+                            <div className="space-y-3">
+                                <input
+                                    type="email"
+                                    value={newEmail}
+                                    onChange={(e) => setNewEmail(e.target.value)}
+                                    placeholder="Enter new email address"
+                                    className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all"
+                                />
+                                <div className="flex gap-3">
+                                    <button
+                                        onClick={handleUpdateEmail}
+                                        disabled={isUpdatingEmail}
+                                        className="px-4 py-2 bg-violet-600 hover:bg-violet-500 text-white text-sm rounded-lg transition-colors disabled:opacity-50"
+                                    >
+                                        {isUpdatingEmail ? 'Sending...' : 'Update Email'}
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setShowEmailEdit(false)
+                                            setNewEmail('')
+                                        }}
+                                        className="px-4 py-2 text-zinc-400 hover:text-white text-sm transition-colors"
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                                <p className="text-xs text-zinc-500">
+                                    A confirmation email will be sent to both addresses
+                                </p>
+                            </div>
+                        )}
                     </div>
                 </div>
 
