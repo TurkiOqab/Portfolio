@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Project } from "../types";
 import { ThemeConfig } from "../lib/themes";
 import {
@@ -107,19 +107,30 @@ function formatDate(dateString?: string): string {
 export default function Projects({ projects, theme }: ProjectsProps) {
     // Reverse projects so oldest is at bottom
     const reversedProjects = [...projects].reverse();
-    const [activeIndex, setActiveIndex] = useState(0);
     const containerRef = useRef<HTMLDivElement>(null);
     const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+    const dotRefs = useRef<(HTMLButtonElement | null)[]>([]);
+    const activeIndexRef = useRef(0);
 
     useEffect(() => {
+        // Set initial state - first card is active
+        if (cardRefs.current[0]) {
+            updateCardState(0, true);
+        }
+
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
+                    const index = Number(entry.target.getAttribute('data-index'));
+
                     if (entry.isIntersecting) {
-                        const index = cardRefs.current.findIndex((ref) => ref === entry.target);
-                        if (index !== -1) {
-                            setActiveIndex(index);
+                        // Deactivate previous card
+                        if (activeIndexRef.current !== index) {
+                            updateCardState(activeIndexRef.current, false);
                         }
+                        // Activate new card
+                        updateCardState(index, true);
+                        activeIndexRef.current = index;
                     }
                 });
             },
@@ -136,6 +147,53 @@ export default function Projects({ projects, theme }: ProjectsProps) {
 
         return () => observer.disconnect();
     }, [reversedProjects.length]);
+
+    // Direct DOM manipulation - no React re-renders
+    const updateCardState = (index: number, isActive: boolean) => {
+        const card = cardRefs.current[index];
+        const dot = dotRefs.current[index];
+
+        if (card) {
+            card.style.opacity = isActive ? '1' : '0.5';
+            card.style.transform = isActive ? 'scale(1)' : 'scale(0.98)';
+
+            // Update inner elements
+            const innerCard = card.querySelector('[data-card-inner]') as HTMLElement;
+            if (innerCard) {
+                innerCard.style.borderColor = isActive ? '#52525b' : 'rgba(39, 39, 42, 0.5)';
+                innerCard.style.boxShadow = isActive ? '0 25px 50px -12px rgba(139, 92, 246, 0.15)' : 'none';
+            }
+
+            const glow = card.querySelector('[data-glow]') as HTMLElement;
+            if (glow) {
+                glow.style.opacity = isActive ? '0.05' : '0';
+            }
+
+            const dateText = card.querySelector('[data-date]') as HTMLElement;
+            if (dateText) {
+                dateText.style.color = isActive ? '#d4d4d8' : '#52525b';
+            }
+
+            const timelineDot = card.querySelector('[data-timeline-dot]') as HTMLElement;
+            if (timelineDot) {
+                timelineDot.style.transform = `translateX(-50%) scale(${isActive ? 1.3 : 1})`;
+            }
+        }
+
+        if (dot) {
+            dot.style.width = isActive ? '2rem' : '0.5rem';
+            dot.style.background = isActive
+                ? 'linear-gradient(to right, #7c3aed, #a855f7)'
+                : '#3f3f46';
+        }
+    };
+
+    const scrollToCard = (index: number) => {
+        cardRefs.current[index]?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+        });
+    };
 
     return (
         <section id="projects" className="py-24 relative">
@@ -163,17 +221,15 @@ export default function Projects({ projects, theme }: ProjectsProps) {
                         {reversedProjects.map((_, index) => (
                             <button
                                 key={index}
-                                onClick={() => {
-                                    cardRefs.current[index]?.scrollIntoView({
-                                        behavior: "smooth",
-                                        block: "center",
-                                    });
+                                ref={(el) => { dotRefs.current[index] = el; }}
+                                onClick={() => scrollToCard(index)}
+                                className="h-2 rounded-full transition-all duration-300 hover:opacity-80"
+                                style={{
+                                    width: index === 0 ? '2rem' : '0.5rem',
+                                    background: index === 0
+                                        ? 'linear-gradient(to right, #7c3aed, #a855f7)'
+                                        : '#3f3f46',
                                 }}
-                                className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                                    index === activeIndex
-                                        ? `w-8 bg-gradient-to-r ${theme.primaryGradient}`
-                                        : "bg-zinc-700 hover:bg-zinc-600"
-                                }`}
                                 aria-label={`Go to project ${index + 1}`}
                             />
                         ))}
@@ -187,36 +243,40 @@ export default function Projects({ projects, theme }: ProjectsProps) {
                         <div className={`absolute left-4 md:left-[140px] top-0 bottom-0 w-px bg-gradient-to-b ${theme.primaryGradient} opacity-30`} />
 
                         <div className="space-y-8 md:space-y-12">
-                            {reversedProjects.map((project, index) => {
-                                const isActive = index === activeIndex;
-
-                                return (
+                            {reversedProjects.map((project, index) => (
                                 <div
                                     key={project.id}
                                     ref={(el) => { cardRefs.current[index] = el; }}
-                                    className={`relative flex gap-6 md:gap-12 transition-all duration-700 ${
-                                        isActive
-                                            ? "opacity-100 scale-100"
-                                            : "opacity-40 scale-[0.97]"
-                                    }`}
+                                    data-index={index}
+                                    className="relative flex gap-6 md:gap-12"
                                     style={{
-                                        scrollSnapAlign: "center",
+                                        opacity: index === 0 ? 1 : 0.5,
+                                        transform: index === 0 ? 'scale(1)' : 'scale(0.98)',
+                                        transition: "opacity 0.4s ease-out, transform 0.4s ease-out",
                                     }}
                                 >
                                     {/* Left Side - Date */}
-                                    <div className={`flex-shrink-0 w-8 md:w-[140px] relative transition-all duration-700 ${
-                                        isActive ? "opacity-100" : "opacity-30"
-                                    }`}>
+                                    <div className="flex-shrink-0 w-8 md:w-[140px] relative">
                                         {/* Timeline Dot */}
-                                        <div className={`absolute left-4 md:left-[140px] top-8 w-3 h-3 rounded-full bg-gradient-to-r ${theme.primaryGradient} transform -translate-x-1/2 ring-4 ring-zinc-950 z-10 transition-all duration-500 ${
-                                            isActive ? "scale-150 ring-8" : "scale-100"
-                                        }`} />
+                                        <div
+                                            data-timeline-dot
+                                            className={`absolute left-4 md:left-[140px] top-8 w-3 h-3 rounded-full bg-gradient-to-r ${theme.primaryGradient} ring-4 ring-zinc-950 z-10`}
+                                            style={{
+                                                transform: `translateX(-50%) scale(${index === 0 ? 1.3 : 1})`,
+                                                transition: "transform 0.4s ease-out",
+                                            }}
+                                        />
 
                                         <div className="hidden md:block text-right pr-8 pt-6">
                                             {(project.startDate || project.endDate) && (
-                                                <p className={`text-sm font-mono transition-all duration-500 ${
-                                                    isActive ? "text-zinc-300" : "text-zinc-600"
-                                                }`}>
+                                                <p
+                                                    data-date
+                                                    className="text-sm font-mono"
+                                                    style={{
+                                                        color: index === 0 ? "#d4d4d8" : "#52525b",
+                                                        transition: "color 0.4s ease-out",
+                                                    }}
+                                                >
                                                     {formatDate(project.startDate)}
                                                     {project.startDate && project.endDate && " — "}
                                                     {formatDate(project.endDate)}
@@ -227,11 +287,15 @@ export default function Projects({ projects, theme }: ProjectsProps) {
 
                                     {/* Right Side - Card */}
                                     <div className="flex-1 pb-4">
-                                        <div className={`group relative bg-zinc-900/80 border rounded-2xl p-6 md:p-8 transition-all duration-700 ${
-                                            isActive
-                                                ? `border-zinc-600 bg-zinc-900 shadow-2xl shadow-${theme.shadowColor || 'violet-500/10'}`
-                                                : "border-zinc-800/50"
-                                        }`}>
+                                        <div
+                                            data-card-inner
+                                            className="group relative bg-zinc-900/80 border rounded-2xl p-6 md:p-8"
+                                            style={{
+                                                borderColor: index === 0 ? "#52525b" : "rgba(39, 39, 42, 0.5)",
+                                                boxShadow: index === 0 ? "0 25px 50px -12px rgba(139, 92, 246, 0.15)" : "none",
+                                                transition: "border-color 0.4s ease-out, box-shadow 0.4s ease-out",
+                                            }}
+                                        >
                                             {/* Badge */}
                                             {project.liveUrl && (
                                                 <div className="absolute top-4 right-4 md:top-6 md:right-6">
@@ -314,14 +378,18 @@ export default function Projects({ projects, theme }: ProjectsProps) {
                                             </div>
 
                                             {/* Active Glow */}
-                                            <div className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${theme.primaryGradient} transition-opacity duration-700 pointer-events-none ${
-                                                isActive ? "opacity-5" : "opacity-0"
-                                            }`} />
+                                            <div
+                                                data-glow
+                                                className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${theme.primaryGradient} pointer-events-none`}
+                                                style={{
+                                                    opacity: index === 0 ? 0.05 : 0,
+                                                    transition: "opacity 0.4s ease-out",
+                                                }}
+                                            />
                                         </div>
                                     </div>
                                 </div>
-                                );
-                            })}
+                            ))}
                         </div>
                     </div>
                 ) : (
