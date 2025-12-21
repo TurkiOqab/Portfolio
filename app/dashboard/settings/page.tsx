@@ -272,7 +272,7 @@ export default function SettingsPage() {
             const url = URL.createObjectURL(blob)
             const a = document.createElement('a')
             a.href = url
-            a.download = `devfolio-export-${username}-${new Date().toISOString().split('T')[0]}.json`
+            a.download = `dfolio-export-${username}-${new Date().toISOString().split('T')[0]}.json`
             document.body.appendChild(a)
             a.click()
             document.body.removeChild(a)
@@ -326,7 +326,7 @@ export default function SettingsPage() {
                 <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
                     <Link href="/dashboard" className="group text-2xl font-bold text-white flex items-center gap-2">
                         <span className={`w-8 h-8 bg-gradient-to-br ${theme.primaryGradient} rounded-lg flex items-center justify-center text-sm font-bold ${theme.shadowColor} shadow-lg group-hover:shadow-xl transition-shadow duration-300`}>D</span>
-                        <span className="bg-gradient-to-r from-white to-zinc-300 bg-clip-text text-transparent">DevFolio</span>
+                        <span className="bg-gradient-to-r from-white to-zinc-300 bg-clip-text text-transparent">Dfolio</span>
                     </Link>
                     <Link href="/dashboard" className={`text-sm ${theme.textAccent} hover:text-white transition-colors flex items-center gap-2`}>
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

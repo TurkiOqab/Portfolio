@@ -77,7 +77,7 @@ export default function LoginPage() {
                 <div className="text-center mb-8">
                     <Link href="/" className="inline-block">
                         <h1 className="text-3xl font-bold text-white">
-                            DevFolio
+                            Dfolio
                         </h1>
                     </Link>
                     <p className="text-zinc-500 mt-2">Welcome back</p>

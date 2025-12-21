@@ -1,4 +1,4 @@
-// Database types for DevFolio
+// Database types for Dfolio
 
 export interface Profile {
     id: string

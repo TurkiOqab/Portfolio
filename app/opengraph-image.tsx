@@ -2,7 +2,7 @@ import { ImageResponse } from 'next/og'
 
 export const runtime = 'edge'
 
-export const alt = 'DevFolio - Create your professional developer portfolio'
+export const alt = 'Dfolio - Create your professional developer portfolio'
 export const size = {
     width: 1200,
     height: 630,
@@ -59,7 +59,7 @@ export default async function Image() {
                             color: 'transparent',
                         }}
                     >
-                        DevFolio
+                        Dfolio
                     </span>
                 </div>
 
@@ -132,7 +132,7 @@ export default async function Image() {
                         color: '#52525b',
                     }}
                 >
-                    devfolio.app
+                    dfolio.dev
                 </div>
             </div>
         ),

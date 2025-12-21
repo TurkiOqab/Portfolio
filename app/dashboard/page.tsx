@@ -97,7 +97,7 @@ export default async function DashboardPage() {
                 <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
                     <Link href="/" className="group text-2xl font-bold text-white flex items-center gap-2">
                         <span className={`w-8 h-8 bg-gradient-to-br ${theme.primaryGradient} rounded-lg flex items-center justify-center text-sm font-bold ${theme.shadowColor} shadow-lg group-hover:shadow-xl transition-shadow duration-300`}>D</span>
-                        <span className="bg-gradient-to-r from-white to-zinc-300 bg-clip-text text-transparent">DevFolio</span>
+                        <span className="bg-gradient-to-r from-white to-zinc-300 bg-clip-text text-transparent">Dfolio</span>
                     </Link>
                     <div className="flex items-center gap-4">
                         {portfolioUrl && (
@@ -209,7 +209,7 @@ export default async function DashboardPage() {
                             <p className="text-zinc-500 text-sm font-medium mb-3">Your URL</p>
                             <div className="flex items-center justify-between gap-4">
                                 <p className={`text-lg font-mono ${theme.textAccent} truncate`}>
-                                    devfolio.com{portfolioUrl}
+                                    dfolio.dev{portfolioUrl}
                                 </p>
                                 <CopyLinkButton
                                     url={portfolioUrl}

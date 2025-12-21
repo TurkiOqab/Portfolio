@@ -36,7 +36,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="group text-2xl font-bold text-white flex items-center gap-2">
             <span className="w-8 h-8 bg-white rounded-lg flex items-center justify-center text-sm font-bold text-zinc-900">D</span>
-            <span className="text-white">DevFolio</span>
+            <span className="text-white">Dfolio</span>
           </Link>
           <div className="flex items-center gap-4">
             <Link
@@ -78,7 +78,7 @@ export default function LandingPage() {
                 Build yours in <span className="text-slate-400">5 minutes</span>
               </h2>
               <p className="text-zinc-400 text-lg md:text-xl mb-10 max-w-xl mx-auto">
-                Join thousands of developers showcasing their work with DevFolio.
+                Join thousands of developers showcasing their work with Dfolio.
               </p>
               <Link
                 href="/signup"
@@ -98,12 +98,12 @@ export default function LandingPage() {
       <footer className="py-12 px-6 border-t border-zinc-800/50 relative z-10">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="text-zinc-500 text-sm">
-            © {new Date().getFullYear()} DevFolio. All rights reserved.
+            © {new Date().getFullYear()} Dfolio. All rights reserved.
           </div>
           <div className="flex items-center gap-6 text-sm text-zinc-500">
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
             <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
-            <a href="mailto:support@devfolio.app" className="hover:text-white transition-colors">Contact</a>
+            <a href="mailto:support@dfolio.dev" className="hover:text-white transition-colors">Contact</a>
           </div>
         </div>
       </footer>

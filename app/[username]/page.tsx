@@ -93,7 +93,7 @@ export default async function PortfolioPage({ params }: PageProps) {
         "@type": "Person",
         name: portfolio.name,
         description: portfolio.bio,
-        url: `https://devfolio.app/${username}`,
+        url: `https://dfolio.dev/${username}`,
         image: portfolio.avatar_url || undefined,
         jobTitle: portfolio.title,
         sameAs: [
@@ -160,7 +160,7 @@ export async function generateMetadata({ params }: PageProps) {
         .single()
 
     if (!profile) {
-        return { title: 'Not Found | DevFolio' }
+        return { title: 'Not Found | Dfolio' }
     }
 
     const { data: portfolio } = await supabase
@@ -169,8 +169,8 @@ export async function generateMetadata({ params }: PageProps) {
         .eq('user_id', profile.id)
         .single()
 
-    const title = portfolio ? `${portfolio.name} | DevFolio` : `@${username} | DevFolio`
-    const description = portfolio?.bio || `Check out ${username}'s developer portfolio on DevFolio`
+    const title = portfolio ? `${portfolio.name} | Dfolio` : `@${username} | Dfolio`
+    const description = portfolio?.bio || `Check out ${username}'s developer portfolio on Dfolio`
 
     return {
         title,
@@ -179,7 +179,7 @@ export async function generateMetadata({ params }: PageProps) {
             title,
             description,
             type: 'profile',
-            url: `https://devfolio.app/${username}`,
+            url: `https://dfolio.dev/${username}`,
             images: portfolio?.avatar_url ? [
                 {
                     url: portfolio.avatar_url,
@@ -188,7 +188,7 @@ export async function generateMetadata({ params }: PageProps) {
                     alt: `${portfolio.name}'s profile picture`,
                 }
             ] : [],
-            siteName: 'DevFolio',
+            siteName: 'Dfolio',
         },
         twitter: {
             card: 'summary',

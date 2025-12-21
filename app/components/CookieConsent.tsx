@@ -26,7 +26,7 @@ export default function CookieConsent() {
         localStorage.setItem('cookie_consent', 'declined')
         localStorage.setItem('cookie_consent_date', new Date().toISOString())
         // Clear any existing tracking data
-        localStorage.removeItem('devfolio_visitor_id')
+        localStorage.removeItem('dfolio_visitor_id')
         setIsVisible(false)
     }
 

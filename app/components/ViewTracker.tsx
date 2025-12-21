@@ -18,10 +18,10 @@ function getVisitorId(): string {
     // Only create/store visitor ID if user has consented
     if (!hasConsent()) return "";
 
-    let visitorId = localStorage.getItem("devfolio_visitor_id");
+    let visitorId = localStorage.getItem("dfolio_visitor_id");
     if (!visitorId) {
         visitorId = `visitor_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
-        localStorage.setItem("devfolio_visitor_id", visitorId);
+        localStorage.setItem("dfolio_visitor_id", visitorId);
     }
     return visitorId;
 }

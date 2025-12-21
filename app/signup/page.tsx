@@ -176,7 +176,7 @@ export default function SignupPage() {
                 <div className="text-center mb-8">
                     <Link href="/" className="inline-block">
                         <h1 className="text-3xl font-bold text-white">
-                            DevFolio
+                            Dfolio
                         </h1>
                     </Link>
                     <p className="text-zinc-500 mt-2">Create your portfolio in minutes</p>
@@ -197,7 +197,7 @@ export default function SignupPage() {
                             </label>
                             <div className="relative">
                                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500">
-                                    devfolio.com/
+                                    dfolio.dev/
                                 </span>
                                 <input
                                     id="username"

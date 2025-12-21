@@ -2,8 +2,8 @@ import Link from 'next/link'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-    title: 'Privacy Policy | DevFolio',
-    description: 'Privacy Policy for DevFolio - Learn how we collect, use, and protect your data.',
+    title: 'Privacy Policy | Dfolio',
+    description: 'Privacy Policy for Dfolio - Learn how we collect, use, and protect your data.',
 }
 
 export default function PrivacyPage() {
@@ -17,7 +17,7 @@ export default function PrivacyPage() {
             <header className="relative z-10 border-b border-zinc-800/50">
                 <div className="max-w-4xl mx-auto px-6 py-6 flex items-center justify-between">
                     <Link href="/" className="text-xl font-bold text-white">
-                        DevFolio
+                        Dfolio
                     </Link>
                     <Link
                         href="/"
@@ -40,7 +40,7 @@ export default function PrivacyPage() {
                     <section className="mb-10">
                         <h2 className="text-2xl font-semibold text-white mb-4">1. Information We Collect</h2>
                         <p className="text-zinc-400 leading-relaxed mb-4">
-                            When you use DevFolio, we collect information you provide directly to us, including:
+                            When you use Dfolio, we collect information you provide directly to us, including:
                         </p>
                         <ul className="list-disc list-inside text-zinc-400 space-y-2 ml-4">
                             <li>Account information (email address, username)</li>
@@ -115,8 +115,8 @@ export default function PrivacyPage() {
                         <h2 className="text-2xl font-semibold text-white mb-4">8. Contact Us</h2>
                         <p className="text-zinc-400 leading-relaxed">
                             If you have any questions about this Privacy Policy, please contact us at{' '}
-                            <a href="mailto:support@devfolio.app" className="text-white hover:underline">
-                                support@devfolio.app
+                            <a href="mailto:support@dfolio.dev" className="text-white hover:underline">
+                                support@dfolio.dev
                             </a>
                         </p>
                     </section>

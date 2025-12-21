@@ -283,7 +283,7 @@ export default function OnboardingPage() {
                     </div>
                     {username && (
                         <p className="text-xs text-zinc-500 mt-2 text-center">
-                            Your portfolio will be live at: <span className="text-white">devfolio.com/{username}</span>
+                            Your portfolio will be live at: <span className="text-white">dfolio.dev/{username}</span>
                         </p>
                     )}
                 </div>

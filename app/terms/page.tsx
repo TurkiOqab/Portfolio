@@ -2,8 +2,8 @@ import Link from 'next/link'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-    title: 'Terms of Service | DevFolio',
-    description: 'Terms of Service for DevFolio - Read the terms and conditions for using our platform.',
+    title: 'Terms of Service | Dfolio',
+    description: 'Terms of Service for Dfolio - Read the terms and conditions for using our platform.',
 }
 
 export default function TermsPage() {
@@ -17,7 +17,7 @@ export default function TermsPage() {
             <header className="relative z-10 border-b border-zinc-800/50">
                 <div className="max-w-4xl mx-auto px-6 py-6 flex items-center justify-between">
                     <Link href="/" className="text-xl font-bold text-white">
-                        DevFolio
+                        Dfolio
                     </Link>
                     <Link
                         href="/"
@@ -40,7 +40,7 @@ export default function TermsPage() {
                     <section className="mb-10">
                         <h2 className="text-2xl font-semibold text-white mb-4">1. Acceptance of Terms</h2>
                         <p className="text-zinc-400 leading-relaxed">
-                            By accessing or using DevFolio, you agree to be bound by these Terms of Service.
+                            By accessing or using Dfolio, you agree to be bound by these Terms of Service.
                             If you do not agree to these terms, please do not use our service.
                         </p>
                     </section>
@@ -48,7 +48,7 @@ export default function TermsPage() {
                     <section className="mb-10">
                         <h2 className="text-2xl font-semibold text-white mb-4">2. Description of Service</h2>
                         <p className="text-zinc-400 leading-relaxed">
-                            DevFolio provides a platform for developers to create and host professional portfolio
+                            Dfolio provides a platform for developers to create and host professional portfolio
                             websites. We offer tools to showcase your skills, projects, and experience to potential
                             employers and clients.
                         </p>
@@ -57,7 +57,7 @@ export default function TermsPage() {
                     <section className="mb-10">
                         <h2 className="text-2xl font-semibold text-white mb-4">3. User Accounts</h2>
                         <p className="text-zinc-400 leading-relaxed mb-4">
-                            To use DevFolio, you must:
+                            To use Dfolio, you must:
                         </p>
                         <ul className="list-disc list-inside text-zinc-400 space-y-2 ml-4">
                             <li>Provide accurate and complete registration information</li>
@@ -70,7 +70,7 @@ export default function TermsPage() {
                     <section className="mb-10">
                         <h2 className="text-2xl font-semibold text-white mb-4">4. User Content</h2>
                         <p className="text-zinc-400 leading-relaxed mb-4">
-                            You retain ownership of the content you create on DevFolio. By posting content, you grant
+                            You retain ownership of the content you create on Dfolio. By posting content, you grant
                             us a license to display it on your public portfolio. You are responsible for ensuring your
                             content:
                         </p>
@@ -99,7 +99,7 @@ export default function TermsPage() {
                     <section className="mb-10">
                         <h2 className="text-2xl font-semibold text-white mb-4">6. Intellectual Property</h2>
                         <p className="text-zinc-400 leading-relaxed">
-                            The DevFolio platform, including its design, features, and code, is owned by us and
+                            The Dfolio platform, including its design, features, and code, is owned by us and
                             protected by intellectual property laws. You may not copy, modify, or distribute our
                             platform without permission.
                         </p>
@@ -117,7 +117,7 @@ export default function TermsPage() {
                     <section className="mb-10">
                         <h2 className="text-2xl font-semibold text-white mb-4">8. Disclaimer of Warranties</h2>
                         <p className="text-zinc-400 leading-relaxed">
-                            DevFolio is provided &quot;as is&quot; without warranties of any kind. We do not guarantee
+                            Dfolio is provided &quot;as is&quot; without warranties of any kind. We do not guarantee
                             that the service will be uninterrupted, secure, or error-free. We are not responsible
                             for any decisions made based on your portfolio content.
                         </p>
@@ -126,7 +126,7 @@ export default function TermsPage() {
                     <section className="mb-10">
                         <h2 className="text-2xl font-semibold text-white mb-4">9. Limitation of Liability</h2>
                         <p className="text-zinc-400 leading-relaxed">
-                            To the maximum extent permitted by law, DevFolio shall not be liable for any indirect,
+                            To the maximum extent permitted by law, Dfolio shall not be liable for any indirect,
                             incidental, special, or consequential damages arising from your use of the service.
                         </p>
                     </section>
@@ -143,8 +143,8 @@ export default function TermsPage() {
                         <h2 className="text-2xl font-semibold text-white mb-4">11. Contact</h2>
                         <p className="text-zinc-400 leading-relaxed">
                             If you have questions about these Terms of Service, please contact us at{' '}
-                            <a href="mailto:support@devfolio.app" className="text-white hover:underline">
-                                support@devfolio.app
+                            <a href="mailto:support@dfolio.dev" className="text-white hover:underline">
+                                support@dfolio.dev
                             </a>
                         </p>
                     </section>

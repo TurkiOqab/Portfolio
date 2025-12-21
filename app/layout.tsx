@@ -71,8 +71,8 @@ const unbounded = Unbounded({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://devfolio.app"),
-  title: "DevFolio | Developer Portfolios",
+  metadataBase: new URL("https://dfolio.dev"),
+  title: "Dfolio | Developer Portfolios",
   description:
     "Create your professional developer portfolio in minutes. Stand out to recruiters and clients with a stunning portfolio.",
   keywords: [
@@ -95,15 +95,15 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "DevFolio | Developer Portfolios",
+    title: "Dfolio | Developer Portfolios",
     description: "Create your professional developer portfolio in minutes. Stand out to recruiters and clients with a stunning portfolio.",
     type: "website",
-    url: "https://devfolio.app",
-    siteName: "DevFolio",
+    url: "https://dfolio.dev",
+    siteName: "Dfolio",
   },
   twitter: {
     card: "summary_large_image",
-    title: "DevFolio | Developer Portfolios",
+    title: "Dfolio | Developer Portfolios",
     description: "Create your professional developer portfolio in minutes.",
   },
 };
@@ -112,9 +112,9 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  name: "DevFolio",
+  name: "Dfolio",
   description: "Create your professional developer portfolio in minutes. Stand out to recruiters and clients with a stunning portfolio.",
-  url: "https://devfolio.app",
+  url: "https://dfolio.dev",
   applicationCategory: "BusinessApplication",
   operatingSystem: "Web",
   offers: {
@@ -124,8 +124,8 @@ const jsonLd = {
   },
   creator: {
     "@type": "Organization",
-    name: "DevFolio",
-    url: "https://devfolio.app",
+    name: "Dfolio",
+    url: "https://dfolio.dev",
   },
 };
 

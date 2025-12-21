@@ -143,7 +143,7 @@ export default async function Image({ params }: { params: Promise<{ username: st
                         {title}
                     </div>
 
-                    {/* DevFolio branding */}
+                    {/* Dfolio branding */}
                     <div
                         style={{
                             fontSize: 18,
@@ -153,7 +153,7 @@ export default async function Image({ params }: { params: Promise<{ username: st
                             gap: '8px',
                         }}
                     >
-                        <span style={{ color: '#a78bfa' }}>DevFolio</span>
+                        <span style={{ color: '#a78bfa' }}>Dfolio</span>
                         <span>|</span>
                         <span>@{username}</span>
                     </div>
