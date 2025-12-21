@@ -138,8 +138,8 @@ export default function FeaturesCards() {
         <div className="relative w-full max-w-3xl mx-auto">
           {/* Subtle glow effect */}
           <div
-            className="absolute inset-0 bg-violet-600/20 blur-3xl transition-all duration-700"
-            style={{ opacity: isHovered ? 0.6 : 0.3 }}
+            className="absolute inset-0 bg-violet-600/10 blur-3xl transition-all duration-700"
+            style={{ opacity: isHovered ? 0.4 : 0.2 }}
           />
 
           {/* 3D Tilt Container */}
@@ -180,16 +180,19 @@ export default function FeaturesCards() {
               </div>
 
               {/* Progress dots */}
-              <div className="flex justify-center gap-3 mt-8">
-                {features.map((_, index) => (
+              <div className="flex justify-center gap-3 mt-8" role="tablist" aria-label="Feature navigation">
+                {features.map((feature, index) => (
                   <button
                     key={index}
                     onClick={() => setActiveIndex(index)}
-                    className="h-2 rounded-full transition-all duration-300"
+                    className="h-2 rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:ring-offset-2 focus:ring-offset-zinc-900"
                     style={{
                       width: index === activeIndex ? '2.5rem' : '0.5rem',
                       backgroundColor: index === activeIndex ? 'rgb(124, 58, 237)' : 'rgb(63, 63, 70)',
                     }}
+                    aria-label={`Go to feature: ${feature.title}`}
+                    aria-selected={index === activeIndex}
+                    role="tab"
                   />
                 ))}
               </div>

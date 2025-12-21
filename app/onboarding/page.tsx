@@ -9,16 +9,13 @@ import { PortfolioData, defaultPortfolioData } from "../types";
 import NameStep from "./steps/NameStep";
 import BioStep from "./steps/BioStep";
 import SkillsStep from "./steps/SkillsStep";
-import EducationStep from "./steps/EducationStep";
-import ExperienceStep from "./steps/ExperienceStep";
-import ProjectsStep from "./steps/ProjectsStep";
 import ContactStep from "./steps/ContactStep";
-import ProfilePictureStep from "./steps/ProfilePictureStep";
-import CVStep from "./steps/CVStep";
+import PortfolioContentStep from "./steps/PortfolioContentStep";
+import MediaUploadStep from "./steps/MediaUploadStep";
 import ThemeStep from "./steps/ThemeStep";
 import { isValidEmail } from "../lib/validation";
 
-const TOTAL_STEPS = 10;
+const TOTAL_STEPS = 7;
 
 export default function OnboardingPage() {
     const router = useRouter();
@@ -113,17 +110,13 @@ export default function OnboardingPage() {
             case 3:
                 return data.skills.length >= 3;
             case 4:
-                return data.education.length >= 1;
-            case 5:
-                return data.experience.length >= 1;
-            case 6:
-                return data.projects.length >= 1;
-            case 7:
                 return isValidEmail(data.contact.email);
-            case 8:
-                return !!data.avatarUrl; // Require profile picture or skip
-            case 9:
-                return !!data.cvUrl; // Require CV or skip
+            case 5:
+                // Portfolio content - at least one item in any category
+                return data.education.length >= 1 || data.experience.length >= 1 || data.projects.length >= 1;
+            case 6:
+                // Media upload - optional
+                return true;
             default:
                 return true;
         }
@@ -142,17 +135,12 @@ export default function OnboardingPage() {
                 if (data.skills.length < 3) return `Please add at least 3 skills (${data.skills.length}/3)`;
                 return null;
             case 4:
-                if (data.education.length < 1) return "Add education or skip to continue";
-                return null;
-            case 5:
-                if (data.experience.length < 1) return "Add experience or skip to continue";
-                return null;
-            case 6:
-                if (data.projects.length < 1) return "Add a project or skip to continue";
-                return null;
-            case 7:
                 if (!data.contact.email.trim()) return "Please enter your email address";
                 if (!isValidEmail(data.contact.email)) return "Please enter a valid email address";
+                return null;
+            case 5:
+                if (data.education.length === 0 && data.experience.length === 0 && data.projects.length === 0)
+                    return "Add at least one education, experience, or project entry";
                 return null;
             default:
                 return null;
@@ -255,12 +243,9 @@ export default function OnboardingPage() {
         "Let's get started",
         "Tell us about yourself",
         "What are your skills?",
-        "Your education",
-        "Work experience",
-        "Showcase your work",
         "How can people reach you?",
-        "Add a photo",
-        "Upload your CV",
+        "Build your portfolio",
+        "Add your media",
         "Choose your style",
     ];
 
@@ -306,7 +291,7 @@ export default function OnboardingPage() {
 
             {/* Step Content */}
             <div className="flex-1 flex items-center justify-center pt-28 pb-24 px-6 relative z-10">
-                <div className="w-full max-w-2xl">
+                <div className={`w-full ${currentStep === 5 ? 'max-w-4xl' : 'max-w-2xl'}`}>
                     {currentStep === 1 && (
                         <NameStep data={data} updateData={updateData} />
                     )}
@@ -317,24 +302,15 @@ export default function OnboardingPage() {
                         <SkillsStep data={data} updateData={updateData} />
                     )}
                     {currentStep === 4 && (
-                        <EducationStep data={data} updateData={updateData} />
-                    )}
-                    {currentStep === 5 && (
-                        <ExperienceStep data={data} updateData={updateData} />
-                    )}
-                    {currentStep === 6 && (
-                        <ProjectsStep data={data} updateData={updateData} />
-                    )}
-                    {currentStep === 7 && (
                         <ContactStep data={data} updateData={updateData} />
                     )}
-                    {currentStep === 8 && userId && (
-                        <ProfilePictureStep data={data} updateData={updateData} userId={userId} />
+                    {currentStep === 5 && (
+                        <PortfolioContentStep data={data} updateData={updateData} />
                     )}
-                    {currentStep === 9 && userId && (
-                        <CVStep data={data} updateData={updateData} userId={userId} />
+                    {currentStep === 6 && userId && (
+                        <MediaUploadStep data={data} updateData={updateData} userId={userId} />
                     )}
-                    {currentStep === 10 && (
+                    {currentStep === 7 && (
                         <ThemeStep data={data} updateData={updateData} />
                     )}
                 </div>
@@ -368,11 +344,8 @@ export default function OnboardingPage() {
                             ← Back
                         </button>
                         <div className="flex items-center gap-3">
-                            {((currentStep === 4 && data.education.length === 0) ||
-                                (currentStep === 5 && data.experience.length === 0) ||
-                                (currentStep === 6 && data.projects.length === 0) ||
-                                (currentStep === 8 && !data.avatarUrl) ||
-                                (currentStep === 9 && !data.cvUrl)) && (
+                            {((currentStep === 5 && data.education.length === 0 && data.experience.length === 0 && data.projects.length === 0) ||
+                                (currentStep === 6 && !data.avatarUrl && !data.cvUrl)) && (
                                     <button
                                         onClick={skipStep}
                                         className="px-6 py-3 text-zinc-400 hover:text-white border border-zinc-700 rounded-full transition-colors"

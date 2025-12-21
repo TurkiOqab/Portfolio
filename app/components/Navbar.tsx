@@ -60,8 +60,9 @@ export default function Navbar({ theme, isOwner = false }: NavbarProps) {
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className={`flex items-center gap-1 px-3 py-2 rounded-lg ${theme.textAccent} hover:text-white hover:bg-zinc-800/50 transition-all duration-300`}
-                  title="Menu"
+                  className={`flex items-center gap-1 px-3 py-2 rounded-lg ${theme.textAccent} hover:text-white hover:bg-zinc-800/50 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-violet-500/50`}
+                  aria-label="Open navigation menu"
+                  aria-expanded={isDropdownOpen}
                 >
                   <span className="text-sm font-medium">Menu</span>
                   <svg
@@ -106,7 +107,9 @@ export default function Navbar({ theme, isOwner = false }: NavbarProps) {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 text-zinc-400 hover:text-white transition-colors"
+            className="md:hidden p-2 text-zinc-400 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-violet-500/50 rounded-lg"
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isMenuOpen}
           >
             <svg
               className="w-6 h-6"

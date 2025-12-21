@@ -109,8 +109,8 @@ export default function PortfolioMockup() {
     <div className="relative w-full max-w-4xl mx-auto perspective-1000">
       {/* Glow effect behind the mockup */}
       <div
-        className="absolute inset-0 bg-violet-600/20 blur-3xl transition-opacity duration-500"
-        style={{ opacity: isHovered ? 0.6 : 0.3 }}
+        className="absolute inset-0 bg-violet-600/10 blur-3xl transition-opacity duration-500"
+        style={{ opacity: isHovered ? 0.4 : 0.2 }}
       />
 
       {/* 3D Mockup Container */}

@@ -107,6 +107,35 @@ export const themes: Record<string, ThemeConfig> = {
         orb2: 'bg-yellow-600/20',
         shadowColor: 'shadow-amber-500/25',
     },
+    // Flat/Minimal themes (no gradients)
+    minimal_violet: {
+        id: 'minimal_violet',
+        name: 'Minimal Violet',
+        description: 'Clean, solid violet design',
+        primaryGradient: 'from-violet-600 to-violet-600',
+        primaryGradientHover: 'from-violet-500 to-violet-500',
+        accentColor: 'bg-violet-600',
+        accentColorHover: 'bg-violet-500',
+        textAccent: 'text-violet-400',
+        timelineDot: 'bg-violet-500',
+        orb1: 'bg-violet-600/5',
+        orb2: 'bg-violet-600/5',
+        shadowColor: 'shadow-violet-500/10',
+    },
+    minimal_blue: {
+        id: 'minimal_blue',
+        name: 'Minimal Blue',
+        description: 'Clean, solid blue design',
+        primaryGradient: 'from-blue-600 to-blue-600',
+        primaryGradientHover: 'from-blue-500 to-blue-500',
+        accentColor: 'bg-blue-600',
+        accentColorHover: 'bg-blue-500',
+        textAccent: 'text-blue-400',
+        timelineDot: 'bg-blue-500',
+        orb1: 'bg-blue-600/5',
+        orb2: 'bg-blue-600/5',
+        shadowColor: 'shadow-blue-500/10',
+    },
 };
 
 export const themeList = Object.values(themes);

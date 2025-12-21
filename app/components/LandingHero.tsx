@@ -63,7 +63,7 @@ export default function LandingHero() {
             displayedText.length > 0 ? 'opacity-100' : 'opacity-0'
           }`}
         >
-          <span className="w-2 h-2 bg-violet-500 rounded-full animate-pulse" />
+          <span className="w-2 h-2 bg-violet-500 rounded-full" />
           <span className="text-sm text-zinc-300">Start for free • No credit card required</span>
         </div>
 
@@ -74,7 +74,7 @@ export default function LandingHero() {
 
         {/* Subheading - Fades in after typing completes */}
         <p
-          className={`text-xl md:text-2xl text-zinc-400 mb-10 max-w-2xl mx-auto leading-relaxed transition-all duration-700 ${
+          className={`text-xl md:text-2xl text-zinc-400 mb-10 max-w-2xl mx-auto leading-relaxed transition-all duration-500 ${
             isTypingComplete ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}
         >
@@ -84,13 +84,13 @@ export default function LandingHero() {
 
         {/* CTA Buttons - Fade in after typing completes */}
         <div
-          className={`flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 transition-all duration-700 delay-200 ${
+          className={`flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 transition-all duration-500 delay-100 ${
             isTypingComplete ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}
         >
           <Link
             href="/signup"
-            className="group px-8 py-4 bg-violet-600 text-white font-medium rounded-full hover:bg-violet-500 transition-all duration-300 flex items-center gap-2"
+            className="group px-8 py-4 bg-violet-600 text-white font-medium rounded-full hover:bg-violet-500 transition-all duration-300 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:ring-offset-2 focus:ring-offset-zinc-950"
           >
             Create Your Portfolio
             <svg
@@ -109,7 +109,7 @@ export default function LandingHero() {
           </Link>
           <Link
             href="#features"
-            className="px-8 py-4 border border-zinc-700 text-white font-medium rounded-full hover:bg-zinc-800/50 hover:border-zinc-600 transition-all duration-300"
+            className="px-8 py-4 border border-zinc-700 text-white font-medium rounded-full hover:bg-zinc-800/50 hover:border-zinc-600 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:ring-offset-2 focus:ring-offset-zinc-950"
           >
             See How It Works
           </Link>
@@ -117,7 +117,7 @@ export default function LandingHero() {
 
         {/* Social Proof - Fades in after typing completes */}
         <div
-          className={`flex items-center justify-center gap-8 text-zinc-500 text-sm transition-all duration-700 delay-300 ${
+          className={`flex items-center justify-center gap-8 text-zinc-500 text-sm transition-all duration-500 delay-150 ${
             isTypingComplete ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}
         >
