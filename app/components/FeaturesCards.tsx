@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useRef, useState, useEffect } from 'react'
 
 const features = [
   {
@@ -13,7 +13,7 @@ const features = [
     ),
     gradient: 'from-violet-500 to-purple-500',
     shadow: 'shadow-violet-500/25',
-    glowColor: 'rgba(139, 92, 246, 0.15)',
+    glowColor: 'from-violet-600/30 to-purple-600/30',
   },
   {
     title: 'Your Own URL',
@@ -25,7 +25,7 @@ const features = [
     ),
     gradient: 'from-cyan-500 to-blue-500',
     shadow: 'shadow-cyan-500/25',
-    glowColor: 'rgba(6, 182, 212, 0.15)',
+    glowColor: 'from-cyan-600/30 to-blue-600/30',
   },
   {
     title: 'Beautiful Designs',
@@ -37,21 +37,99 @@ const features = [
     ),
     gradient: 'from-emerald-500 to-teal-500',
     shadow: 'shadow-emerald-500/25',
-    glowColor: 'rgba(16, 185, 129, 0.15)',
+    glowColor: 'from-emerald-600/30 to-teal-600/30',
   },
 ]
 
 export default function FeaturesCards() {
-  const [visibleCards, setVisibleCards] = useState<number[]>([])
+  const cardRef = useRef<HTMLDivElement>(null)
+  const [rotateX, setRotateX] = useState(0)
+  const [rotateY, setRotateY] = useState(0)
+  const [isHovered, setIsHovered] = useState(false)
+  const [activeIndex, setActiveIndex] = useState(0)
+  const [displayedTitle, setDisplayedTitle] = useState('')
+  const [displayedDesc, setDisplayedDesc] = useState('')
+  const [isTyping, setIsTyping] = useState(true)
 
+  // Typing effect for title and description
   useEffect(() => {
-    // Stagger the appearance of each card
-    features.forEach((_, index) => {
-      setTimeout(() => {
-        setVisibleCards((prev) => [...prev, index])
-      }, index * 400) // 400ms delay between each card
-    })
-  }, [])
+    const feature = features[activeIndex]
+    let titleIndex = 0
+    let descIndex = 0
+    let phase: 'title' | 'desc' | 'pause' | 'clear' = 'title'
+
+    setDisplayedTitle('')
+    setDisplayedDesc('')
+    setIsTyping(true)
+
+    const type = () => {
+      if (phase === 'title') {
+        if (titleIndex <= feature.title.length) {
+          setDisplayedTitle(feature.title.slice(0, titleIndex))
+          titleIndex++
+          setTimeout(type, 25)
+        } else {
+          phase = 'desc'
+          setTimeout(type, 50)
+        }
+      } else if (phase === 'desc') {
+        if (descIndex <= feature.description.length) {
+          setDisplayedDesc(feature.description.slice(0, descIndex))
+          descIndex++
+          setTimeout(type, 5)
+        } else {
+          phase = 'pause'
+          setIsTyping(false)
+          setTimeout(type, 2000)
+        }
+      } else if (phase === 'pause') {
+        phase = 'clear'
+        setIsTyping(true)
+        setTimeout(type, 30)
+      } else if (phase === 'clear') {
+        if (descIndex > 0 || titleIndex > 0) {
+          if (descIndex > 0) {
+            descIndex = Math.max(0, descIndex - 8)
+            setDisplayedDesc(feature.description.slice(0, descIndex))
+          } else {
+            titleIndex = Math.max(0, titleIndex - 3)
+            setDisplayedTitle(feature.title.slice(0, titleIndex))
+          }
+          setTimeout(type, 8)
+        } else {
+          setActiveIndex((prev) => (prev + 1) % features.length)
+        }
+      }
+    }
+
+    const timeout = setTimeout(type, 200)
+    return () => clearTimeout(timeout)
+  }, [activeIndex])
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return
+
+    const rect = cardRef.current.getBoundingClientRect()
+    const centerX = rect.left + rect.width / 2
+    const centerY = rect.top + rect.height / 2
+
+    const mouseX = e.clientX - centerX
+    const mouseY = e.clientY - centerY
+
+    const rotateYValue = (mouseX / (rect.width / 2)) * 12
+    const rotateXValue = -(mouseY / (rect.height / 2)) * 12
+
+    setRotateX(rotateXValue)
+    setRotateY(rotateYValue)
+  }
+
+  const handleMouseLeave = () => {
+    setRotateX(0)
+    setRotateY(0)
+    setIsHovered(false)
+  }
+
+  const currentFeature = features[activeIndex]
 
   return (
     <section id="features" className="py-32 px-6 relative z-10">
@@ -65,43 +143,80 @@ export default function FeaturesCards() {
           </p>
         </div>
 
-        {/* Cards - Stacked Vertically */}
-        <div className="space-y-6">
-          {features.map((feature, index) => {
-            const isVisible = visibleCards.includes(index)
+        {/* 3D Card Container */}
+        <div className="relative w-full max-w-3xl mx-auto">
+          {/* Dynamic glow effect */}
+          <div
+            className={`absolute inset-0 bg-gradient-to-r ${currentFeature.glowColor} blur-3xl transition-all duration-700`}
+            style={{ opacity: isHovered ? 0.8 : 0.5 }}
+          />
 
-            return (
-              <div
-                key={index}
-                className="transition-all duration-700 ease-out"
-                style={{
-                  opacity: isVisible ? 1 : 0,
-                  transform: isVisible ? 'translateY(0)' : 'translateY(30px)',
-                }}
-              >
-                <div
-                  className="bg-white/[0.06] backdrop-blur-xl border border-white/10 rounded-3xl p-10 md:p-14 hover:bg-white/[0.1] hover:border-white/20 transition-all duration-300"
-                  style={{
-                    boxShadow: `0 25px 50px -12px ${feature.glowColor}`,
-                  }}
-                >
-                  <div className="flex flex-col md:flex-row md:items-center gap-8">
-                    <div className="flex-shrink-0">
-                      <div className={`w-16 h-16 bg-gradient-to-br ${feature.gradient} rounded-2xl flex items-center justify-center shadow-lg ${feature.shadow}`}>
-                        {feature.icon}
-                      </div>
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">{feature.title}</h3>
-                      <p className="text-zinc-400 text-lg leading-relaxed">
-                        {feature.description}
-                      </p>
-                    </div>
-                  </div>
+          {/* 3D Tilt Container */}
+          <div
+            ref={cardRef}
+            className="relative transition-transform duration-200 ease-out"
+            style={{
+              transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
+              transformStyle: 'preserve-3d',
+            }}
+            onMouseMove={handleMouseMove}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={handleMouseLeave}
+          >
+            {/* Glass Card */}
+            <div className="relative bg-white/[0.06] backdrop-blur-xl border border-white/10 rounded-3xl p-10 md:p-14 shadow-2xl min-h-[280px] md:min-h-[260px]">
+              <div className="flex flex-col md:flex-row md:items-start gap-6">
+                {/* Icon */}
+                <div className={`flex-shrink-0 w-16 h-16 bg-gradient-to-br ${currentFeature.gradient} rounded-2xl flex items-center justify-center shadow-lg ${currentFeature.shadow} transition-all duration-500`}>
+                  {currentFeature.icon}
+                </div>
+
+                {/* Content */}
+                <div className="flex-1">
+                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-3 min-h-[2.25rem]">
+                    {displayedTitle}
+                    {isTyping && displayedDesc.length === 0 && (
+                      <span className="animate-pulse text-violet-400">|</span>
+                    )}
+                  </h3>
+                  <p className="text-zinc-400 text-lg leading-relaxed min-h-[4.5rem]">
+                    {displayedDesc}
+                    {isTyping && displayedDesc.length > 0 && (
+                      <span className="animate-pulse text-violet-400">|</span>
+                    )}
+                  </p>
                 </div>
               </div>
-            )
-          })}
+
+              {/* Progress dots */}
+              <div className="flex justify-center gap-3 mt-8">
+                {features.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setActiveIndex(index)}
+                    className="relative h-2 rounded-full overflow-hidden transition-all duration-300"
+                    style={{
+                      width: index === activeIndex ? '2.5rem' : '0.5rem',
+                      backgroundColor: index === activeIndex ? 'transparent' : 'rgb(63, 63, 70)',
+                    }}
+                  >
+                    {index === activeIndex && (
+                      <div className={`absolute inset-0 bg-gradient-to-r ${currentFeature.gradient} rounded-full`} />
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Reflection effect */}
+            <div
+              className="absolute inset-0 rounded-3xl pointer-events-none"
+              style={{
+                background: `linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.1) 45%, rgba(255,255,255,0.05) 50%, transparent 55%)`,
+                transform: 'translateZ(1px)',
+              }}
+            />
+          </div>
         </div>
       </div>
     </section>
