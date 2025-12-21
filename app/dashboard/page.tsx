@@ -37,6 +37,12 @@ export default async function DashboardPage() {
         redirect('/onboarding')
     }
 
+    // Get like count
+    const { count: likeCount } = await supabase
+        .from('portfolio_likes')
+        .select('*', { count: 'exact', head: true })
+        .eq('portfolio_id', portfolio.id)
+
     // Get font configuration
     const font = getFont(portfolio.font || 'inter')
 
@@ -114,7 +120,7 @@ export default async function DashboardPage() {
                 </div>
 
                 {/* Portfolio Status */}
-                <div className="grid md:grid-cols-2 gap-6 mb-12">
+                <div className="grid md:grid-cols-3 gap-6 mb-12">
                     {/* Live Status */}
                     <div className="p-6 bg-zinc-900/50 border border-zinc-800 rounded-2xl backdrop-blur-sm">
                         <div className="flex items-center gap-3 mb-4">
@@ -139,7 +145,21 @@ export default async function DashboardPage() {
                             <span className="text-sm text-zinc-400">Views</span>
                         </div>
                         <div className="text-4xl font-bold text-white mb-1">—</div>
-                        <p className="text-zinc-400 text-sm">Portfolio views coming soon</p>
+                        <p className="text-zinc-400 text-sm">Coming soon</p>
+                    </div>
+
+                    {/* Portfolio Likes */}
+                    <div className="p-6 bg-zinc-900/50 border border-zinc-800 rounded-2xl backdrop-blur-sm">
+                        <div className="flex items-center gap-3 mb-4">
+                            <svg className="w-5 h-5 text-rose-400" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                            <span className="text-sm text-zinc-400">Likes</span>
+                        </div>
+                        <div className="text-4xl font-bold text-white mb-1">{likeCount || 0}</div>
+                        <p className="text-zinc-400 text-sm">
+                            {likeCount === 1 ? 'person likes' : 'people like'} your portfolio
+                        </p>
                     </div>
                 </div>
 

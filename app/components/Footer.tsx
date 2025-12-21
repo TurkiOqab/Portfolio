@@ -1,15 +1,17 @@
 import Link from "next/link";
 import { ContactInfo } from "../types";
 import { ThemeConfig } from "../lib/themes";
+import LikeButton from "./LikeButton";
 
 interface FooterProps {
     contact: ContactInfo;
     name: string;
     theme: ThemeConfig;
     cvUrl?: string;
+    portfolioId: string;
 }
 
-export default function Footer({ contact, name, theme, cvUrl }: FooterProps) {
+export default function Footer({ contact, name, theme, cvUrl, portfolioId }: FooterProps) {
     const currentYear = new Date().getFullYear();
 
     const socialLinks = [
@@ -152,8 +154,16 @@ export default function Footer({ contact, name, theme, cvUrl }: FooterProps) {
                     </div>
                 </div>
 
+                {/* Like Section */}
+                <div className="mt-12 pt-8 border-t border-zinc-800">
+                    <div className="flex flex-col items-center gap-3">
+                        <p className="text-zinc-500 text-sm">Enjoyed this portfolio?</p>
+                        <LikeButton portfolioId={portfolioId} theme={theme} />
+                    </div>
+                </div>
+
                 {/* Bottom Bar */}
-                <div className="mt-16 pt-8">
+                <div className="mt-12 pt-8 border-t border-zinc-800">
                     <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                         <p className="text-zinc-500 text-sm">
                             © {currentYear} {name || "Portfolio"}. All rights reserved.

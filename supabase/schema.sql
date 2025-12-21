@@ -106,10 +106,34 @@ create policy "Users can delete own projects"
     )
   );
 
+-- Likes table (tracks portfolio likes by visitors)
+create table public.portfolio_likes (
+  id uuid primary key default gen_random_uuid(),
+  portfolio_id uuid references public.portfolios(id) on delete cascade,
+  visitor_id text not null,
+  created_at timestamp with time zone default now(),
+  unique(portfolio_id, visitor_id)
+);
+
+-- Enable Row Level Security for likes
+alter table public.portfolio_likes enable row level security;
+
+-- Likes policies
+create policy "Anyone can view likes count"
+  on public.portfolio_likes for select using (true);
+
+create policy "Anyone can insert likes"
+  on public.portfolio_likes for insert with check (true);
+
+create policy "Anyone can delete their own likes"
+  on public.portfolio_likes for delete using (true);
+
 -- Create indexes for better performance
 create index idx_profiles_username on public.profiles(username);
 create index idx_portfolios_user_id on public.portfolios(user_id);
 create index idx_projects_portfolio_id on public.projects(portfolio_id);
+create index idx_portfolio_likes_portfolio_id on public.portfolio_likes(portfolio_id);
+create index idx_portfolio_likes_visitor_id on public.portfolio_likes(visitor_id);
 
 -- Function to handle new user signup
 create or replace function public.handle_new_user()
