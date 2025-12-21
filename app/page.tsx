@@ -101,9 +101,9 @@ export default function LandingPage() {
             © {new Date().getFullYear()} DevFolio. All rights reserved.
           </div>
           <div className="flex items-center gap-6 text-sm text-zinc-500">
-            <Link href="#" className="hover:text-white transition-colors">Privacy</Link>
-            <Link href="#" className="hover:text-white transition-colors">Terms</Link>
-            <Link href="#" className="hover:text-white transition-colors">Contact</Link>
+            <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
+            <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
+            <a href="mailto:support@devfolio.app" className="hover:text-white transition-colors">Contact</a>
           </div>
         </div>
       </footer>

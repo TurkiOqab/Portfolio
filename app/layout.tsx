@@ -73,7 +73,7 @@ const unbounded = Unbounded({
 export const metadata: Metadata = {
   title: "DevFolio | Developer Portfolios",
   description:
-    "Create your professional developer portfolio in minutes.",
+    "Create your professional developer portfolio in minutes. Stand out to recruiters and clients with a stunning portfolio.",
   keywords: [
     "developer",
     "portfolio",
@@ -82,6 +82,18 @@ export const metadata: Metadata = {
     "next.js",
     "web development",
   ],
+  openGraph: {
+    title: "DevFolio | Developer Portfolios",
+    description: "Create your professional developer portfolio in minutes. Stand out to recruiters and clients with a stunning portfolio.",
+    type: "website",
+    url: "https://devfolio.app",
+    siteName: "DevFolio",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "DevFolio | Developer Portfolios",
+    description: "Create your professional developer portfolio in minutes.",
+  },
 };
 
 export default function RootLayout({

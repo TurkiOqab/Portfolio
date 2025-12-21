@@ -143,12 +143,36 @@ export async function generateMetadata({ params }: PageProps) {
 
     const { data: portfolio } = await supabase
         .from('portfolios')
-        .select('name, title, bio')
+        .select('name, title, bio, avatar_url')
         .eq('user_id', profile.id)
         .single()
 
+    const title = portfolio ? `${portfolio.name} | DevFolio` : `@${username} | DevFolio`
+    const description = portfolio?.bio || `Check out ${username}'s developer portfolio on DevFolio`
+
     return {
-        title: portfolio ? `${portfolio.name} | DevFolio` : `@${username} | DevFolio`,
-        description: portfolio?.bio || `Check out ${username}'s portfolio on DevFolio`,
+        title,
+        description,
+        openGraph: {
+            title,
+            description,
+            type: 'profile',
+            url: `https://devfolio.app/${username}`,
+            images: portfolio?.avatar_url ? [
+                {
+                    url: portfolio.avatar_url,
+                    width: 400,
+                    height: 400,
+                    alt: `${portfolio.name}'s profile picture`,
+                }
+            ] : [],
+            siteName: 'DevFolio',
+        },
+        twitter: {
+            card: 'summary',
+            title,
+            description,
+            images: portfolio?.avatar_url ? [portfolio.avatar_url] : [],
+        },
     }
 }

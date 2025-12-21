@@ -1,0 +1,11 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Disallow private routes
+Disallow: /dashboard
+Disallow: /onboarding
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://devfolio.app/sitemap.xml
