@@ -57,14 +57,14 @@ export default function LandingHero() {
       <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
         {/* Badge */}
         <div
-          className={`inline-flex items-center gap-2 px-5 py-2.5 bg-zinc-900/80 border border-zinc-800 rounded-full mb-8 transition-all duration-500 ${
+          className={`inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 bg-zinc-900/80 border border-zinc-800 rounded-full mb-8 transition-all duration-500 ${
             displayedText.length > 0 ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'
           }`}
         >
-          <span className="w-2 h-2 rounded-full bg-slate-400"></span>
-          <span className="text-sm text-zinc-300 font-medium">Start for free</span>
-          <span className="text-zinc-600">•</span>
-          <span className="text-sm text-zinc-500">No credit card required</span>
+          <span className="w-2 h-2 rounded-full bg-slate-400 shrink-0"></span>
+          <span className="text-xs sm:text-sm text-zinc-300 font-medium whitespace-nowrap">Start for free</span>
+          <span className="text-zinc-600 hidden sm:inline">•</span>
+          <span className="text-xs sm:text-sm text-zinc-500 hidden sm:inline">No credit card required</span>
         </div>
 
         {/* Main Heading with Typing Effect */}
