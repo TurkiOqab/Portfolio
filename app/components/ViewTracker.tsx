@@ -6,8 +6,17 @@ interface ViewTrackerProps {
     portfolioId: string;
 }
 
+function hasConsent(): boolean {
+    if (typeof window === "undefined") return false;
+    const consent = localStorage.getItem("cookie_consent");
+    return consent === "accepted";
+}
+
 function getVisitorId(): string {
     if (typeof window === "undefined") return "";
+
+    // Only create/store visitor ID if user has consented
+    if (!hasConsent()) return "";
 
     let visitorId = localStorage.getItem("devfolio_visitor_id");
     if (!visitorId) {
@@ -20,6 +29,9 @@ function getVisitorId(): string {
 export default function ViewTracker({ portfolioId }: ViewTrackerProps) {
     useEffect(() => {
         const trackView = async () => {
+            // Respect user cookie consent preference
+            if (!hasConsent()) return;
+
             const visitorId = getVisitorId();
             if (!visitorId) return;
 

@@ -135,6 +135,8 @@ export default function SignupPage() {
             options: {
                 data: {
                     username: username.toLowerCase(),
+                    terms_accepted_at: new Date().toISOString(),
+                    privacy_accepted_at: new Date().toISOString(),
                 }
             }
         })

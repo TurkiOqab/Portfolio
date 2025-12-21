@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/app/lib/supabase/client'
@@ -11,10 +11,30 @@ export default function LoginPage() {
     const [password, setPassword] = useState('')
     const [error, setError] = useState<string | null>(null)
     const [isLoading, setIsLoading] = useState(false)
+    const [isRateLimited, setIsRateLimited] = useState(false)
+    const attemptCount = useRef(0)
+    const lockoutUntil = useRef<number | null>(null)
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault()
         setError(null)
+
+        // Client-side rate limiting
+        const now = Date.now()
+        if (lockoutUntil.current && now < lockoutUntil.current) {
+            const remainingSeconds = Math.ceil((lockoutUntil.current - now) / 1000)
+            setError(`Too many attempts. Please try again in ${remainingSeconds} seconds.`)
+            setIsRateLimited(true)
+            return
+        }
+
+        // Reset lockout if expired
+        if (lockoutUntil.current && now >= lockoutUntil.current) {
+            lockoutUntil.current = null
+            attemptCount.current = 0
+            setIsRateLimited(false)
+        }
+
         setIsLoading(true)
 
         const supabase = createClient()
@@ -25,11 +45,22 @@ export default function LoginPage() {
         })
 
         if (error) {
-            setError(error.message)
+            attemptCount.current++
+
+            // After 5 failed attempts, lock for 60 seconds
+            if (attemptCount.current >= 5) {
+                lockoutUntil.current = Date.now() + 60000
+                setError('Too many failed attempts. Please try again in 60 seconds.')
+                setIsRateLimited(true)
+            } else {
+                setError('Invalid email or password')
+            }
             setIsLoading(false)
             return
         }
 
+        // Reset on success
+        attemptCount.current = 0
         router.push('/dashboard')
         router.refresh()
     }

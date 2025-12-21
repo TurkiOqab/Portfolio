@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { copyToClipboard as copy, getFullUrl } from "../lib/clipboard";
 
 interface CopyLinkButtonProps {
     url: string;
@@ -10,21 +11,18 @@ interface CopyLinkButtonProps {
 export default function CopyLinkButton({ url, className = "" }: CopyLinkButtonProps) {
     const [copied, setCopied] = useState(false);
 
-    const copyToClipboard = async () => {
-        try {
-            // Get the full URL
-            const fullUrl = `${window.location.origin}${url}`;
-            await navigator.clipboard.writeText(fullUrl);
+    const handleCopy = async () => {
+        const fullUrl = getFullUrl(url);
+        const success = await copy(fullUrl);
+        if (success) {
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
-        } catch (err) {
-            console.error("Failed to copy:", err);
         }
     };
 
     return (
         <button
-            onClick={copyToClipboard}
+            onClick={handleCopy}
             className={`flex items-center gap-2 ${className}`}
         >
             {copied ? (

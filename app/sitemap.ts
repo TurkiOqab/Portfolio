@@ -50,12 +50,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             `)
             .eq('is_published', true)
 
-        const portfolioPages: MetadataRoute.Sitemap = (portfolios || []).map((portfolio) => ({
-            url: `${baseUrl}/${(portfolio.profiles as { username: string }).username}`,
-            lastModified: new Date(portfolio.updated_at),
-            changeFrequency: 'weekly' as const,
-            priority: 0.8,
-        }))
+        const portfolioPages: MetadataRoute.Sitemap = (portfolios || []).map((portfolio) => {
+            const profiles = portfolio.profiles as unknown as { username: string }
+            return {
+                url: `${baseUrl}/${profiles.username}`,
+                lastModified: new Date(portfolio.updated_at),
+                changeFrequency: 'weekly' as const,
+                priority: 0.8,
+            }
+        })
 
         return [...staticPages, ...portfolioPages]
     } catch (error) {

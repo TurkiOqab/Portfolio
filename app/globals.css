@@ -207,3 +207,52 @@ html {
     animation: none;
   }
 }
+
+/* Accessibility: Focus visible styles for keyboard navigation */
+:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* Remove default focus outline, use focus-visible instead */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Ensure buttons and links have visible focus states */
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Form elements focus states */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 0;
+}
+
+/* Skip to main content link (for screen readers) */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #fff;
+  color: #09090b;
+  padding: 8px 16px;
+  z-index: 100;
+  transition: top 0.3s;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* Improve contrast for zinc-500 text on dark backgrounds */
+.text-zinc-500 {
+  color: #a1a1aa; /* Slightly lighter for better contrast */
+}

@@ -60,7 +60,15 @@ export function sanitizeInput(input: string, maxLength: number = 1000): string {
 
     return input
         .trim()
-        .replace(/[<>]/g, '') // Remove potential HTML brackets
+        // Encode HTML entities to prevent XSS
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#x27;')
+        // Remove potential script injection patterns
+        .replace(/javascript:/gi, '')
+        .replace(/on\w+=/gi, '')
         .slice(0, maxLength)
 }
 

@@ -71,6 +71,7 @@ const unbounded = Unbounded({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://devfolio.app"),
   title: "DevFolio | Developer Portfolios",
   description:
     "Create your professional developer portfolio in minutes. Stand out to recruiters and clients with a stunning portfolio.",
@@ -82,19 +83,41 @@ export const metadata: Metadata = {
     "next.js",
     "web development",
   ],
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   openGraph: {
     title: "DevFolio | Developer Portfolios",
     description: "Create your professional developer portfolio in minutes. Stand out to recruiters and clients with a stunning portfolio.",
     type: "website",
     url: "https://devfolio.app",
     siteName: "DevFolio",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "DevFolio - Create your professional developer portfolio",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "DevFolio | Developer Portfolios",
     description: "Create your professional developer portfolio in minutes.",
+    images: ["/og-image.png"],
   },
 };
+
+import CookieConsent from "./components/CookieConsent";
 
 export default function RootLayout({
   children,
@@ -120,6 +143,7 @@ export default function RootLayout({
         `}
       >
         {children}
+        <CookieConsent />
       </body>
     </html>
   );

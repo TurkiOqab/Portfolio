@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ThemeConfig } from "../lib/themes";
+import { copyToClipboard, getFullUrl } from "../lib/clipboard";
 
 interface ShareButtonsProps {
     url: string;
@@ -11,17 +12,15 @@ interface ShareButtonsProps {
 
 export default function ShareButtons({ url, title, theme }: ShareButtonsProps) {
     const [copied, setCopied] = useState(false);
-    const fullUrl = typeof window !== "undefined" ? `${window.location.origin}${url}` : url;
+    const fullUrl = getFullUrl(url);
     const encodedUrl = encodeURIComponent(fullUrl);
     const encodedTitle = encodeURIComponent(title);
 
     const handleCopy = async () => {
-        try {
-            await navigator.clipboard.writeText(fullUrl);
+        const success = await copyToClipboard(fullUrl);
+        if (success) {
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
-        } catch (err) {
-            console.error("Failed to copy:", err);
         }
     };
 

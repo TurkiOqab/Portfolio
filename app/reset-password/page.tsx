@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/app/lib/supabase/client'
+import { validatePassword } from '@/app/lib/validation'
 
 export default function ResetPasswordPage() {
     const router = useRouter()
@@ -38,8 +39,9 @@ export default function ResetPasswordPage() {
             return
         }
 
-        if (password.length < 6) {
-            setError('Password must be at least 6 characters')
+        const passwordError = validatePassword(password)
+        if (passwordError) {
+            setError(passwordError)
             return
         }
 
@@ -142,10 +144,11 @@ export default function ResetPasswordPage() {
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
-                                    minLength={6}
+                                    minLength={8}
                                     className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-zinc-600 transition-all"
                                     placeholder="••••••••"
                                 />
+                                <p className="text-zinc-500 text-xs mt-1">Min 8 chars with uppercase, lowercase, and number</p>
                             </div>
 
                             <div>
@@ -158,7 +161,7 @@ export default function ResetPasswordPage() {
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                     required
-                                    minLength={6}
+                                    minLength={8}
                                     className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-zinc-600 transition-all"
                                     placeholder="••••••••"
                                 />

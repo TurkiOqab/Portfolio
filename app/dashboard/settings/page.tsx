@@ -144,6 +144,26 @@ export default function SettingsPage() {
                 return
             }
 
+            // Get portfolio ID first for analytics deletion
+            const { data: portfolio } = await supabase
+                .from('portfolios')
+                .select('id')
+                .eq('user_id', user.id)
+                .single()
+
+            if (portfolio) {
+                // Delete analytics data (GDPR compliance - Right to be Forgotten)
+                await supabase
+                    .from('portfolio_views')
+                    .delete()
+                    .eq('portfolio_id', portfolio.id)
+
+                await supabase
+                    .from('portfolio_likes')
+                    .delete()
+                    .eq('portfolio_id', portfolio.id)
+            }
+
             // Delete portfolio and projects (cascade)
             const { error: portfolioError } = await supabase
                 .from('portfolios')
