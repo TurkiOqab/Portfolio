@@ -95,22 +95,20 @@ export default async function DashboardPage() {
             {/* Header */}
             <header className="relative z-10 bg-zinc-950/70 border-b border-zinc-800/30 backdrop-blur-xl">
                 <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-                    <Link href="/" className="group text-2xl font-bold text-white flex items-center gap-2">
-                        <span className={`w-8 h-8 bg-gradient-to-br ${theme.primaryGradient} rounded-lg flex items-center justify-center text-sm font-bold ${theme.shadowColor} shadow-lg group-hover:shadow-xl transition-shadow duration-300`}>D</span>
-                        <span className="bg-gradient-to-r from-white to-zinc-300 bg-clip-text text-transparent">Dfolio</span>
-                    </Link>
+                    {portfolioUrl ? (
+                        <Link
+                            href={portfolioUrl}
+                            className={`flex items-center gap-2 text-sm ${theme.textAccent} hover:text-white transition-colors`}
+                        >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                            View Portfolio
+                        </Link>
+                    ) : (
+                        <div />
+                    )}
                     <div className="flex items-center gap-4">
-                        {portfolioUrl && (
-                            <Link
-                                href={portfolioUrl}
-                                className={`flex items-center gap-2 text-sm ${theme.textAccent} hover:text-white transition-colors`}
-                            >
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                </svg>
-                                View Portfolio
-                            </Link>
-                        )}
                         <span className="text-sm text-zinc-400 hidden sm:block">{user.email}</span>
                         <Link
                             href="/dashboard/settings"

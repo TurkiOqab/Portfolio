@@ -34,9 +34,8 @@ export default function LandingPage() {
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-zinc-950/80 backdrop-blur-xl border-b border-zinc-800/50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="group text-sm sm:text-base font-medium text-zinc-400 hover:text-white transition-colors flex items-center gap-2">
-            <span className="w-8 h-8 bg-white rounded-lg flex items-center justify-center text-sm font-bold text-zinc-900 shrink-0">D</span>
-            <span className="hidden sm:inline">Portfolios for Developers</span>
+          <Link href="/" className="text-xs sm:text-base font-medium text-zinc-400 hover:text-white transition-colors whitespace-nowrap">
+            Portfolios for Developers
           </Link>
           <div className="flex items-center gap-2 sm:gap-4">
             <Link
