@@ -290,7 +290,7 @@ export default function OnboardingPage() {
             </div>
 
             {/* Step Content */}
-            <div className="flex-1 flex items-center justify-center pt-28 pb-24 px-6 relative z-10">
+            <div className="flex-1 flex items-center justify-center pt-28 pb-32 px-6 relative z-10 overflow-y-auto">
                 <div className={`w-full ${currentStep === 5 ? 'max-w-4xl' : 'max-w-2xl'}`}>
                     {currentStep === 1 && (
                         <NameStep data={data} updateData={updateData} />
@@ -305,10 +305,10 @@ export default function OnboardingPage() {
                         <ContactStep data={data} updateData={updateData} />
                     )}
                     {currentStep === 5 && (
-                        <PortfolioContentStep data={data} updateData={updateData} onSkip={skipStep} userId={userId || undefined} />
+                        <PortfolioContentStep data={data} updateData={updateData} userId={userId || undefined} />
                     )}
                     {currentStep === 6 && userId && (
-                        <MediaUploadStep data={data} updateData={updateData} userId={userId} onSkip={skipStep} />
+                        <MediaUploadStep data={data} updateData={updateData} userId={userId} />
                     )}
                     {currentStep === 7 && (
                         <ThemeStep data={data} updateData={updateData} />
@@ -344,6 +344,15 @@ export default function OnboardingPage() {
                             ← Back
                         </button>
                         <div className="flex items-center gap-3">
+                            {/* Skip button for optional steps (5: Portfolio Content, 6: Media) */}
+                            {(currentStep === 5 || currentStep === 6) && (
+                                <button
+                                    onClick={skipStep}
+                                    className="px-6 py-3 text-zinc-400 hover:text-white border border-zinc-700 rounded-full transition-colors hover:border-zinc-500"
+                                >
+                                    Skip for now
+                                </button>
+                            )}
                             <button
                                 onClick={nextStep}
                                 disabled={!canProceed() || isSaving}

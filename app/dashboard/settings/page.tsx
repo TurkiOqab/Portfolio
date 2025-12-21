@@ -18,6 +18,7 @@ export default function SettingsPage() {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
     const [showEmailEdit, setShowEmailEdit] = useState(false)
     const [isSigningOut, setIsSigningOut] = useState(false)
+    const [isExporting, setIsExporting] = useState(false)
     const [username, setUsername] = useState('')
     const [email, setEmail] = useState('')
     const [newEmail, setNewEmail] = useState('')
@@ -184,6 +185,86 @@ export default function SettingsPage() {
         setIsSigningOut(true)
         await supabase.auth.signOut()
         router.push('/')
+    }
+
+    const handleExportData = async () => {
+        setIsExporting(true)
+        setMessage(null)
+
+        try {
+            const { data: { user } } = await supabase.auth.getUser()
+            if (!user) {
+                setMessage({ type: 'error', text: 'Unable to verify user session' })
+                setIsExporting(false)
+                return
+            }
+
+            // Fetch all portfolio data
+            const { data: portfolio } = await supabase
+                .from('portfolios')
+                .select('*')
+                .eq('user_id', user.id)
+                .single()
+
+            const { data: projects } = await supabase
+                .from('projects')
+                .select('*')
+                .eq('portfolio_id', portfolio?.id)
+
+            const { data: profile } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', user.id)
+                .single()
+
+            // Create export object
+            const exportData = {
+                exportedAt: new Date().toISOString(),
+                profile: {
+                    username: profile?.username,
+                    createdAt: profile?.created_at,
+                },
+                portfolio: portfolio ? {
+                    name: portfolio.name,
+                    title: portfolio.title,
+                    bio: portfolio.bio,
+                    skills: portfolio.skills,
+                    education: portfolio.education,
+                    experience: portfolio.experience,
+                    contact: portfolio.contact,
+                    theme: portfolio.theme,
+                    font: portfolio.font,
+                    isPublished: portfolio.is_published,
+                } : null,
+                projects: (projects || []).map(p => ({
+                    title: p.title,
+                    description: p.description,
+                    tags: p.tags,
+                    liveUrl: p.live_url,
+                    githubUrl: p.github_url,
+                    startDate: p.start_date,
+                    endDate: p.end_date,
+                })),
+            }
+
+            // Download as JSON
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' })
+            const url = URL.createObjectURL(blob)
+            const a = document.createElement('a')
+            a.href = url
+            a.download = `devfolio-export-${username}-${new Date().toISOString().split('T')[0]}.json`
+            document.body.appendChild(a)
+            a.click()
+            document.body.removeChild(a)
+            URL.revokeObjectURL(url)
+
+            setMessage({ type: 'success', text: 'Portfolio data exported successfully!' })
+        } catch (error) {
+            console.error('Export failed:', error)
+            setMessage({ type: 'error', text: 'Failed to export data. Please try again.' })
+        }
+
+        setIsExporting(false)
     }
 
     if (isLoading) {
@@ -353,6 +434,22 @@ export default function SettingsPage() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                         </svg>
                         {isSigningOut ? 'Signing out...' : 'Sign Out'}
+                    </button>
+                </div>
+
+                {/* Data Export Section */}
+                <div className="mb-8 p-6 bg-zinc-900/50 border border-zinc-800/50 rounded-2xl backdrop-blur-sm">
+                    <h2 className="text-xl font-bold text-white mb-2">Your Data</h2>
+                    <p className="text-zinc-400 text-sm mb-4">Download a copy of all your portfolio data as JSON.</p>
+                    <button
+                        onClick={handleExportData}
+                        disabled={isExporting}
+                        className="px-6 py-3 bg-zinc-800 border border-zinc-700 text-zinc-300 rounded-xl hover:bg-zinc-700 hover:border-zinc-600 hover:text-white transition-all flex items-center gap-2 disabled:opacity-50"
+                    >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        {isExporting ? 'Exporting...' : 'Export Data'}
                     </button>
                 </div>
 

@@ -313,6 +313,7 @@ export default function Projects({ projects, theme }: ProjectsProps) {
                                                     <img
                                                         src={project.imageUrl}
                                                         alt={project.title}
+                                                        loading="lazy"
                                                         className="w-full h-48 md:h-56 object-cover"
                                                     />
                                                 </div>
