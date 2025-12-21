@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { createClient } from "@/app/lib/supabase/client";
 import { ThemeConfig } from "../lib/themes";
 
@@ -34,6 +35,7 @@ export default function LikeButton({ portfolioId, theme }: LikeButtonProps) {
     const [likeCount, setLikeCount] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const [isAnimating, setIsAnimating] = useState(false);
+    const [showSignupPrompt, setShowSignupPrompt] = useState(false);
     const supabase = createClient();
 
     useEffect(() => {
@@ -66,7 +68,14 @@ export default function LikeButton({ portfolioId, theme }: LikeButtonProps) {
 
     const handleLike = async () => {
         const visitorId = getVisitorId();
-        if (!visitorId || isLoading) return;
+
+        // Show signup prompt if no consent/visitor ID
+        if (!visitorId) {
+            setShowSignupPrompt(true);
+            return;
+        }
+
+        if (isLoading) return;
 
         setIsAnimating(true);
         setTimeout(() => setIsAnimating(false), 300);
@@ -92,39 +101,90 @@ export default function LikeButton({ portfolioId, theme }: LikeButtonProps) {
                     portfolio_id: portfolioId,
                     visitor_id: visitorId,
                 });
+
+            // Show signup prompt after liking
+            setTimeout(() => setShowSignupPrompt(true), 500);
         }
     };
 
     return (
-        <button
-            onClick={handleLike}
-            disabled={isLoading}
-            className={`group flex items-center gap-3 px-6 py-3 rounded-full border transition-all duration-300 ${
-                liked
-                    ? `bg-gradient-to-r ${theme.primaryGradient} border-transparent ${theme.buttonText} shadow-lg ${theme.shadowColor}`
-                    : "bg-zinc-900/50 border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-white"
-            } ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
-            aria-label={liked ? "Unlike this portfolio" : "Like this portfolio"}
-        >
-            <svg
-                className={`w-5 h-5 transition-transform duration-300 ${isAnimating ? "scale-125" : "scale-100"}`}
-                fill={liked ? "currentColor" : "none"}
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+        <>
+            <button
+                onClick={handleLike}
+                disabled={isLoading}
+                className={`group flex items-center gap-3 px-6 py-3 rounded-full border transition-all duration-300 ${
+                    liked
+                        ? `bg-gradient-to-r ${theme.primaryGradient} border-transparent ${theme.buttonText} shadow-lg ${theme.shadowColor}`
+                        : "bg-zinc-900/50 border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-white"
+                } ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+                aria-label={liked ? "Unlike this portfolio" : "Like this portfolio"}
             >
-                <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                />
-            </svg>
-            <span className="font-medium">
-                {isLoading ? "..." : likeCount}
-            </span>
-            <span className="text-sm opacity-75">
-                {likeCount === 1 ? "Like" : "Likes"}
-            </span>
-        </button>
+                <svg
+                    className={`w-5 h-5 transition-transform duration-300 ${isAnimating ? "scale-125" : "scale-100"}`}
+                    fill={liked ? "currentColor" : "none"}
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                    />
+                </svg>
+                <span className="font-medium">
+                    {isLoading ? "..." : likeCount}
+                </span>
+                <span className="text-sm opacity-75">
+                    {likeCount === 1 ? "Like" : "Likes"}
+                </span>
+            </button>
+
+            {/* Signup Prompt Modal */}
+            {showSignupPrompt && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                    <div className="relative w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-2xl">
+                        {/* Close Button */}
+                        <button
+                            onClick={() => setShowSignupPrompt(false)}
+                            className="absolute top-4 right-4 text-zinc-400 hover:text-white transition-colors"
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+
+                        {/* Content */}
+                        <div className="text-center">
+                            <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r ${theme.primaryGradient} flex items-center justify-center`}>
+                                <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                </svg>
+                            </div>
+                            <h3 className="text-xl font-bold text-white mb-2">
+                                Like what you see?
+                            </h3>
+                            <p className="text-zinc-400 mb-6">
+                                Create your own developer portfolio in minutes.
+                            </p>
+                            <div className="flex flex-col gap-3">
+                                <Link
+                                    href="/signup"
+                                    className={`w-full py-3 bg-gradient-to-r ${theme.primaryGradient} ${theme.buttonText} font-medium rounded-xl hover:opacity-90 transition-all text-center`}
+                                >
+                                    Create My Portfolio
+                                </Link>
+                                <button
+                                    onClick={() => setShowSignupPrompt(false)}
+                                    className="w-full py-3 border border-zinc-700 text-zinc-400 font-medium rounded-xl hover:bg-zinc-800 hover:text-white transition-all"
+                                >
+                                    Maybe Later
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </>
     );
 }

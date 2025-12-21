@@ -138,6 +138,7 @@ export default function ProjectsStep({ data, updateData, onSkip, userId }: StepP
         useState<Omit<Project, "id">>(emptyProject);
     const [isEditing, setIsEditing] = useState<string | null>(null);
     const [urlError, setUrlError] = useState<string | null>(null);
+    const [dateError, setDateError] = useState<string | null>(null);
     const [showTagMenu, setShowTagMenu] = useState(false);
     const [isUploadingImage, setIsUploadingImage] = useState(false);
     const [imageError, setImageError] = useState<string | null>(null);
@@ -202,6 +203,17 @@ export default function ProjectsStep({ data, updateData, onSkip, userId }: StepP
         if (imageInputRef.current) imageInputRef.current.value = "";
     };
 
+    const validateDates = (): boolean => {
+        if (currentProject.startDate && currentProject.endDate) {
+            if (currentProject.endDate < currentProject.startDate) {
+                setDateError("End date cannot be before start date");
+                return false;
+            }
+        }
+        setDateError(null);
+        return true;
+    };
+
     const addProject = () => {
         if (!currentProject.title.trim()) return;
 
@@ -215,6 +227,7 @@ export default function ProjectsStep({ data, updateData, onSkip, userId }: StepP
             setUrlError("Please enter a valid URL for GitHub URL (https:// or http://)");
             return;
         }
+        if (!validateDates()) return;
 
         const newProject: Project = {
             ...currentProject,
@@ -489,9 +502,10 @@ export default function ProjectsStep({ data, updateData, onSkip, userId }: StepP
                         <input
                             type="month"
                             value={currentProject.startDate}
-                            onChange={(e) =>
-                                setCurrentProject((prev) => ({ ...prev, startDate: e.target.value }))
-                            }
+                            onChange={(e) => {
+                                setDateError(null);
+                                setCurrentProject((prev) => ({ ...prev, startDate: e.target.value }));
+                            }}
                             className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-600 transition-all"
                         />
                     </div>
@@ -502,13 +516,20 @@ export default function ProjectsStep({ data, updateData, onSkip, userId }: StepP
                         <input
                             type="month"
                             value={currentProject.endDate}
-                            onChange={(e) =>
-                                setCurrentProject((prev) => ({ ...prev, endDate: e.target.value }))
-                            }
+                            onChange={(e) => {
+                                setDateError(null);
+                                setCurrentProject((prev) => ({ ...prev, endDate: e.target.value }));
+                            }}
                             className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-600 transition-all"
                         />
                     </div>
                 </div>
+
+                {dateError && (
+                    <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl">
+                        <p className="text-red-400 text-sm">{dateError}</p>
+                    </div>
+                )}
 
                 <div className="grid md:grid-cols-2 gap-4">
                     <div>

@@ -45,12 +45,15 @@ export default function Navbar({ theme, isOwner = false }: NavbarProps) {
     <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-zinc-950/80 border-b border-zinc-800/50">
       <div className="max-w-6xl mx-auto px-6">
         <div className="flex items-center justify-between h-20">
-          {/* Logo */}
-          <Link href="/" className="text-2xl font-bold text-white">
-            <span className={`bg-gradient-to-r ${theme.primaryGradient} bg-clip-text text-transparent`}>
-              Portfolio
-            </span>
-          </Link>
+          {/* Slogan with link to Dfolio */}
+          <a
+            href="https://dfolio.dev"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs sm:text-sm font-medium text-zinc-500 hover:text-zinc-300 transition-colors"
+          >
+            Portfolios for Developers
+          </a>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-12">

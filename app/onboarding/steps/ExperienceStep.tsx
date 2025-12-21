@@ -21,9 +21,22 @@ export default function ExperienceStep({ data, updateData }: StepProps) {
     const [currentExperience, setCurrentExperience] =
         useState<Omit<WorkExperience, "id">>(emptyExperience);
     const [isEditing, setIsEditing] = useState<string | null>(null);
+    const [dateError, setDateError] = useState<string | null>(null);
+
+    const validateDates = (): boolean => {
+        if (currentExperience.startDate && currentExperience.endDate && !currentExperience.isPresent) {
+            if (currentExperience.endDate < currentExperience.startDate) {
+                setDateError("End date cannot be before start date");
+                return false;
+            }
+        }
+        setDateError(null);
+        return true;
+    };
 
     const addExperience = () => {
         if (!currentExperience.company.trim() || !currentExperience.title.trim()) return;
+        if (!validateDates()) return;
 
         const newExperience: WorkExperience = {
             ...currentExperience,
@@ -114,9 +127,10 @@ export default function ExperienceStep({ data, updateData }: StepProps) {
                         <input
                             type="month"
                             value={currentExperience.startDate}
-                            onChange={(e) =>
-                                setCurrentExperience((prev) => ({ ...prev, startDate: e.target.value }))
-                            }
+                            onChange={(e) => {
+                                setDateError(null);
+                                setCurrentExperience((prev) => ({ ...prev, startDate: e.target.value }));
+                            }}
                             className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white focus:outline-none focus:border-zinc-600 transition-all"
                         />
                     </div>
@@ -128,9 +142,10 @@ export default function ExperienceStep({ data, updateData }: StepProps) {
                             <input
                                 type="month"
                                 value={currentExperience.endDate || ""}
-                                onChange={(e) =>
-                                    setCurrentExperience((prev) => ({ ...prev, endDate: e.target.value }))
-                                }
+                                onChange={(e) => {
+                                    setDateError(null);
+                                    setCurrentExperience((prev) => ({ ...prev, endDate: e.target.value }));
+                                }}
                                 disabled={currentExperience.isPresent}
                                 className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white focus:outline-none focus:border-zinc-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                             />
@@ -146,6 +161,12 @@ export default function ExperienceStep({ data, updateData }: StepProps) {
                         </div>
                     </div>
                 </div>
+
+                {dateError && (
+                    <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl">
+                        <p className="text-red-400 text-sm">{dateError}</p>
+                    </div>
+                )}
 
                 <div>
                     <label className="block text-sm font-medium text-zinc-300 mb-2">

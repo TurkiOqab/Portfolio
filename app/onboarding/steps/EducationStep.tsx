@@ -32,9 +32,22 @@ export default function EducationStep({ data, updateData }: StepProps) {
     const [currentEducation, setCurrentEducation] =
         useState<Omit<Education, "id">>(emptyEducation);
     const [isEditing, setIsEditing] = useState<string | null>(null);
+    const [dateError, setDateError] = useState<string | null>(null);
+
+    const validateDates = (): boolean => {
+        if (currentEducation.startDate && currentEducation.endDate) {
+            if (currentEducation.endDate < currentEducation.startDate) {
+                setDateError("End date cannot be before start date");
+                return false;
+            }
+        }
+        setDateError(null);
+        return true;
+    };
 
     const addEducation = () => {
         if (!currentEducation.institution.trim() || !currentEducation.degreeLevel) return;
+        if (!validateDates()) return;
 
         const newEducation: Education = {
             ...currentEducation,
@@ -153,9 +166,10 @@ export default function EducationStep({ data, updateData }: StepProps) {
                         <input
                             type="month"
                             value={currentEducation.startDate || ""}
-                            onChange={(e) =>
-                                setCurrentEducation((prev) => ({ ...prev, startDate: e.target.value }))
-                            }
+                            onChange={(e) => {
+                                setDateError(null);
+                                setCurrentEducation((prev) => ({ ...prev, startDate: e.target.value }));
+                            }}
                             className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white focus:outline-none focus:border-zinc-600 transition-all"
                         />
                     </div>
@@ -166,13 +180,20 @@ export default function EducationStep({ data, updateData }: StepProps) {
                         <input
                             type="month"
                             value={currentEducation.endDate || ""}
-                            onChange={(e) =>
-                                setCurrentEducation((prev) => ({ ...prev, endDate: e.target.value }))
-                            }
+                            onChange={(e) => {
+                                setDateError(null);
+                                setCurrentEducation((prev) => ({ ...prev, endDate: e.target.value }));
+                            }}
                             className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white focus:outline-none focus:border-zinc-600 transition-all"
                         />
                     </div>
                 </div>
+
+                {dateError && (
+                    <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl">
+                        <p className="text-red-400 text-sm">{dateError}</p>
+                    </div>
+                )}
 
                 <button
                     onClick={addEducation}
