@@ -289,13 +289,25 @@ export default function SignupPage() {
 
                         {/* Terms Acceptance */}
                         <div className="flex items-start gap-3">
-                            <input
-                                id="terms"
-                                type="checkbox"
-                                checked={acceptedTerms}
-                                onChange={(e) => setAcceptedTerms(e.target.checked)}
-                                className="mt-1 w-4 h-4 rounded border-zinc-600 bg-zinc-800 text-white accent-white focus:ring-white/20 cursor-pointer"
-                            />
+                            <div className="relative mt-0.5">
+                                <input
+                                    id="terms"
+                                    type="checkbox"
+                                    checked={acceptedTerms}
+                                    onChange={(e) => setAcceptedTerms(e.target.checked)}
+                                    className="sr-only peer"
+                                />
+                                <div
+                                    onClick={() => setAcceptedTerms(!acceptedTerms)}
+                                    className="w-5 h-5 rounded border-2 border-zinc-600 bg-zinc-800 cursor-pointer peer-checked:bg-white peer-checked:border-white transition-all flex items-center justify-center"
+                                >
+                                    {acceptedTerms && (
+                                        <svg className="w-3 h-3 text-zinc-900" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    )}
+                                </div>
+                            </div>
                             <label htmlFor="terms" className="text-sm text-zinc-400 cursor-pointer">
                                 I agree to the{' '}
                                 <Link href="/terms" className="text-white hover:underline" target="_blank">
