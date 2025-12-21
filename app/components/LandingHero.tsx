@@ -24,38 +24,31 @@ export default function LandingHero() {
     return () => clearInterval(typingInterval)
   }, [])
 
-  // Function to render text with gradient styling for "developer portfolio"
+  // Function to render text with accent styling for "developer portfolio"
   const renderText = () => {
-    const gradientStart = fullText.indexOf('developer portfolio')
-    const gradientEnd = gradientStart + 'developer portfolio'.length
+    const accentStart = fullText.indexOf('developer portfolio')
+    const accentEnd = accentStart + 'developer portfolio'.length
 
-    if (displayedText.length <= gradientStart) {
-      // Haven't reached the gradient part yet
+    if (displayedText.length <= accentStart) {
       return <>{displayedText}</>
-    } else if (displayedText.length <= gradientEnd) {
-      // In the middle of typing the gradient part
-      const beforeGradient = displayedText.slice(0, gradientStart)
-      const gradientPart = displayedText.slice(gradientStart)
+    } else if (displayedText.length <= accentEnd) {
+      const beforeAccent = displayedText.slice(0, accentStart)
+      const accentPart = displayedText.slice(accentStart)
       return (
         <>
-          {beforeGradient}
-          <span className="bg-gradient-to-r from-violet-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-            {gradientPart}
-          </span>
+          {beforeAccent}
+          <span className="text-violet-400">{accentPart}</span>
         </>
       )
     } else {
-      // Past the gradient part
-      const beforeGradient = displayedText.slice(0, gradientStart)
-      const gradientPart = displayedText.slice(gradientStart, gradientEnd)
-      const afterGradient = displayedText.slice(gradientEnd)
+      const beforeAccent = displayedText.slice(0, accentStart)
+      const accentPart = displayedText.slice(accentStart, accentEnd)
+      const afterAccent = displayedText.slice(accentEnd)
       return (
         <>
-          {beforeGradient}
-          <span className="bg-gradient-to-r from-violet-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-            {gradientPart}
-          </span>
-          {afterGradient}
+          {beforeAccent}
+          <span className="text-violet-400">{accentPart}</span>
+          {afterAccent}
         </>
       )
     }
@@ -66,12 +59,12 @@ export default function LandingHero() {
       <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
         {/* Badge */}
         <div
-          className={`inline-flex items-center gap-2 px-4 py-2 bg-violet-500/10 border border-violet-500/30 rounded-full mb-8 transition-opacity duration-500 ${
+          className={`inline-flex items-center gap-2 px-4 py-2 bg-zinc-800/50 border border-zinc-700 rounded-full mb-8 transition-opacity duration-500 ${
             displayedText.length > 0 ? 'opacity-100' : 'opacity-0'
           }`}
         >
           <span className="w-2 h-2 bg-violet-500 rounded-full animate-pulse" />
-          <span className="text-sm text-violet-300">Start for free • No credit card required</span>
+          <span className="text-sm text-zinc-300">Start for free • No credit card required</span>
         </div>
 
         {/* Main Heading with Typing Effect */}
@@ -97,7 +90,7 @@ export default function LandingHero() {
         >
           <Link
             href="/signup"
-            className="group px-8 py-4 bg-gradient-to-r from-violet-600 to-purple-600 text-white font-medium rounded-full hover:from-violet-500 hover:to-purple-500 transition-all duration-300 shadow-lg shadow-purple-500/25 flex items-center gap-2"
+            className="group px-8 py-4 bg-violet-600 text-white font-medium rounded-full hover:bg-violet-500 transition-all duration-300 flex items-center gap-2"
           >
             Create Your Portfolio
             <svg

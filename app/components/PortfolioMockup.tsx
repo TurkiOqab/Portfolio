@@ -88,7 +88,7 @@ export default function PortfolioMockup() {
     setIsHovered(false)
   }
 
-  // Render typed text with gradient on name
+  // Render typed text with accent on name
   const renderTypedText = () => {
     if (isTypingName) {
       const hiPart = "Hi, I'm "
@@ -98,25 +98,19 @@ export default function PortfolioMockup() {
       return (
         <>
           <span className="text-white">{hiPart}</span>
-          <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
-            {typedText.slice(hiPart.length)}
-          </span>
+          <span className="text-violet-400">{typedText.slice(hiPart.length)}</span>
         </>
       )
     }
-    return (
-      <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
-        {typedText}
-      </span>
-    )
+    return <span className="text-violet-400">{typedText}</span>
   }
 
   return (
     <div className="relative w-full max-w-4xl mx-auto perspective-1000">
       {/* Glow effect behind the mockup */}
       <div
-        className="absolute inset-0 bg-gradient-to-r from-violet-600/30 via-purple-600/30 to-pink-600/30 blur-3xl transition-opacity duration-500"
-        style={{ opacity: isHovered ? 0.8 : 0.4 }}
+        className="absolute inset-0 bg-violet-600/20 blur-3xl transition-opacity duration-500"
+        style={{ opacity: isHovered ? 0.6 : 0.3 }}
       />
 
       {/* 3D Mockup Container */}
@@ -153,7 +147,7 @@ export default function PortfolioMockup() {
           </div>
 
           {/* Portfolio Content - Matching real Hero design */}
-          <div className="p-8 md:p-12 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 min-h-[380px] md:min-h-[420px]">
+          <div className="p-8 md:p-12 bg-zinc-950 min-h-[380px] md:min-h-[420px]">
             <div className="text-center">
               {/* Main Heading with Typewriter */}
               <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 tracking-tight min-h-[2.5rem] md:min-h-[3rem]">
@@ -186,13 +180,13 @@ export default function PortfolioMockup() {
 
               {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                <div className="px-6 py-3 bg-gradient-to-r from-violet-600 to-purple-600 rounded-full text-sm text-white font-medium flex items-center gap-2">
+                <div className="px-6 py-3 bg-violet-600 rounded-full text-sm text-white font-medium flex items-center gap-2">
                   View My Work
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                   </svg>
                 </div>
-                <div className="px-6 py-3 border border-zinc-700 rounded-full text-sm text-white font-medium">
+                <div className="px-6 py-3 border border-zinc-700 rounded-full text-sm text-zinc-300 font-medium">
                   Contact Me
                 </div>
               </div>

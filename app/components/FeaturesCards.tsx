@@ -11,9 +11,6 @@ const features = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
       </svg>
     ),
-    gradient: 'from-violet-500 to-purple-500',
-    shadow: 'shadow-violet-500/25',
-    glowColor: 'from-violet-600/30 to-purple-600/30',
   },
   {
     title: 'Your Own URL',
@@ -23,9 +20,6 @@ const features = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
       </svg>
     ),
-    gradient: 'from-cyan-500 to-blue-500',
-    shadow: 'shadow-cyan-500/25',
-    glowColor: 'from-cyan-600/30 to-blue-600/30',
   },
   {
     title: 'Beautiful Designs',
@@ -35,9 +29,6 @@ const features = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
       </svg>
     ),
-    gradient: 'from-emerald-500 to-teal-500',
-    shadow: 'shadow-emerald-500/25',
-    glowColor: 'from-emerald-600/30 to-teal-600/30',
   },
 ]
 
@@ -145,10 +136,10 @@ export default function FeaturesCards() {
 
         {/* 3D Card Container */}
         <div className="relative w-full max-w-3xl mx-auto">
-          {/* Dynamic glow effect */}
+          {/* Subtle glow effect */}
           <div
-            className={`absolute inset-0 bg-gradient-to-r ${currentFeature.glowColor} blur-3xl transition-all duration-700`}
-            style={{ opacity: isHovered ? 0.8 : 0.5 }}
+            className="absolute inset-0 bg-violet-600/20 blur-3xl transition-all duration-700"
+            style={{ opacity: isHovered ? 0.6 : 0.3 }}
           />
 
           {/* 3D Tilt Container */}
@@ -164,10 +155,10 @@ export default function FeaturesCards() {
             onMouseLeave={handleMouseLeave}
           >
             {/* Glass Card */}
-            <div className="relative bg-white/[0.06] backdrop-blur-xl border border-white/10 rounded-3xl p-10 md:p-14 shadow-2xl min-h-[280px] md:min-h-[260px]">
+            <div className="relative bg-zinc-900/80 border border-zinc-800 rounded-3xl p-10 md:p-14 shadow-2xl min-h-[280px] md:min-h-[260px]">
               <div className="flex flex-col md:flex-row md:items-start gap-6">
                 {/* Icon */}
-                <div className={`flex-shrink-0 w-16 h-16 bg-gradient-to-br ${currentFeature.gradient} rounded-2xl flex items-center justify-center shadow-lg ${currentFeature.shadow} transition-all duration-500`}>
+                <div className="flex-shrink-0 w-16 h-16 bg-violet-600 rounded-2xl flex items-center justify-center transition-all duration-500">
                   {currentFeature.icon}
                 </div>
 
@@ -194,16 +185,12 @@ export default function FeaturesCards() {
                   <button
                     key={index}
                     onClick={() => setActiveIndex(index)}
-                    className="relative h-2 rounded-full overflow-hidden transition-all duration-300"
+                    className="h-2 rounded-full transition-all duration-300"
                     style={{
                       width: index === activeIndex ? '2.5rem' : '0.5rem',
-                      backgroundColor: index === activeIndex ? 'transparent' : 'rgb(63, 63, 70)',
+                      backgroundColor: index === activeIndex ? 'rgb(124, 58, 237)' : 'rgb(63, 63, 70)',
                     }}
-                  >
-                    {index === activeIndex && (
-                      <div className={`absolute inset-0 bg-gradient-to-r ${currentFeature.gradient} rounded-full`} />
-                    )}
-                  </button>
+                  />
                 ))}
               </div>
             </div>
@@ -212,7 +199,7 @@ export default function FeaturesCards() {
             <div
               className="absolute inset-0 rounded-3xl pointer-events-none"
               style={{
-                background: `linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.1) 45%, rgba(255,255,255,0.05) 50%, transparent 55%)`,
+                background: `linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.05) 45%, rgba(255,255,255,0.02) 50%, transparent 55%)`,
                 transform: 'translateZ(1px)',
               }}
             />
