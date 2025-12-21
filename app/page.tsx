@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import LandingHero from './components/LandingHero'
 import FeaturesCards from './components/FeaturesCards'
+import PortfolioMockup from './components/PortfolioMockup'
 
 export default function LandingPage() {
   return (
@@ -44,6 +45,11 @@ export default function LandingPage() {
 
       {/* Hero Section with Typing Effect */}
       <LandingHero />
+
+      {/* Portfolio Mockup Preview */}
+      <section className="py-16 md:py-24 px-6 relative z-10">
+        <PortfolioMockup />
+      </section>
 
       {/* Features Section */}
       <FeaturesCards />
