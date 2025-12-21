@@ -15,6 +15,7 @@ export default function SignupPage() {
     const [isLoading, setIsLoading] = useState(false)
     const [usernameStatus, setUsernameStatus] = useState<'idle' | 'checking' | 'available' | 'taken'>('idle')
     const [emailStatus, setEmailStatus] = useState<'idle' | 'checking' | 'available' | 'taken'>('idle')
+    const [acceptedTerms, setAcceptedTerms] = useState(false)
 
     const checkUsername = async (value: string) => {
         if (value.length < 3) {
@@ -110,6 +111,11 @@ export default function SignupPage() {
 
         if (emailStatus === 'taken') {
             setError('This email is already registered. Please sign in instead.')
+            return
+        }
+
+        if (!acceptedTerms) {
+            setError('Please accept the Terms of Service and Privacy Policy')
             return
         }
 
@@ -292,9 +298,30 @@ export default function SignupPage() {
                             <p className="text-zinc-500 text-xs mt-1">Min 8 chars with uppercase, lowercase, and number</p>
                         </div>
 
+                        {/* Terms Acceptance */}
+                        <div className="flex items-start gap-3">
+                            <input
+                                id="terms"
+                                type="checkbox"
+                                checked={acceptedTerms}
+                                onChange={(e) => setAcceptedTerms(e.target.checked)}
+                                className="mt-1 w-4 h-4 rounded border-zinc-600 bg-zinc-800 text-white accent-white focus:ring-white/20 cursor-pointer"
+                            />
+                            <label htmlFor="terms" className="text-sm text-zinc-400 cursor-pointer">
+                                I agree to the{' '}
+                                <Link href="/terms" className="text-white hover:underline" target="_blank">
+                                    Terms of Service
+                                </Link>
+                                {' '}and{' '}
+                                <Link href="/privacy" className="text-white hover:underline" target="_blank">
+                                    Privacy Policy
+                                </Link>
+                            </label>
+                        </div>
+
                         <button
                             type="submit"
-                            disabled={isLoading || usernameStatus === 'taken' || emailStatus === 'taken'}
+                            disabled={isLoading || usernameStatus === 'taken' || emailStatus === 'taken' || !acceptedTerms}
                             className="w-full py-3 bg-white text-zinc-900 font-medium rounded-xl hover:bg-zinc-100 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {isLoading ? (

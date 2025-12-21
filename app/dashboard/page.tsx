@@ -220,25 +220,7 @@ export default async function DashboardPage() {
                     )}
 
                     {/* Quick Actions */}
-                    <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-                        <Link
-                            href="/onboarding"
-                            className="group flex items-center gap-4 p-5 bg-zinc-900/60 border border-zinc-800/50 rounded-2xl hover:border-zinc-700 hover:bg-zinc-900/80 transition-all duration-300"
-                        >
-                            <div className={`w-12 h-12 bg-gradient-to-br ${theme.primaryGradient} rounded-xl flex items-center justify-center shrink-0`}>
-                                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                </svg>
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <h3 className="font-semibold text-white">Edit Portfolio</h3>
-                                <p className="text-zinc-500 text-sm truncate">Update info, projects & theme</p>
-                            </div>
-                            <svg className={`w-5 h-5 text-zinc-600 group-hover:${theme.textAccent} group-hover:translate-x-1 transition-all duration-300 shrink-0`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
-                        </Link>
-
+                    <div className="md:col-span-2 mt-4">
                         <Link
                             href="/dashboard/settings"
                             className="group flex items-center gap-4 p-5 bg-zinc-900/60 border border-zinc-800/50 rounded-2xl hover:border-zinc-700 hover:bg-zinc-900/80 transition-all duration-300"
