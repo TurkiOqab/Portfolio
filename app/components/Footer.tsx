@@ -11,9 +11,10 @@ interface FooterProps {
     cvUrl?: string;
     portfolioId: string;
     username: string;
+    isOwner?: boolean;
 }
 
-export default function Footer({ contact, name, theme, cvUrl, portfolioId, username }: FooterProps) {
+export default function Footer({ contact, name, theme, cvUrl, portfolioId, username, isOwner }: FooterProps) {
     const currentYear = new Date().getFullYear();
 
     const socialLinks = [
@@ -181,7 +182,7 @@ export default function Footer({ contact, name, theme, cvUrl, portfolioId, usern
                     <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12">
                         <div className="flex flex-col items-center gap-3">
                             <p className="text-zinc-500 text-sm">Enjoyed this portfolio?</p>
-                            <LikeButton portfolioId={portfolioId} theme={theme} />
+                            <LikeButton portfolioId={portfolioId} theme={theme} isOwner={isOwner} />
                         </div>
                         <div className="hidden md:block w-px h-12 bg-zinc-800" />
                         <div className="flex flex-col items-center gap-3">

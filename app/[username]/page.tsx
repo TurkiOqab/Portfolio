@@ -142,7 +142,7 @@ export default async function PortfolioPage({ params }: PageProps) {
                     <ExperienceSection experience={portfolioData.experience} theme={theme} />
                     <Projects projects={portfolioData.projects} theme={theme} />
                 </main>
-                <Footer contact={portfolioData.contact} name={portfolioData.name} theme={theme} cvUrl={portfolio.cv_url} portfolioId={portfolio.id} username={username} />
+                <Footer contact={portfolioData.contact} name={portfolioData.name} theme={theme} cvUrl={portfolio.cv_url} portfolioId={portfolio.id} username={username} isOwner={isOwner} />
             </div>
         </div>
     )

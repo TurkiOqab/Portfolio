@@ -8,6 +8,7 @@ import { ThemeConfig } from "../lib/themes";
 interface LikeButtonProps {
     portfolioId: string;
     theme: ThemeConfig;
+    isOwner?: boolean;
 }
 
 function hasConsent(): boolean {
@@ -30,7 +31,7 @@ function getVisitorId(): string {
     return visitorId;
 }
 
-export default function LikeButton({ portfolioId, theme }: LikeButtonProps) {
+export default function LikeButton({ portfolioId, theme, isOwner }: LikeButtonProps) {
     const [liked, setLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
@@ -40,10 +41,7 @@ export default function LikeButton({ portfolioId, theme }: LikeButtonProps) {
 
     useEffect(() => {
         const fetchLikeData = async () => {
-            const visitorId = getVisitorId();
-            if (!visitorId) return;
-
-            // Get total like count
+            // Always fetch like count (for owners too)
             const { count } = await supabase
                 .from("portfolio_likes")
                 .select("*", { count: "exact", head: true })
@@ -51,20 +49,50 @@ export default function LikeButton({ portfolioId, theme }: LikeButtonProps) {
 
             setLikeCount(count || 0);
 
-            // Check if current visitor has liked
-            const { data } = await supabase
-                .from("portfolio_likes")
-                .select("id")
-                .eq("portfolio_id", portfolioId)
-                .eq("visitor_id", visitorId)
-                .single();
+            // Only check visitor like status for non-owners
+            if (!isOwner) {
+                const visitorId = getVisitorId();
+                if (visitorId) {
+                    const { data } = await supabase
+                        .from("portfolio_likes")
+                        .select("id")
+                        .eq("portfolio_id", portfolioId)
+                        .eq("visitor_id", visitorId)
+                        .single();
 
-            setLiked(!!data);
+                    setLiked(!!data);
+                }
+            }
             setIsLoading(false);
         };
 
         fetchLikeData();
-    }, [portfolioId, supabase]);
+    }, [portfolioId, supabase, isOwner]);
+
+    // Show read-only view for portfolio owner
+    if (isOwner) {
+        return (
+            <div className="flex items-center gap-3 px-6 py-3 rounded-full border bg-zinc-900/50 border-zinc-700 text-zinc-400">
+                <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                    />
+                </svg>
+                <span className="font-medium">{isLoading ? "..." : likeCount}</span>
+                <span className="text-sm opacity-75">
+                    {likeCount === 1 ? "Like" : "Likes"}
+                </span>
+            </div>
+        );
+    }
 
     const handleLike = async () => {
         const visitorId = getVisitorId();
