@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { PortfolioData, Project } from "../../types";
 import { isValidProjectUrl } from "@/app/lib/validation";
+import { createClient } from "@/app/lib/supabase/client";
 import {
     SiReact,
     SiNextdotjs,
@@ -52,6 +53,7 @@ interface StepProps {
     data: PortfolioData;
     updateData: (updates: Partial<PortfolioData>) => void;
     onSkip?: () => void;
+    userId?: string;
 }
 
 interface Tag {
@@ -124,18 +126,81 @@ const emptyProject: Omit<Project, "id"> = {
     title: "",
     description: "",
     tags: [],
+    imageUrl: "",
     liveUrl: "",
     githubUrl: "",
     startDate: "",
     endDate: "",
 };
 
-export default function ProjectsStep({ data, updateData, onSkip }: StepProps) {
+export default function ProjectsStep({ data, updateData, onSkip, userId }: StepProps) {
     const [currentProject, setCurrentProject] =
         useState<Omit<Project, "id">>(emptyProject);
     const [isEditing, setIsEditing] = useState<string | null>(null);
     const [urlError, setUrlError] = useState<string | null>(null);
     const [showTagMenu, setShowTagMenu] = useState(false);
+    const [isUploadingImage, setIsUploadingImage] = useState(false);
+    const [imageError, setImageError] = useState<string | null>(null);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const imageInputRef = useRef<HTMLInputElement>(null);
+    const supabase = createClient();
+
+    const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        if (!file.type.startsWith("image/")) {
+            setImageError("Please select an image file");
+            return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            setImageError("Image must be less than 5MB");
+            return;
+        }
+
+        setImageError(null);
+        setIsUploadingImage(true);
+
+        try {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                setImagePreview(e.target?.result as string);
+            };
+            reader.readAsDataURL(file);
+
+            const fileExt = file.name.split(".").pop();
+            const fileName = `project-${userId || 'anon'}-${Date.now()}.${fileExt}`;
+
+            const { error: uploadError } = await supabase.storage
+                .from("projects")
+                .upload(fileName, file, {
+                    cacheControl: "3600",
+                    upsert: true,
+                });
+
+            if (uploadError) throw uploadError;
+
+            const { data: urlData } = supabase.storage
+                .from("projects")
+                .getPublicUrl(fileName);
+
+            setCurrentProject((prev) => ({ ...prev, imageUrl: urlData.publicUrl }));
+        } catch (err) {
+            console.error("Upload error:", err);
+            const error = err as { message?: string; error?: string };
+            setImageError(error.message || error.error || "Failed to upload image");
+            setImagePreview(null);
+        }
+
+        setIsUploadingImage(false);
+    };
+
+    const handleRemoveImage = () => {
+        setImagePreview(null);
+        setCurrentProject((prev) => ({ ...prev, imageUrl: "" }));
+        if (imageInputRef.current) imageInputRef.current.value = "";
+    };
 
     const addProject = () => {
         if (!currentProject.title.trim()) return;
@@ -169,6 +234,8 @@ export default function ProjectsStep({ data, updateData, onSkip }: StepProps) {
 
         setCurrentProject(emptyProject);
         setShowTagMenu(false);
+        setImagePreview(null);
+        if (imageInputRef.current) imageInputRef.current.value = "";
     };
 
     const removeProject = (id: string) => {
@@ -179,6 +246,7 @@ export default function ProjectsStep({ data, updateData, onSkip }: StepProps) {
         setCurrentProject(project);
         setIsEditing(project.id);
         setShowTagMenu(false);
+        setImagePreview(project.imageUrl || null);
     };
 
     const toggleTag = (tagName: string) => {
@@ -341,6 +409,70 @@ export default function ProjectsStep({ data, updateData, onSkip }: StepProps) {
                         rows={3}
                         className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 transition-all resize-none"
                     />
+                </div>
+
+                {/* Project Image Upload */}
+                <div>
+                    <label className="block text-sm font-medium text-zinc-300 mb-2">
+                        Project Screenshot
+                        <span className="text-zinc-500 font-normal ml-2">(optional)</span>
+                    </label>
+                    <div className="flex items-start gap-4">
+                        <div className="relative">
+                            {imagePreview || currentProject.imageUrl ? (
+                                <div className="relative">
+                                    <img
+                                        src={imagePreview || currentProject.imageUrl}
+                                        alt="Project preview"
+                                        className="w-32 h-20 rounded-lg object-cover border border-zinc-700"
+                                    />
+                                    {isUploadingImage && (
+                                        <div className="absolute inset-0 bg-black/50 rounded-lg flex items-center justify-center">
+                                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                        </div>
+                                    )}
+                                </div>
+                            ) : (
+                                <div className="w-32 h-20 rounded-lg bg-zinc-800 border border-zinc-700 border-dashed flex items-center justify-center">
+                                    <svg className="w-8 h-8 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                            )}
+                        </div>
+                        <div className="flex-1">
+                            <input
+                                ref={imageInputRef}
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageSelect}
+                                className="hidden"
+                            />
+                            <div className="flex gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => imageInputRef.current?.click()}
+                                    disabled={isUploadingImage}
+                                    className="px-3 py-1.5 bg-zinc-800 border border-zinc-700 text-zinc-300 text-sm rounded-lg hover:bg-zinc-700 hover:border-zinc-600 transition-all disabled:opacity-50"
+                                >
+                                    {isUploadingImage ? "Uploading..." : imagePreview || currentProject.imageUrl ? "Change" : "Upload"}
+                                </button>
+                                {(imagePreview || currentProject.imageUrl) && !isUploadingImage && (
+                                    <button
+                                        type="button"
+                                        onClick={handleRemoveImage}
+                                        className="px-3 py-1.5 border border-zinc-700 text-zinc-400 text-sm rounded-lg hover:bg-zinc-800 transition-all"
+                                    >
+                                        Remove
+                                    </button>
+                                )}
+                            </div>
+                            <p className="text-zinc-500 text-xs mt-1">Max 5MB, PNG/JPG recommended</p>
+                            {imageError && (
+                                <p className="text-red-400 text-xs mt-1">{imageError}</p>
+                            )}
+                        </div>
+                    </div>
                 </div>
 
                 {urlError && (

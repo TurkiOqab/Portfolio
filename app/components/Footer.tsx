@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ContactInfo } from "../types";
 import { ThemeConfig } from "../lib/themes";
 import LikeButton from "./LikeButton";
+import ShareButtons from "./ShareButtons";
 
 interface FooterProps {
     contact: ContactInfo;
@@ -9,9 +10,10 @@ interface FooterProps {
     theme: ThemeConfig;
     cvUrl?: string;
     portfolioId: string;
+    username: string;
 }
 
-export default function Footer({ contact, name, theme, cvUrl, portfolioId }: FooterProps) {
+export default function Footer({ contact, name, theme, cvUrl, portfolioId, username }: FooterProps) {
     const currentYear = new Date().getFullYear();
 
     const socialLinks = [
@@ -154,11 +156,18 @@ export default function Footer({ contact, name, theme, cvUrl, portfolioId }: Foo
                     </div>
                 </div>
 
-                {/* Like Section */}
+                {/* Like & Share Section */}
                 <div className="mt-12 pt-8 border-t border-zinc-800">
-                    <div className="flex flex-col items-center gap-3">
-                        <p className="text-zinc-500 text-sm">Enjoyed this portfolio?</p>
-                        <LikeButton portfolioId={portfolioId} theme={theme} />
+                    <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12">
+                        <div className="flex flex-col items-center gap-3">
+                            <p className="text-zinc-500 text-sm">Enjoyed this portfolio?</p>
+                            <LikeButton portfolioId={portfolioId} theme={theme} />
+                        </div>
+                        <div className="hidden md:block w-px h-12 bg-zinc-800" />
+                        <div className="flex flex-col items-center gap-3">
+                            <p className="text-zinc-500 text-sm">Share with others</p>
+                            <ShareButtons url={`/${username}`} title={`${name}'s Portfolio`} theme={theme} />
+                        </div>
                     </div>
                 </div>
 

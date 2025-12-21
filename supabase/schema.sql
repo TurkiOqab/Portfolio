@@ -36,6 +36,7 @@ create table public.projects (
   title text not null,
   description text,
   tags text[] default '{}',
+  image_url text,
   live_url text,
   github_url text,
   display_order integer default 0,
@@ -149,3 +150,27 @@ $$ language plpgsql security definer;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
+
+-- Views table (tracks portfolio page views by visitors)
+create table public.portfolio_views (
+  id uuid primary key default gen_random_uuid(),
+  portfolio_id uuid references public.portfolios(id) on delete cascade,
+  visitor_id text not null,
+  referrer text,
+  created_at timestamp with time zone default now()
+);
+
+-- Enable Row Level Security for views
+alter table public.portfolio_views enable row level security;
+
+-- Views policies
+create policy "Anyone can view views count"
+  on public.portfolio_views for select using (true);
+
+create policy "Anyone can insert views"
+  on public.portfolio_views for insert with check (true);
+
+-- Create indexes for views
+create index idx_portfolio_views_portfolio_id on public.portfolio_views(portfolio_id);
+create index idx_portfolio_views_created_at on public.portfolio_views(created_at);
+create index idx_portfolio_views_visitor_portfolio on public.portfolio_views(portfolio_id, visitor_id, created_at);

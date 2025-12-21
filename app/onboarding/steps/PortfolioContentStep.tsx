@@ -10,11 +10,12 @@ interface StepProps {
     data: PortfolioData;
     updateData: (updates: Partial<PortfolioData>) => void;
     onSkip?: () => void;
+    userId?: string;
 }
 
 type TabType = "education" | "experience" | "projects";
 
-export default function PortfolioContentStep({ data, updateData, onSkip }: StepProps) {
+export default function PortfolioContentStep({ data, updateData, onSkip, userId }: StepProps) {
     const [activeTab, setActiveTab] = useState<TabType>("education");
 
     const hasNoContent = data.education.length === 0 && data.experience.length === 0 && data.projects.length === 0;
@@ -82,7 +83,7 @@ export default function PortfolioContentStep({ data, updateData, onSkip }: StepP
                 )}
                 {activeTab === "projects" && (
                     <div className="space-y-4">
-                        <ProjectsStep data={data} updateData={updateData} />
+                        <ProjectsStep data={data} updateData={updateData} userId={userId} />
                     </div>
                 )}
             </div>

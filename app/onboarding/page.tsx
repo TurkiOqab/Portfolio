@@ -305,7 +305,7 @@ export default function OnboardingPage() {
                         <ContactStep data={data} updateData={updateData} />
                     )}
                     {currentStep === 5 && (
-                        <PortfolioContentStep data={data} updateData={updateData} onSkip={skipStep} />
+                        <PortfolioContentStep data={data} updateData={updateData} onSkip={skipStep} userId={userId || undefined} />
                     )}
                     {currentStep === 6 && userId && (
                         <MediaUploadStep data={data} updateData={updateData} userId={userId} onSkip={skipStep} />

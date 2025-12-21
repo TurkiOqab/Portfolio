@@ -298,11 +298,22 @@ export default function Projects({ projects, theme }: ProjectsProps) {
                                         >
                                             {/* Badge */}
                                             {project.liveUrl && (
-                                                <div className="absolute top-4 right-4 md:top-6 md:right-6">
+                                                <div className="absolute top-4 right-4 md:top-6 md:right-6 z-10">
                                                     <span className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-gradient-to-r ${theme.primaryGradient} ${theme.buttonText}`}>
                                                         <span className={`w-1.5 h-1.5 rounded-full animate-pulse ${theme.id === 'pure_white' ? 'bg-zinc-900' : 'bg-white'}`} />
                                                         Deployed
                                                     </span>
+                                                </div>
+                                            )}
+
+                                            {/* Project Image */}
+                                            {project.imageUrl && (
+                                                <div className="mb-5 -mx-6 md:-mx-8 -mt-6 md:-mt-8 overflow-hidden rounded-t-2xl">
+                                                    <img
+                                                        src={project.imageUrl}
+                                                        alt={project.title}
+                                                        className="w-full h-48 md:h-56 object-cover"
+                                                    />
                                                 </div>
                                             )}
 

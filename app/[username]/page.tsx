@@ -8,6 +8,7 @@ import EducationSection from '@/app/components/Education'
 import ExperienceSection from '@/app/components/Experience'
 import Projects from '@/app/components/Projects'
 import Footer from '@/app/components/Footer'
+import ViewTracker from '@/app/components/ViewTracker'
 
 interface PageProps {
     params: Promise<{ username: string }>
@@ -77,6 +78,7 @@ export default async function PortfolioPage({ params }: PageProps) {
             title: p.title,
             description: p.description || '',
             tags: p.tags || [],
+            imageUrl: p.image_url || undefined,
             liveUrl: p.live_url || undefined,
             githubUrl: p.github_url || undefined,
             startDate: p.start_date || undefined,
@@ -87,6 +89,9 @@ export default async function PortfolioPage({ params }: PageProps) {
 
     return (
         <div className={`min-h-screen bg-zinc-950 relative overflow-hidden ${font.className}`}>
+            {/* Track views for non-owners */}
+            {!isOwner && <ViewTracker portfolioId={portfolio.id} />}
+
             {/* Global Background Effects */}
             <div className="fixed inset-0 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 z-0" />
             <div className={`fixed top-1/4 left-1/4 w-96 h-96 ${theme.orb1} rounded-full blur-3xl animate-pulse z-0 pointer-events-none`} />
@@ -115,7 +120,7 @@ export default async function PortfolioPage({ params }: PageProps) {
                     <ExperienceSection experience={portfolioData.experience} theme={theme} />
                     <Projects projects={portfolioData.projects} theme={theme} />
                 </main>
-                <Footer contact={portfolioData.contact} name={portfolioData.name} theme={theme} cvUrl={portfolio.cv_url} portfolioId={portfolio.id} />
+                <Footer contact={portfolioData.contact} name={portfolioData.name} theme={theme} cvUrl={portfolio.cv_url} portfolioId={portfolio.id} username={username} />
             </div>
         </div>
     )

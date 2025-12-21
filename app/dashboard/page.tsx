@@ -43,6 +43,21 @@ export default async function DashboardPage() {
         .select('*', { count: 'exact', head: true })
         .eq('portfolio_id', portfolio.id)
 
+    // Get view count (total)
+    const { count: viewCount } = await supabase
+        .from('portfolio_views')
+        .select('*', { count: 'exact', head: true })
+        .eq('portfolio_id', portfolio.id)
+
+    // Get views this week
+    const oneWeekAgo = new Date()
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
+    const { count: weeklyViewCount } = await supabase
+        .from('portfolio_views')
+        .select('*', { count: 'exact', head: true })
+        .eq('portfolio_id', portfolio.id)
+        .gte('created_at', oneWeekAgo.toISOString())
+
     // Get font configuration
     const font = getFont(portfolio.font || 'inter')
 
@@ -144,8 +159,10 @@ export default async function DashboardPage() {
                             </svg>
                             <span className="text-sm text-zinc-400">Views</span>
                         </div>
-                        <div className="text-4xl font-bold text-white mb-1">—</div>
-                        <p className="text-zinc-400 text-sm">Coming soon</p>
+                        <div className="text-4xl font-bold text-white mb-1">{viewCount || 0}</div>
+                        <p className="text-zinc-400 text-sm">
+                            {weeklyViewCount || 0} this week
+                        </p>
                     </div>
 
                     {/* Portfolio Likes */}
