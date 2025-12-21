@@ -83,7 +83,7 @@ export default function Footer({ contact, name, theme, cvUrl }: FooterProps) {
                             {contact.email && (
                                 <a
                                     href={`mailto:${contact.email}`}
-                                    className={`inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r ${theme.primaryGradient} text-white font-medium rounded-full hover:opacity-90 transition-all duration-300 shadow-lg ${theme.shadowColor}`}
+                                    className={`inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r ${theme.primaryGradient} ${theme.buttonText} font-medium rounded-full hover:opacity-90 transition-all duration-300 shadow-lg ${theme.shadowColor}`}
                                 >
                                     <svg
                                         className="w-5 h-5"

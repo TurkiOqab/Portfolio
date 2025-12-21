@@ -1,7 +1,6 @@
 import { createClient } from '@/app/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { getTheme } from '@/app/lib/themes'
 import { getFont } from '@/app/lib/fonts'
 import ProfileAvatar from '@/app/components/ProfileAvatar'
 import CopyLinkButton from '@/app/components/CopyLinkButton'
@@ -38,16 +37,15 @@ export default async function DashboardPage() {
         redirect('/onboarding')
     }
 
-    // Get theme and font configuration
-    const theme = getTheme(portfolio.theme || 'violet')
+    // Get font configuration
     const font = getFont(portfolio.font || 'inter')
 
     return (
         <div className={`min-h-screen bg-zinc-950 relative overflow-hidden ${font.className}`}>
             {/* Global Background Effects */}
             <div className="fixed inset-0 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 z-0" />
-            <div className={`fixed top-1/4 left-1/4 w-96 h-96 ${theme.orb1} rounded-full blur-3xl animate-pulse z-0 pointer-events-none`} />
-            <div className={`fixed bottom-1/4 right-1/4 w-96 h-96 ${theme.orb2} rounded-full blur-3xl animate-pulse z-0 pointer-events-none`} />
+            <div className="fixed top-1/4 left-1/4 w-96 h-96 bg-violet-600/10 rounded-full blur-3xl animate-pulse z-0 pointer-events-none" />
+            <div className="fixed bottom-1/4 right-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl animate-pulse z-0 pointer-events-none" />
 
             {/* Grid Pattern */}
             <div
@@ -61,14 +59,14 @@ export default async function DashboardPage() {
             {/* Header */}
             <header className="relative z-10 bg-zinc-900/50 border-b border-zinc-800 backdrop-blur-md">
                 <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-                    <Link href="/" className={`text-2xl font-bold bg-gradient-to-r ${theme.primaryGradient} bg-clip-text text-transparent`}>
+                    <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
                         DevFolio
                     </Link>
                     <div className="flex items-center gap-4">
                         {portfolioUrl && (
                             <Link
                                 href={portfolioUrl}
-                                className={`flex items-center gap-2 text-sm ${theme.textAccent} hover:text-white transition-colors`}
+                                className="flex items-center gap-2 text-sm text-violet-400 hover:text-white transition-colors"
                             >
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -91,7 +89,6 @@ export default async function DashboardPage() {
                         <ProfileAvatar
                             avatarUrl={portfolio.avatar_url}
                             name={portfolio.name}
-                            theme={theme}
                         />
                         <form action="/auth/signout" method="post">
                             <button
@@ -135,7 +132,7 @@ export default async function DashboardPage() {
                     {/* Portfolio Views */}
                     <div className="p-6 bg-zinc-900/50 border border-zinc-800 rounded-2xl backdrop-blur-sm">
                         <div className="flex items-center gap-3 mb-4">
-                            <svg className={`w-5 h-5 ${theme.textAccent}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                             </svg>
@@ -148,15 +145,15 @@ export default async function DashboardPage() {
 
                 {/* Portfolio URL */}
                 {portfolioUrl && (
-                    <div className={`mb-12 p-6 bg-gradient-to-r ${theme.orb1} ${theme.orb2} border border-zinc-700 rounded-2xl`}>
+                    <div className="mb-12 p-6 bg-gradient-to-r from-violet-600/10 to-purple-600/10 border border-zinc-700 rounded-2xl">
                         <h3 className="text-lg font-semibold text-white mb-2">Your Portfolio URL</h3>
                         <div className="flex items-center gap-4">
-                            <div className={`flex-1 px-4 py-3 bg-zinc-800/50 rounded-xl ${theme.textAccent} font-mono`}>
+                            <div className="flex-1 px-4 py-3 bg-zinc-800/50 rounded-xl text-violet-400 font-mono">
                                 devfolio.com{portfolioUrl}
                             </div>
                             <CopyLinkButton
                                 url={portfolioUrl}
-                                className={`px-6 py-3 ${theme.accentColor} ${theme.accentColorHover} text-white font-medium rounded-xl transition-colors`}
+                                className="px-6 py-3 bg-violet-600 hover:bg-violet-500 text-white font-medium rounded-xl transition-colors"
                             />
                         </div>
                     </div>
@@ -168,7 +165,7 @@ export default async function DashboardPage() {
                         href="/onboarding"
                         className="group p-6 bg-zinc-900/50 border border-zinc-800 rounded-2xl hover:border-zinc-600 transition-all"
                     >
-                        <div className={`w-12 h-12 bg-gradient-to-br ${theme.primaryGradient} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                        <div className="w-12 h-12 bg-gradient-to-br from-violet-600 to-purple-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                             <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                             </svg>

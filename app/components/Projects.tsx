@@ -299,8 +299,8 @@ export default function Projects({ projects, theme }: ProjectsProps) {
                                             {/* Badge */}
                                             {project.liveUrl && (
                                                 <div className="absolute top-4 right-4 md:top-6 md:right-6">
-                                                    <span className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-gradient-to-r ${theme.primaryGradient} text-white`}>
-                                                        <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
+                                                    <span className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-gradient-to-r ${theme.primaryGradient} ${theme.buttonText}`}>
+                                                        <span className={`w-1.5 h-1.5 rounded-full animate-pulse ${theme.id === 'pure_white' ? 'bg-zinc-900' : 'bg-white'}`} />
                                                         Deployed
                                                     </span>
                                                 </div>

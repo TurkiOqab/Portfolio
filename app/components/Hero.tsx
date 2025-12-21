@@ -257,7 +257,7 @@ export default function Hero({ name, title, bio, skills, theme }: HeroProps) {
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                     <a
                         href="#projects"
-                        className={`group px-8 py-4 bg-gradient-to-r ${theme.primaryGradient} text-white font-medium rounded-full hover:opacity-90 transition-all duration-300 shadow-lg ${theme.shadowColor} flex items-center gap-2`}
+                        className={`group px-8 py-4 bg-gradient-to-r ${theme.primaryGradient} ${theme.buttonText} font-medium rounded-full hover:opacity-90 transition-all duration-300 shadow-lg ${theme.shadowColor} flex items-center gap-2`}
                     >
                         View My Work
                         <svg

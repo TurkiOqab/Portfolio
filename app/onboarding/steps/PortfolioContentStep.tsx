@@ -9,12 +9,15 @@ import ProjectsStep from "./ProjectsStep";
 interface StepProps {
     data: PortfolioData;
     updateData: (updates: Partial<PortfolioData>) => void;
+    onSkip?: () => void;
 }
 
 type TabType = "education" | "experience" | "projects";
 
-export default function PortfolioContentStep({ data, updateData }: StepProps) {
+export default function PortfolioContentStep({ data, updateData, onSkip }: StepProps) {
     const [activeTab, setActiveTab] = useState<TabType>("education");
+
+    const hasNoContent = data.education.length === 0 && data.experience.length === 0 && data.projects.length === 0;
 
     const tabs: { id: TabType; label: string; count: number }[] = [
         { id: "education", label: "Education", count: data.education.length },
@@ -99,6 +102,18 @@ export default function PortfolioContentStep({ data, updateData }: StepProps) {
                     <div className="text-xs text-zinc-500">Projects</div>
                 </div>
             </div>
+
+            {/* Skip Button */}
+            {hasNoContent && onSkip && (
+                <div className="flex justify-center pt-4">
+                    <button
+                        onClick={onSkip}
+                        className="px-6 py-3 text-zinc-400 hover:text-white border border-zinc-700 rounded-full transition-colors hover:border-zinc-500"
+                    >
+                        Skip for now
+                    </button>
+                </div>
+            )}
         </div>
     );
 }

@@ -8,11 +8,14 @@ interface StepProps {
     data: PortfolioData;
     updateData: (updates: Partial<PortfolioData>) => void;
     userId: string;
+    onSkip?: () => void;
 }
 
-export default function MediaUploadStep({ data, updateData, userId }: StepProps) {
+export default function MediaUploadStep({ data, updateData, userId, onSkip }: StepProps) {
     // Avatar state
     const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+
+    const hasNoMedia = !data.avatarUrl && !data.cvUrl;
     const [avatarError, setAvatarError] = useState<string | null>(null);
     const [avatarPreview, setAvatarPreview] = useState<string | null>(data.avatarUrl || null);
     const avatarInputRef = useRef<HTMLInputElement>(null);
@@ -301,6 +304,18 @@ export default function MediaUploadStep({ data, updateData, userId }: StepProps)
                     </div>
                 </div>
             </div>
+
+            {/* Skip Button */}
+            {hasNoMedia && onSkip && (
+                <div className="flex justify-center pt-4">
+                    <button
+                        onClick={onSkip}
+                        className="px-6 py-3 text-zinc-400 hover:text-white border border-zinc-700 rounded-full transition-colors hover:border-zinc-500"
+                    >
+                        Skip for now
+                    </button>
+                </div>
+            )}
         </div>
     );
 }

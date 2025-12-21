@@ -6,7 +6,7 @@ import { ThemeConfig } from "../lib/themes";
 interface ProfileAvatarProps {
     avatarUrl?: string | null;
     name: string;
-    theme: ThemeConfig;
+    theme?: ThemeConfig;
     size?: "sm" | "md" | "lg";
 }
 
@@ -21,10 +21,13 @@ export default function ProfileAvatar({ avatarUrl, name, theme, size = "sm" }: P
 
     const initial = name?.charAt(0)?.toUpperCase() || "U";
 
+    // Default to violet gradient for dashboard/consistent styling
+    const gradientClass = theme?.primaryGradient || "from-violet-600 to-purple-600";
+
     if (!avatarUrl || imageError) {
         return (
             <div
-                className={`${sizeClasses[size]} rounded-full bg-gradient-to-br ${theme.primaryGradient} flex items-center justify-center text-white font-medium border-2 border-zinc-700`}
+                className={`${sizeClasses[size]} rounded-full bg-gradient-to-br ${gradientClass} flex items-center justify-center text-white font-medium border-2 border-zinc-700`}
             >
                 {initial}
             </div>

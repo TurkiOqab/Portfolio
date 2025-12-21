@@ -305,10 +305,10 @@ export default function OnboardingPage() {
                         <ContactStep data={data} updateData={updateData} />
                     )}
                     {currentStep === 5 && (
-                        <PortfolioContentStep data={data} updateData={updateData} />
+                        <PortfolioContentStep data={data} updateData={updateData} onSkip={skipStep} />
                     )}
                     {currentStep === 6 && userId && (
-                        <MediaUploadStep data={data} updateData={updateData} userId={userId} />
+                        <MediaUploadStep data={data} updateData={updateData} userId={userId} onSkip={skipStep} />
                     )}
                     {currentStep === 7 && (
                         <ThemeStep data={data} updateData={updateData} />
@@ -344,15 +344,6 @@ export default function OnboardingPage() {
                             ← Back
                         </button>
                         <div className="flex items-center gap-3">
-                            {((currentStep === 5 && data.education.length === 0 && data.experience.length === 0 && data.projects.length === 0) ||
-                                (currentStep === 6 && !data.avatarUrl && !data.cvUrl)) && (
-                                    <button
-                                        onClick={skipStep}
-                                        className="px-6 py-3 text-zinc-400 hover:text-white border border-zinc-700 rounded-full transition-colors"
-                                    >
-                                        Skip for now
-                                    </button>
-                                )}
                             <button
                                 onClick={nextStep}
                                 disabled={!canProceed() || isSaving}
