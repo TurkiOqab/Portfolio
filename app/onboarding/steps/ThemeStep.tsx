@@ -168,7 +168,7 @@ export default function ThemeStep({ data, updateData }: StepProps) {
             {/* Theme Selection Grid */}
             <div>
                 <p className="text-sm text-zinc-400 mb-3">Select a color theme:</p>
-                <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+                <div className="grid grid-cols-4 gap-3">
                     {themeList.map((theme) => (
                         <ThemePreview
                             key={theme.id}
