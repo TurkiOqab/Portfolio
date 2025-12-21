@@ -256,3 +256,92 @@ select:focus-visible {
 .text-zinc-500 {
   color: #a1a1aa; /* Slightly lighter for better contrast */
 }
+
+/* Project card optimized animations */
+.project-card {
+  will-change: opacity, transform;
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+
+.project-card-active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.project-card-inactive {
+  opacity: 0.5;
+  transform: scale(0.98);
+}
+
+/* Project card inner styling */
+.project-card-inner {
+  will-change: border-color, box-shadow;
+  transition: border-color 0.4s ease-out, box-shadow 0.4s ease-out;
+}
+
+.project-card-active .project-card-inner {
+  border-color: #52525b;
+  box-shadow: 0 25px 50px -12px rgba(139, 92, 246, 0.15);
+}
+
+.project-card-inactive .project-card-inner {
+  border-color: rgba(39, 39, 42, 0.5);
+  box-shadow: none;
+}
+
+/* Project timeline dot styling */
+.project-timeline-dot {
+  will-change: transform;
+  transition: transform 0.4s ease-out;
+}
+
+.project-card-active .project-timeline-dot {
+  transform: translateX(-50%) scale(1.3);
+}
+
+.project-card-inactive .project-timeline-dot {
+  transform: translateX(-50%) scale(1);
+}
+
+/* Project date styling */
+.project-date {
+  transition: color 0.4s ease-out;
+}
+
+.project-card-active .project-date {
+  color: #d4d4d8;
+}
+
+.project-card-inactive .project-date {
+  color: #52525b;
+}
+
+/* Project glow styling */
+.project-glow {
+  will-change: opacity;
+  transition: opacity 0.4s ease-out;
+}
+
+.project-card-active .project-glow {
+  opacity: 0.05;
+}
+
+.project-card-inactive .project-glow {
+  opacity: 0;
+}
+
+/* Project navigation dots */
+.project-dot {
+  will-change: width, background-color;
+  transition: width 0.3s ease-out, background-color 0.3s ease-out;
+}
+
+.project-dot-active {
+  width: 2rem;
+  background-color: #a1a1aa;
+}
+
+.project-dot-inactive {
+  width: 0.5rem;
+  background-color: #3f3f46;
+}

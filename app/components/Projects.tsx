@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { Project } from "../types";
 import { ThemeConfig } from "../lib/themes";
 import {
@@ -111,11 +111,55 @@ export default function Projects({ projects, theme }: ProjectsProps) {
     const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
     const dotRefs = useRef<(HTMLButtonElement | null)[]>([]);
     const activeIndexRef = useRef(0);
+    const rafRef = useRef<number | null>(null);
+    const pendingUpdates = useRef<Map<number, boolean>>(new Map());
+
+    // Batched DOM updates using requestAnimationFrame
+    const flushUpdates = useCallback(() => {
+        pendingUpdates.current.forEach((isActive, index) => {
+            const card = cardRefs.current[index];
+            const dot = dotRefs.current[index];
+
+            if (card) {
+                if (isActive) {
+                    card.classList.add('project-card-active');
+                    card.classList.remove('project-card-inactive');
+                } else {
+                    card.classList.remove('project-card-active');
+                    card.classList.add('project-card-inactive');
+                }
+            }
+
+            if (dot) {
+                if (isActive) {
+                    dot.classList.add('project-dot-active');
+                    dot.classList.remove('project-dot-inactive');
+                } else {
+                    dot.classList.remove('project-dot-active');
+                    dot.classList.add('project-dot-inactive');
+                }
+            }
+        });
+        pendingUpdates.current.clear();
+        rafRef.current = null;
+    }, []);
+
+    // Queue state update and batch with RAF
+    const updateCardState = useCallback((index: number, isActive: boolean) => {
+        pendingUpdates.current.set(index, isActive);
+
+        if (rafRef.current === null) {
+            rafRef.current = requestAnimationFrame(flushUpdates);
+        }
+    }, [flushUpdates]);
 
     useEffect(() => {
         // Set initial state - first card is active
         if (cardRefs.current[0]) {
-            updateCardState(0, true);
+            cardRefs.current[0].classList.add('project-card-active');
+        }
+        if (dotRefs.current[0]) {
+            dotRefs.current[0].classList.add('project-dot-active');
         }
 
         const observer = new IntersectionObserver(
@@ -123,11 +167,9 @@ export default function Projects({ projects, theme }: ProjectsProps) {
                 entries.forEach((entry) => {
                     const index = Number(entry.target.getAttribute('data-index'));
 
-                    if (entry.isIntersecting) {
+                    if (entry.isIntersecting && activeIndexRef.current !== index) {
                         // Deactivate previous card
-                        if (activeIndexRef.current !== index) {
-                            updateCardState(activeIndexRef.current, false);
-                        }
+                        updateCardState(activeIndexRef.current, false);
                         // Activate new card
                         updateCardState(index, true);
                         activeIndexRef.current = index;
@@ -145,48 +187,13 @@ export default function Projects({ projects, theme }: ProjectsProps) {
             if (ref) observer.observe(ref);
         });
 
-        return () => observer.disconnect();
-    }, [reversedProjects.length]);
-
-    // Direct DOM manipulation - no React re-renders
-    const updateCardState = (index: number, isActive: boolean) => {
-        const card = cardRefs.current[index];
-        const dot = dotRefs.current[index];
-
-        if (card) {
-            card.style.opacity = isActive ? '1' : '0.5';
-            card.style.transform = isActive ? 'scale(1)' : 'scale(0.98)';
-
-            // Update inner elements
-            const innerCard = card.querySelector('[data-card-inner]') as HTMLElement;
-            if (innerCard) {
-                innerCard.style.borderColor = isActive ? '#52525b' : 'rgba(39, 39, 42, 0.5)';
-                innerCard.style.boxShadow = isActive ? '0 25px 50px -12px rgba(139, 92, 246, 0.15)' : 'none';
+        return () => {
+            observer.disconnect();
+            if (rafRef.current) {
+                cancelAnimationFrame(rafRef.current);
             }
-
-            const glow = card.querySelector('[data-glow]') as HTMLElement;
-            if (glow) {
-                glow.style.opacity = isActive ? '0.05' : '0';
-            }
-
-            const dateText = card.querySelector('[data-date]') as HTMLElement;
-            if (dateText) {
-                dateText.style.color = isActive ? '#d4d4d8' : '#52525b';
-            }
-
-            const timelineDot = card.querySelector('[data-timeline-dot]') as HTMLElement;
-            if (timelineDot) {
-                timelineDot.style.transform = `translateX(-50%) scale(${isActive ? 1.3 : 1})`;
-            }
-        }
-
-        if (dot) {
-            dot.style.width = isActive ? '2rem' : '0.5rem';
-            dot.style.background = isActive
-                ? 'linear-gradient(to right, #7c3aed, #a855f7)'
-                : '#3f3f46';
-        }
-    };
+        };
+    }, [reversedProjects.length, updateCardState]);
 
     const scrollToCard = (index: number) => {
         cardRefs.current[index]?.scrollIntoView({
@@ -224,13 +231,7 @@ export default function Projects({ projects, theme }: ProjectsProps) {
                                 key={index}
                                 ref={(el) => { dotRefs.current[index] = el; }}
                                 onClick={() => scrollToCard(index)}
-                                className="h-2 rounded-full transition-all duration-300 hover:opacity-80"
-                                style={{
-                                    width: index === 0 ? '2rem' : '0.5rem',
-                                    background: index === 0
-                                        ? 'linear-gradient(to right, #7c3aed, #a855f7)'
-                                        : '#3f3f46',
-                                }}
+                                className={`h-2 rounded-full hover:opacity-80 project-dot ${index === 0 ? 'project-dot-active' : 'project-dot-inactive'}`}
                                 aria-label={`Go to project ${index + 1}`}
                             />
                         ))}
@@ -249,35 +250,18 @@ export default function Projects({ projects, theme }: ProjectsProps) {
                                     key={project.id}
                                     ref={(el) => { cardRefs.current[index] = el; }}
                                     data-index={index}
-                                    className="relative flex gap-6 md:gap-12"
-                                    style={{
-                                        opacity: index === 0 ? 1 : 0.5,
-                                        transform: index === 0 ? 'scale(1)' : 'scale(0.98)',
-                                        transition: "opacity 0.4s ease-out, transform 0.4s ease-out",
-                                    }}
+                                    className={`project-card relative flex gap-6 md:gap-12 ${index === 0 ? 'project-card-active' : 'project-card-inactive'}`}
                                 >
                                     {/* Left Side - Date */}
                                     <div className="flex-shrink-0 w-8 md:w-[140px] relative">
                                         {/* Timeline Dot */}
                                         <div
-                                            data-timeline-dot
-                                            className={`absolute left-4 md:left-[140px] top-8 w-3 h-3 rounded-full bg-gradient-to-r ${theme.primaryGradient} ring-4 ring-zinc-950 z-10`}
-                                            style={{
-                                                transform: `translateX(-50%) scale(${index === 0 ? 1.3 : 1})`,
-                                                transition: "transform 0.4s ease-out",
-                                            }}
+                                            className={`project-timeline-dot absolute left-4 md:left-[140px] top-8 w-3 h-3 rounded-full bg-gradient-to-r ${theme.primaryGradient} ring-4 ring-zinc-950 z-10`}
                                         />
 
                                         <div className="hidden md:block text-right pr-8 pt-6">
                                             {(project.startDate || project.endDate) && (
-                                                <p
-                                                    data-date
-                                                    className="text-sm font-mono"
-                                                    style={{
-                                                        color: index === 0 ? "#d4d4d8" : "#52525b",
-                                                        transition: "color 0.4s ease-out",
-                                                    }}
-                                                >
+                                                <p className="project-date text-sm font-mono">
                                                     {formatDate(project.startDate)}
                                                     {project.startDate && project.endDate && " — "}
                                                     {formatDate(project.endDate)}
@@ -288,15 +272,7 @@ export default function Projects({ projects, theme }: ProjectsProps) {
 
                                     {/* Right Side - Card */}
                                     <div className="flex-1 pb-4">
-                                        <div
-                                            data-card-inner
-                                            className="group relative bg-zinc-900/80 backdrop-blur-sm border rounded-2xl p-6 md:p-8 hover-shimmer overflow-hidden"
-                                            style={{
-                                                borderColor: index === 0 ? "#52525b" : "rgba(39, 39, 42, 0.5)",
-                                                boxShadow: index === 0 ? "0 25px 50px -12px rgba(139, 92, 246, 0.15)" : "none",
-                                                transition: "border-color 0.4s ease-out, box-shadow 0.4s ease-out, transform 0.3s ease-out",
-                                            }}
-                                        >
+                                        <div className="project-card-inner group relative bg-zinc-900/80 backdrop-blur-sm border rounded-2xl p-6 md:p-8 hover-shimmer overflow-hidden">
                                             {/* Badge */}
                                             {project.liveUrl && (
                                                 <div className="absolute top-4 right-4 md:top-6 md:right-6 z-10">
@@ -392,12 +368,7 @@ export default function Projects({ projects, theme }: ProjectsProps) {
 
                                             {/* Active Glow */}
                                             <div
-                                                data-glow
-                                                className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${theme.primaryGradient} pointer-events-none`}
-                                                style={{
-                                                    opacity: index === 0 ? 0.05 : 0,
-                                                    transition: "opacity 0.4s ease-out",
-                                                }}
+                                                className={`project-glow absolute inset-0 rounded-2xl bg-gradient-to-r ${theme.primaryGradient} pointer-events-none`}
                                             />
                                         </div>
                                     </div>
