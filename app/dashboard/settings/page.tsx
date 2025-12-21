@@ -17,6 +17,7 @@ export default function SettingsPage() {
     const [isUpdatingEmail, setIsUpdatingEmail] = useState(false)
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
     const [showEmailEdit, setShowEmailEdit] = useState(false)
+    const [isSigningOut, setIsSigningOut] = useState(false)
     const [username, setUsername] = useState('')
     const [email, setEmail] = useState('')
     const [newEmail, setNewEmail] = useState('')
@@ -179,6 +180,12 @@ export default function SettingsPage() {
         }
     }
 
+    const handleSignOut = async () => {
+        setIsSigningOut(true)
+        await supabase.auth.signOut()
+        router.push('/')
+    }
+
     if (isLoading) {
         return (
             <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
@@ -333,6 +340,21 @@ export default function SettingsPage() {
                 >
                     {isSaving ? 'Saving...' : 'Save Changes'}
                 </button>
+
+                {/* Sign Out Section */}
+                <div className="mb-8 p-6 bg-zinc-900/50 border border-zinc-800/50 rounded-2xl backdrop-blur-sm">
+                    <h2 className="text-xl font-bold text-white mb-4">Session</h2>
+                    <button
+                        onClick={handleSignOut}
+                        disabled={isSigningOut}
+                        className="px-6 py-3 bg-zinc-800 border border-zinc-700 text-zinc-300 rounded-xl hover:bg-zinc-700 hover:border-zinc-600 hover:text-white transition-all flex items-center gap-2 disabled:opacity-50"
+                    >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        {isSigningOut ? 'Signing out...' : 'Sign Out'}
+                    </button>
+                </div>
 
                 {/* Danger Zone */}
                 <div className="p-6 bg-red-500/5 border border-red-500/20 rounded-2xl backdrop-blur-sm">

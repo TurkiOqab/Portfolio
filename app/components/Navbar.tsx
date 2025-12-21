@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { createClient } from "@/app/lib/supabase/client";
 import { ThemeConfig } from "../lib/themes";
 
 interface NavbarProps {
@@ -10,9 +12,16 @@ interface NavbarProps {
 }
 
 export default function Navbar({ theme, isOwner = false }: NavbarProps) {
+  const router = useRouter();
+  const supabase = createClient();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    router.push("/");
+  };
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -98,6 +107,19 @@ export default function Navbar({ theme, isOwner = false }: NavbarProps) {
                       </svg>
                       Settings
                     </Link>
+                    <div className="border-t border-zinc-800" />
+                    <button
+                      onClick={() => {
+                        setIsDropdownOpen(false);
+                        handleSignOut();
+                      }}
+                      className="flex items-center gap-3 px-4 py-3 text-sm text-red-400 hover:bg-zinc-800 hover:text-red-300 transition-colors w-full text-left"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                      </svg>
+                      Sign Out
+                    </button>
                   </div>
                 )}
               </div>
@@ -175,6 +197,19 @@ export default function Navbar({ theme, isOwner = false }: NavbarProps) {
                     </svg>
                     Settings
                   </Link>
+                  <div className="border-t border-zinc-800/50 my-2" />
+                  <button
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      handleSignOut();
+                    }}
+                    className="text-lg font-semibold text-red-400 flex items-center gap-2"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Sign Out
+                  </button>
                 </>
               )}
             </div>

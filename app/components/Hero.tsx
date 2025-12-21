@@ -160,8 +160,8 @@ function TypeWriter({ texts, theme }: { texts: string[]; theme: ThemeConfig }) {
 
     useEffect(() => {
         const fullText = texts[currentTextIndex];
-        const typingSpeed = isDeleting ? 100 : 200; // Slower typing
-        const pauseTime = 1500; // 1.5 second pause
+        const typingSpeed = isDeleting ? 30 : 50; // Fast typing
+        const pauseTime = 2000; // 2 second pause
 
         if (!isDeleting && currentText === fullText) {
             // Pause before deleting
@@ -200,7 +200,6 @@ function TypeWriter({ texts, theme }: { texts: string[]; theme: ThemeConfig }) {
                 <span className={`bg-gradient-to-r ${theme.primaryGradient} bg-clip-text text-transparent`}>
                     {displayedName}
                 </span>
-                <span className="animate-pulse text-white">|</span>
             </span>
         );
     }
@@ -209,7 +208,6 @@ function TypeWriter({ texts, theme }: { texts: string[]; theme: ThemeConfig }) {
     return (
         <span className={`bg-gradient-to-r ${theme.primaryGradient} bg-clip-text text-transparent`}>
             {currentText}
-            <span className="animate-pulse">|</span>
         </span>
     );
 }
