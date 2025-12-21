@@ -60,7 +60,7 @@ export default async function DashboardPage() {
         .gte('created_at', oneWeekAgo.toISOString())
 
     // Get font configuration
-    const font = getFont(portfolio.font || 'inter')
+    const font = getFont(portfolio.font || 'outfit')
 
     // Get theme configuration
     const theme = getTheme(portfolio.theme || 'violet')

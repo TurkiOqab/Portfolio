@@ -104,35 +104,36 @@ function FontPreview({ font, isSelected, onClick }: {
     return (
         <button
             onClick={onClick}
-            className={`relative p-4 rounded-xl border-2 transition-all duration-300 text-left ${isSelected
-                    ? 'border-violet-500 bg-violet-600/10 ring-1 ring-violet-500/50'
-                    : 'border-zinc-700 bg-zinc-900/50 hover:border-zinc-600'
+            className={`relative p-5 rounded-2xl border-2 transition-all duration-300 text-left group ${isSelected
+                    ? 'border-white bg-white/5'
+                    : 'border-zinc-800 bg-zinc-900/30 hover:border-zinc-700 hover:bg-zinc-900/50'
                 }`}
         >
             {/* Selected indicator */}
             {isSelected && (
                 <div className="absolute -top-2 -right-2 z-10">
-                    <div className="w-6 h-6 bg-violet-500 rounded-full flex items-center justify-center shadow-lg">
-                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-lg">
+                        <svg className="w-4 h-4 text-zinc-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                         </svg>
                     </div>
                 </div>
             )}
 
-            {/* Font preview */}
-            <div className={`${font.className} text-xl font-bold text-white mb-1 truncate`}>
-                Aa Bb Cc
+            {/* Large font name as preview */}
+            <div className={`${font.className} text-2xl font-semibold text-white mb-3`}>
+                {font.displayName}
             </div>
-            <p className={`${font.className} text-xs text-zinc-400 mb-2 truncate`}>
+
+            {/* Sample text in the font */}
+            <p className={`${font.className} text-sm text-zinc-400 mb-4 leading-relaxed`}>
                 {font.preview}
             </p>
 
-            {/* Font info */}
-            <div>
-                <h3 className="font-medium text-white text-sm">{font.displayName}</h3>
-                <p className="text-xs text-zinc-500">{font.category}</p>
-            </div>
+            {/* Category tag */}
+            <span className={`inline-block px-2.5 py-1 text-xs rounded-full ${isSelected ? 'bg-white/10 text-white' : 'bg-zinc-800 text-zinc-400'}`}>
+                {font.category}
+            </span>
         </button>
     );
 }
@@ -140,7 +141,7 @@ function FontPreview({ font, isSelected, onClick }: {
 export default function ThemeStep({ data, updateData }: StepProps) {
     const selectedThemeId = data.theme || 'violet';
     const selectedTheme = getTheme(selectedThemeId);
-    const selectedFontId = data.font || 'inter';
+    const selectedFontId = data.font || 'outfit';
     const selectedFont = getFont(selectedFontId);
 
     return (
@@ -182,8 +183,8 @@ export default function ThemeStep({ data, updateData }: StepProps) {
 
             {/* Font Selection Grid */}
             <div>
-                <p className="text-sm text-zinc-400 mb-3">Select a font:</p>
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                <p className="text-sm text-zinc-400 mb-4">Select a font:</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                     {fontList.map((font) => (
                         <FontPreview
                             key={font.id}

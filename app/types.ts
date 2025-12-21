@@ -70,5 +70,5 @@ export const defaultPortfolioData: PortfolioData = {
         twitter: "",
     },
     theme: "violet",
-    font: "inter",
+    font: "outfit",
 };

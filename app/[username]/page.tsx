@@ -56,7 +56,7 @@ export default async function PortfolioPage({ params }: PageProps) {
 
     // Get theme and font
     const theme = getTheme(portfolio.theme || 'violet')
-    const font = getFont(portfolio.font || 'inter')
+    const font = getFont(portfolio.font || 'outfit')
 
     // Fetch projects
     const { data: projects } = await supabase

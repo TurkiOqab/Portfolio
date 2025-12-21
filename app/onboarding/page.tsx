@@ -87,7 +87,7 @@ export default function OnboardingPage() {
                     })),
                     contact: portfolio.contact || { email: "" },
                     theme: portfolio.theme || "violet",
-                    font: portfolio.font || "inter",
+                    font: portfolio.font || "outfit",
                 });
             }
 

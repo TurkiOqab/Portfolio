@@ -9,90 +9,62 @@ export interface FontConfig {
     className: string;
 }
 
-// 10 carefully selected fonts for portfolios
+// 5 curated minimal fonts for portfolios
 export const fontList: FontConfig[] = [
-    {
-        id: "inter",
-        name: "Inter",
-        displayName: "Inter",
-        category: "Modern & Clean",
-        preview: "The quick brown fox jumps",
-        className: "font-inter",
-    },
-    {
-        id: "space-grotesk",
-        name: "Space Grotesk",
-        displayName: "Space Grotesk",
-        category: "Tech & Futuristic",
-        preview: "The quick brown fox jumps",
-        className: "font-space-grotesk",
-    },
-    {
-        id: "syne",
-        name: "Syne",
-        displayName: "Syne",
-        category: "Bold & Creative",
-        preview: "The quick brown fox jumps",
-        className: "font-syne",
-    },
     {
         id: "outfit",
         name: "Outfit",
         displayName: "Outfit",
-        category: "Geometric & Minimal",
-        preview: "The quick brown fox jumps",
+        category: "Geometric",
+        preview: "Clean lines, modern feel",
         className: "font-outfit",
     },
     {
         id: "plus-jakarta",
         name: "Plus Jakarta Sans",
-        displayName: "Jakarta Sans",
+        displayName: "Jakarta",
         category: "Professional",
-        preview: "The quick brown fox jumps",
+        preview: "Polished and refined",
         className: "font-plus-jakarta",
     },
     {
-        id: "cabinet-grotesk",
+        id: "dm-sans",
         name: "DM Sans",
         displayName: "DM Sans",
-        category: "Elegant & Readable",
-        preview: "The quick brown fox jumps",
+        category: "Elegant",
+        preview: "Subtle and sophisticated",
         className: "font-dm-sans",
     },
     {
-        id: "clash-display",
-        name: "Bebas Neue",
-        displayName: "Bebas Neue",
-        category: "Display & Impact",
-        preview: "The quick brown fox jumps",
-        className: "font-bebas-neue",
+        id: "syne",
+        name: "Syne",
+        displayName: "Syne",
+        category: "Creative",
+        preview: "Bold and distinctive",
+        className: "font-syne",
     },
     {
         id: "source-code",
         name: "Source Code Pro",
         displayName: "Source Code",
-        category: "Developer & Mono",
-        preview: "The quick brown fox jumps",
+        category: "Monospace",
+        preview: "Built for developers",
         className: "font-source-code",
-    },
-    {
-        id: "playfair",
-        name: "Playfair Display",
-        displayName: "Playfair",
-        category: "Elegant & Serif",
-        preview: "The quick brown fox jumps",
-        className: "font-playfair",
-    },
-    {
-        id: "unbounded",
-        name: "Unbounded",
-        displayName: "Unbounded",
-        category: "Unique & Expressive",
-        preview: "The quick brown fox jumps",
-        className: "font-unbounded",
     },
 ];
 
+// Map old font IDs to new ones
+const fontMigration: Record<string, string> = {
+    'inter': 'outfit',
+    'space-grotesk': 'outfit',
+    'cabinet-grotesk': 'dm-sans',
+    'clash-display': 'syne',
+    'playfair': 'dm-sans',
+    'unbounded': 'syne',
+    'bebas-neue': 'syne',
+};
+
 export function getFont(fontId: string): FontConfig {
-    return fontList.find(f => f.id === fontId) || fontList[0];
+    const migratedId = fontMigration[fontId] || fontId;
+    return fontList.find(f => f.id === migratedId) || fontList[0];
 }
