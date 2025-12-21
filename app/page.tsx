@@ -34,20 +34,20 @@ export default function LandingPage() {
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-zinc-950/80 backdrop-blur-xl border-b border-zinc-800/50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="group text-sm sm:text-lg font-medium text-zinc-400 hover:text-white transition-colors flex items-center gap-2">
-            <span className="w-7 h-7 sm:w-8 sm:h-8 bg-white rounded-lg flex items-center justify-center text-xs sm:text-sm font-bold text-zinc-900 shrink-0">D</span>
-            <span>Portfolios for Developers</span>
+          <Link href="/" className="group text-sm sm:text-base font-medium text-zinc-400 hover:text-white transition-colors flex items-center gap-2">
+            <span className="w-8 h-8 bg-white rounded-lg flex items-center justify-center text-sm font-bold text-zinc-900 shrink-0">D</span>
+            <span className="hidden sm:inline">Portfolios for Developers</span>
           </Link>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <Link
               href="/login"
-              className="text-zinc-400 hover:text-white transition-colors px-4 py-2 font-medium"
+              className="text-zinc-400 hover:text-white transition-colors px-2 sm:px-4 py-2 text-sm sm:text-base font-medium whitespace-nowrap"
             >
               Log in
             </Link>
             <Link
               href="/signup"
-              className="px-5 py-2.5 bg-white text-zinc-900 font-medium rounded-full hover:bg-zinc-200 transition-all duration-300"
+              className="px-3 sm:px-5 py-2 sm:py-2.5 bg-white text-zinc-900 text-sm sm:text-base font-medium rounded-full hover:bg-zinc-200 transition-all duration-300 whitespace-nowrap"
             >
               Get Started
             </Link>
