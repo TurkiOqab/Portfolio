@@ -19,7 +19,7 @@ export default function NameStep({ data, updateData }: StepProps) {
         if (isTouched && isEmpty) {
             return `${baseClass} border-red-500/50 focus:border-red-500 focus:ring-red-500`;
         }
-        return `${baseClass} border-zinc-800 focus:border-violet-500 focus:ring-violet-500`;
+        return `${baseClass} border-zinc-800 focus:border-zinc-600 focus:ring-white/20`;
     };
 
     return (
@@ -27,7 +27,7 @@ export default function NameStep({ data, updateData }: StepProps) {
             <div className="text-center">
                 <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
                     What&apos;s your{" "}
-                    <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
+                    <span className="text-slate-400">
                         name?
                     </span>
                 </h1>

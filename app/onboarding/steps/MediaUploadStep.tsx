@@ -167,7 +167,7 @@ export default function MediaUploadStep({ data, updateData, userId, onSkip }: St
             <div className="text-center mb-6">
                 <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
                     Add your{" "}
-                    <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
+                    <span className="text-slate-400">
                         media
                     </span>
                 </h1>
@@ -223,7 +223,7 @@ export default function MediaUploadStep({ data, updateData, userId, onSkip }: St
                             <button
                                 onClick={() => avatarInputRef.current?.click()}
                                 disabled={isUploadingAvatar}
-                                className="px-4 py-2 bg-violet-600 text-white text-sm font-medium rounded-lg hover:bg-violet-500 transition-all disabled:opacity-50"
+                                className="px-4 py-2 bg-white text-zinc-900 text-sm font-medium rounded-lg hover:bg-white transition-all disabled:opacity-50"
                             >
                                 {isUploadingAvatar ? "Uploading..." : avatarPreview ? "Change" : "Upload"}
                             </button>
@@ -246,12 +246,12 @@ export default function MediaUploadStep({ data, updateData, userId, onSkip }: St
 
                     <div className="flex flex-col items-center">
                         <div className="relative mb-4">
-                            <div className={`w-32 h-40 rounded-xl ${cvFileName ? 'bg-violet-600/20 border-violet-500/50' : 'bg-zinc-800 border-zinc-700'} border-2 border-dashed flex flex-col items-center justify-center transition-colors`}>
+                            <div className={`w-32 h-40 rounded-xl ${cvFileName ? 'bg-white/10 border-zinc-600' : 'bg-zinc-800 border-zinc-700'} border-2 border-dashed flex flex-col items-center justify-center transition-colors`}>
                                 {isUploadingCV ? (
-                                    <div className="w-6 h-6 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+                                    <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
                                 ) : cvFileName ? (
                                     <>
-                                        <svg className="w-10 h-10 text-violet-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg className="w-10 h-10 text-white mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                         </svg>
                                         <span className="text-[10px] text-zinc-400 text-center px-2 truncate max-w-full">
@@ -287,7 +287,7 @@ export default function MediaUploadStep({ data, updateData, userId, onSkip }: St
                             <button
                                 onClick={() => cvInputRef.current?.click()}
                                 disabled={isUploadingCV}
-                                className="px-4 py-2 bg-violet-600 text-white text-sm font-medium rounded-lg hover:bg-violet-500 transition-all disabled:opacity-50"
+                                className="px-4 py-2 bg-white text-zinc-900 text-sm font-medium rounded-lg hover:bg-white transition-all disabled:opacity-50"
                             >
                                 {isUploadingCV ? "Uploading..." : cvFileName ? "Change" : "Upload"}
                             </button>

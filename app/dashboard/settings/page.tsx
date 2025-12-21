@@ -21,7 +21,7 @@ export default function SettingsPage() {
     const [email, setEmail] = useState('')
     const [newEmail, setNewEmail] = useState('')
     const [isPublished, setIsPublished] = useState(true)
-    const [theme, setTheme] = useState<ThemeConfig>(getTheme('violet'))
+    const [theme, setTheme] = useState<ThemeConfig>(getTheme('slate'))
     const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
 
     useEffect(() => {
@@ -53,7 +53,7 @@ export default function SettingsPage() {
             if (profile) setUsername(profile.username)
             if (portfolio) {
                 setIsPublished(portfolio.is_published)
-                setTheme(getTheme(portfolio.theme || 'violet'))
+                setTheme(getTheme(portfolio.theme || 'slate'))
             }
 
             setIsLoading(false)

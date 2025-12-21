@@ -173,5 +173,5 @@ const themeMigration: Record<string, string> = {
 export function getTheme(themeId: string): ThemeConfig {
     // Check if it's an old theme ID that needs migration
     const migratedId = themeMigration[themeId] || themeId;
-    return themes[migratedId] || themes.violet;
+    return themes[migratedId] || themes.slate;
 }

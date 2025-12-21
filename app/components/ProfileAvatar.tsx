@@ -21,8 +21,8 @@ export default function ProfileAvatar({ avatarUrl, name, theme, size = "sm" }: P
 
     const initial = name?.charAt(0)?.toUpperCase() || "U";
 
-    // Default to violet gradient for dashboard/consistent styling
-    const gradientClass = theme?.primaryGradient || "from-violet-600 to-purple-600";
+    // Default to slate for dashboard/consistent styling
+    const gradientClass = theme?.primaryGradient || "from-slate-600 to-slate-600";
 
     if (!avatarUrl || imageError) {
         return (

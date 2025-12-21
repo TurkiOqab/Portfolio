@@ -87,7 +87,7 @@ export default function ContactStep({ data, updateData }: StepProps) {
             <div className="text-center mb-6">
                 <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
                     How can people{" "}
-                    <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
+                    <span className="text-slate-400">
                         reach you?
                     </span>
                 </h1>
@@ -115,7 +115,7 @@ export default function ContactStep({ data, updateData }: StepProps) {
                             className={`w-full pl-12 pr-4 py-4 bg-zinc-900 border rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-1 transition-all ${
                                 errors.email
                                     ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-                                    : "border-zinc-800 focus:border-violet-500 focus:ring-violet-500"
+                                    : "border-zinc-800 focus:border-zinc-600 focus:ring-white/20"
                             }`}
                         />
                     </div>
@@ -144,7 +144,7 @@ export default function ContactStep({ data, updateData }: StepProps) {
                             className={`w-full pl-12 pr-4 py-4 bg-zinc-900 border rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-1 transition-all ${
                                 errors.github
                                     ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-                                    : "border-zinc-800 focus:border-violet-500 focus:ring-violet-500"
+                                    : "border-zinc-800 focus:border-zinc-600 focus:ring-white/20"
                             }`}
                         />
                     </div>
@@ -173,7 +173,7 @@ export default function ContactStep({ data, updateData }: StepProps) {
                             className={`w-full pl-12 pr-4 py-4 bg-zinc-900 border rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-1 transition-all ${
                                 errors.linkedin
                                     ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-                                    : "border-zinc-800 focus:border-violet-500 focus:ring-violet-500"
+                                    : "border-zinc-800 focus:border-zinc-600 focus:ring-white/20"
                             }`}
                         />
                     </div>
@@ -202,7 +202,7 @@ export default function ContactStep({ data, updateData }: StepProps) {
                             className={`w-full pl-12 pr-4 py-4 bg-zinc-900 border rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-1 transition-all ${
                                 errors.twitter
                                     ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-                                    : "border-zinc-800 focus:border-violet-500 focus:ring-violet-500"
+                                    : "border-zinc-800 focus:border-zinc-600 focus:ring-white/20"
                             }`}
                         />
                     </div>

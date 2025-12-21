@@ -37,23 +37,23 @@ export default function LoginPage() {
     return (
         <div className="min-h-screen bg-zinc-950 flex items-center justify-center px-6">
             {/* Background Effects */}
-            <div className="absolute inset-0 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950" />
-            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-violet-600/10 rounded-full blur-3xl" />
-            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl" />
+            <div className="absolute inset-0 bg-zinc-950" />
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-slate-600/5 rounded-full blur-3xl" />
+            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-zinc-700/5 rounded-full blur-3xl" />
 
             <div className="relative z-10 w-full max-w-md">
                 {/* Logo */}
                 <div className="text-center mb-8">
                     <Link href="/" className="inline-block">
-                        <h1 className="text-3xl font-bold bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
+                        <h1 className="text-3xl font-bold text-white">
                             DevFolio
                         </h1>
                     </Link>
-                    <p className="text-zinc-400 mt-2">Welcome back</p>
+                    <p className="text-zinc-500 mt-2">Welcome back</p>
                 </div>
 
                 {/* Login Form */}
-                <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-8 backdrop-blur-sm">
+                <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-8">
                     <form onSubmit={handleLogin} className="space-y-6">
                         {error && (
                             <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-xl">
@@ -62,7 +62,7 @@ export default function LoginPage() {
                         )}
 
                         <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-zinc-300 mb-2">
+                            <label htmlFor="email" className="block text-sm font-medium text-zinc-400 mb-2">
                                 Email
                             </label>
                             <input
@@ -71,17 +71,17 @@ export default function LoginPage() {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
-                                className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all"
+                                className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-zinc-600 transition-all"
                                 placeholder="you@example.com"
                             />
                         </div>
 
                         <div>
                             <div className="flex items-center justify-between mb-2">
-                                <label htmlFor="password" className="block text-sm font-medium text-zinc-300">
+                                <label htmlFor="password" className="block text-sm font-medium text-zinc-400">
                                     Password
                                 </label>
-                                <Link href="/forgot-password" className="text-sm text-violet-400 hover:text-violet-300 transition-colors">
+                                <Link href="/forgot-password" className="text-sm text-zinc-400 hover:text-white transition-colors">
                                     Forgot password?
                                 </Link>
                             </div>
@@ -91,7 +91,7 @@ export default function LoginPage() {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
-                                className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all"
+                                className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-zinc-600 transition-all"
                                 placeholder="••••••••"
                             />
                         </div>
@@ -99,7 +99,7 @@ export default function LoginPage() {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white font-medium rounded-xl hover:from-violet-500 hover:to-purple-500 transition-all duration-300 shadow-lg shadow-purple-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full py-3 bg-white text-zinc-900 font-medium rounded-xl hover:bg-zinc-100 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {isLoading ? (
                                 <span className="flex items-center justify-center gap-2">
@@ -116,9 +116,9 @@ export default function LoginPage() {
                     </form>
 
                     <div className="mt-6 text-center">
-                        <p className="text-zinc-400 text-sm">
+                        <p className="text-zinc-500 text-sm">
                             Don&apos;t have an account?{' '}
-                            <Link href="/signup" className="text-violet-400 hover:text-violet-300 transition-colors">
+                            <Link href="/signup" className="text-white hover:text-zinc-300 transition-colors">
                                 Sign up
                             </Link>
                         </p>

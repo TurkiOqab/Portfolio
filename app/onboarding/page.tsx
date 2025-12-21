@@ -86,7 +86,7 @@ export default function OnboardingPage() {
                         endDate: p.end_date || undefined,
                     })),
                     contact: portfolio.contact || { email: "" },
-                    theme: portfolio.theme || "violet",
+                    theme: portfolio.theme || "slate",
                     font: portfolio.font || "outfit",
                 });
             }
@@ -234,7 +234,7 @@ export default function OnboardingPage() {
     if (isLoading) {
         return (
             <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-                <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+                <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin" />
             </div>
         );
     }
@@ -252,9 +252,9 @@ export default function OnboardingPage() {
     return (
         <div className="min-h-screen bg-zinc-950 flex flex-col relative overflow-hidden">
             {/* Global Background Effects */}
-            <div className="fixed inset-0 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 z-0" />
-            <div className="fixed top-1/4 left-1/4 w-96 h-96 bg-violet-600/30 rounded-full blur-3xl animate-pulse z-0 pointer-events-none" />
-            <div className="fixed bottom-1/4 right-1/4 w-96 h-96 bg-purple-600/30 rounded-full blur-3xl animate-pulse z-0 pointer-events-none" />
+            <div className="fixed inset-0 bg-zinc-950 z-0" />
+            <div className="fixed top-1/4 left-1/4 w-96 h-96 bg-slate-600/10 rounded-full blur-3xl z-0 pointer-events-none" />
+            <div className="fixed bottom-1/4 right-1/4 w-96 h-96 bg-zinc-700/10 rounded-full blur-3xl z-0 pointer-events-none" />
 
             {/* Grid Pattern */}
             <div
@@ -271,19 +271,19 @@ export default function OnboardingPage() {
                         <span className="text-sm text-zinc-400">
                             Step {currentStep} of {TOTAL_STEPS}
                         </span>
-                        <span className="text-sm text-violet-400 font-medium">
+                        <span className="text-sm text-white font-medium">
                             {stepTitles[currentStep - 1]}
                         </span>
                     </div>
                     <div className="h-1 bg-zinc-800 rounded-full overflow-hidden">
                         <div
-                            className="h-full bg-gradient-to-r from-violet-600 to-purple-600 transition-all duration-500"
+                            className="h-full bg-white transition-all duration-500"
                             style={{ width: `${(currentStep / TOTAL_STEPS) * 100}%` }}
                         />
                     </div>
                     {username && (
                         <p className="text-xs text-zinc-500 mt-2 text-center">
-                            Your portfolio will be live at: <span className="text-violet-400">devfolio.com/{username}</span>
+                            Your portfolio will be live at: <span className="text-white">devfolio.com/{username}</span>
                         </p>
                     )}
                 </div>
@@ -347,7 +347,7 @@ export default function OnboardingPage() {
                             <button
                                 onClick={nextStep}
                                 disabled={!canProceed() || isSaving}
-                                className="px-8 py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white font-medium rounded-full hover:from-violet-500 hover:to-purple-500 transition-all duration-300 shadow-lg shadow-purple-500/25 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                className="px-8 py-3 bg-white text-zinc-900 font-medium rounded-full hover:bg-zinc-100 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                             >
                                 {isSaving ? (
                                     <>

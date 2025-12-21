@@ -66,7 +66,7 @@ export default function ExperienceStep({ data, updateData }: StepProps) {
             <div className="text-center">
                 <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
                     Work{" "}
-                    <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
+                    <span className="text-slate-400">
                         experience
                     </span>
                 </h1>
@@ -87,7 +87,7 @@ export default function ExperienceStep({ data, updateData }: StepProps) {
                                 setCurrentExperience((prev) => ({ ...prev, company: e.target.value }))
                             }
                             placeholder="Google"
-                            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 transition-all"
+                            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-600 transition-all"
                         />
                     </div>
                     <div>
@@ -101,7 +101,7 @@ export default function ExperienceStep({ data, updateData }: StepProps) {
                                 setCurrentExperience((prev) => ({ ...prev, title: e.target.value }))
                             }
                             placeholder="Software Engineer"
-                            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 transition-all"
+                            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-600 transition-all"
                         />
                     </div>
                 </div>
@@ -117,7 +117,7 @@ export default function ExperienceStep({ data, updateData }: StepProps) {
                             onChange={(e) =>
                                 setCurrentExperience((prev) => ({ ...prev, startDate: e.target.value }))
                             }
-                            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white focus:outline-none focus:border-violet-500 transition-all"
+                            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white focus:outline-none focus:border-zinc-600 transition-all"
                         />
                     </div>
                     <div>
@@ -132,14 +132,14 @@ export default function ExperienceStep({ data, updateData }: StepProps) {
                                     setCurrentExperience((prev) => ({ ...prev, endDate: e.target.value }))
                                 }
                                 disabled={currentExperience.isPresent}
-                                className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white focus:outline-none focus:border-violet-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white focus:outline-none focus:border-zinc-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                             />
                             <label className="flex items-center gap-2 cursor-pointer">
                                 <input
                                     type="checkbox"
                                     checked={currentExperience.isPresent}
                                     onChange={handlePresentToggle}
-                                    className="w-4 h-4 rounded border-zinc-600 bg-zinc-800 text-violet-500 focus:ring-violet-500"
+                                    className="w-4 h-4 rounded border-zinc-600 bg-zinc-800 text-white accent-white focus:ring-white/20"
                                 />
                                 <span className="text-sm text-zinc-400">I currently work here</span>
                             </label>
@@ -158,14 +158,14 @@ export default function ExperienceStep({ data, updateData }: StepProps) {
                         }
                         placeholder="Describe your key responsibilities and achievements..."
                         rows={3}
-                        className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 transition-all resize-none"
+                        className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-600 transition-all resize-none"
                     />
                 </div>
 
                 <button
                     onClick={addExperience}
                     disabled={!currentExperience.company.trim() || !currentExperience.title.trim()}
-                    className="w-full py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white font-medium rounded-xl hover:from-violet-500 hover:to-purple-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full py-3 bg-white text-zinc-900 font-medium rounded-xl hover:bg-zinc-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     {isEditing ? "Update Experience" : "+ Add Experience"}
                 </button>
@@ -193,7 +193,7 @@ export default function ExperienceStep({ data, updateData }: StepProps) {
                             <div className="flex gap-2">
                                 <button
                                     onClick={() => editExperience(exp)}
-                                    className="p-2 text-zinc-400 hover:text-violet-400 transition-colors"
+                                    className="p-2 text-zinc-400 hover:text-white transition-colors"
                                 >
                                     ✎
                                 </button>

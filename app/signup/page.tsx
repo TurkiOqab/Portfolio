@@ -31,17 +31,16 @@ export default function SignupPage() {
                 .eq('username', value.toLowerCase())
                 .single()
 
-            // PGRST116 means no rows found - username is available
             if (error && error.code !== 'PGRST116') {
                 console.error('Error checking username:', error)
-                setUsernameStatus('available') // Assume available on error
+                setUsernameStatus('available')
                 return
             }
 
             setUsernameStatus(data ? 'taken' : 'available')
         } catch (err) {
             console.error('Failed to check username:', err)
-            setUsernameStatus('available') // Assume available on error
+            setUsernameStatus('available')
         }
     }
 
@@ -49,7 +48,6 @@ export default function SignupPage() {
         const value = e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, '')
         setUsername(value)
 
-        // Debounce username check
         const timeoutId = setTimeout(() => checkUsername(value), 500)
         return () => clearTimeout(timeoutId)
     }
@@ -78,7 +76,6 @@ export default function SignupPage() {
 
         const supabase = createClient()
 
-        // Sign up the user with username in metadata
         const { data: authData, error: authError } = await supabase.auth.signUp({
             email,
             password,
@@ -90,7 +87,6 @@ export default function SignupPage() {
         })
 
         if (authError) {
-            // Check for duplicate email error
             if (authError.message.toLowerCase().includes('already registered') ||
                 authError.message.toLowerCase().includes('already been registered') ||
                 authError.message.toLowerCase().includes('user already exists')) {
@@ -116,23 +112,23 @@ export default function SignupPage() {
     return (
         <div className="min-h-screen bg-zinc-950 flex items-center justify-center px-6">
             {/* Background Effects */}
-            <div className="absolute inset-0 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950" />
-            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-violet-600/10 rounded-full blur-3xl" />
-            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl" />
+            <div className="absolute inset-0 bg-zinc-950" />
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-slate-600/5 rounded-full blur-3xl" />
+            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-zinc-700/5 rounded-full blur-3xl" />
 
             <div className="relative z-10 w-full max-w-md">
                 {/* Logo */}
                 <div className="text-center mb-8">
                     <Link href="/" className="inline-block">
-                        <h1 className="text-3xl font-bold bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
+                        <h1 className="text-3xl font-bold text-white">
                             DevFolio
                         </h1>
                     </Link>
-                    <p className="text-zinc-400 mt-2">Create your portfolio in minutes</p>
+                    <p className="text-zinc-500 mt-2">Create your portfolio in minutes</p>
                 </div>
 
                 {/* Signup Form */}
-                <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-8 backdrop-blur-sm">
+                <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-8">
                     <form onSubmit={handleSignup} className="space-y-6">
                         {error && (
                             <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-xl">
@@ -141,7 +137,7 @@ export default function SignupPage() {
                         )}
 
                         <div>
-                            <label htmlFor="username" className="block text-sm font-medium text-zinc-300 mb-2">
+                            <label htmlFor="username" className="block text-sm font-medium text-zinc-400 mb-2">
                                 Username
                             </label>
                             <div className="relative">
@@ -154,7 +150,7 @@ export default function SignupPage() {
                                     value={username}
                                     onChange={handleUsernameChange}
                                     required
-                                    className="w-full pl-32 pr-10 py-3 bg-zinc-800/50 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all"
+                                    className="w-full pl-32 pr-10 py-3 bg-zinc-800/50 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-zinc-600 transition-all"
                                     placeholder="yourname"
                                 />
                                 {usernameStatus === 'checking' && (
@@ -189,7 +185,7 @@ export default function SignupPage() {
                         </div>
 
                         <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-zinc-300 mb-2">
+                            <label htmlFor="email" className="block text-sm font-medium text-zinc-400 mb-2">
                                 Email
                             </label>
                             <input
@@ -198,13 +194,13 @@ export default function SignupPage() {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
-                                className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all"
+                                className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-zinc-600 transition-all"
                                 placeholder="you@example.com"
                             />
                         </div>
 
                         <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-zinc-300 mb-2">
+                            <label htmlFor="password" className="block text-sm font-medium text-zinc-400 mb-2">
                                 Password
                             </label>
                             <input
@@ -214,7 +210,7 @@ export default function SignupPage() {
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
                                 minLength={8}
-                                className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all"
+                                className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-zinc-600 transition-all"
                                 placeholder="••••••••"
                             />
                             <p className="text-zinc-500 text-xs mt-1">Min 8 chars with uppercase, lowercase, and number</p>
@@ -223,7 +219,7 @@ export default function SignupPage() {
                         <button
                             type="submit"
                             disabled={isLoading || usernameStatus === 'taken'}
-                            className="w-full py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white font-medium rounded-xl hover:from-violet-500 hover:to-purple-500 transition-all duration-300 shadow-lg shadow-purple-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full py-3 bg-white text-zinc-900 font-medium rounded-xl hover:bg-zinc-100 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {isLoading ? (
                                 <span className="flex items-center justify-center gap-2">
@@ -240,9 +236,9 @@ export default function SignupPage() {
                     </form>
 
                     <div className="mt-6 text-center">
-                        <p className="text-zinc-400 text-sm">
+                        <p className="text-zinc-500 text-sm">
                             Already have an account?{' '}
-                            <Link href="/login" className="text-violet-400 hover:text-violet-300 transition-colors">
+                            <Link href="/login" className="text-white hover:text-zinc-300 transition-colors">
                                 Sign in
                             </Link>
                         </p>

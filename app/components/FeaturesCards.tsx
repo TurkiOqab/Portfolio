@@ -7,7 +7,7 @@ const features = [
     title: 'Lightning Fast Setup',
     description: 'Be live in under 5 minutes. Our guided wizard makes it simple to create a stunning portfolio that showcases your work professionally.',
     icon: (
-      <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
       </svg>
     ),
@@ -16,7 +16,7 @@ const features = [
     title: 'Your Own URL',
     description: 'Get a personalized URL like devfolio.com/yourname that you can share anywhere. Make it easy for recruiters and clients to find you.',
     icon: (
-      <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
       </svg>
     ),
@@ -25,7 +25,7 @@ const features = [
     title: 'Beautiful Designs',
     description: 'Modern, responsive designs that look great on any device. No design skills needed — just fill in your details and watch your portfolio come to life.',
     icon: (
-      <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
       </svg>
     ),
@@ -138,8 +138,8 @@ export default function FeaturesCards() {
         <div className="relative w-full max-w-3xl mx-auto">
           {/* Subtle glow effect */}
           <div
-            className="absolute inset-0 bg-violet-600/10 blur-3xl transition-all duration-700"
-            style={{ opacity: isHovered ? 0.4 : 0.2 }}
+            className="absolute inset-0 bg-slate-600/10 blur-3xl transition-all duration-700"
+            style={{ opacity: isHovered ? 0.3 : 0.1 }}
           />
 
           {/* 3D Tilt Container */}
@@ -158,8 +158,8 @@ export default function FeaturesCards() {
             <div className="relative bg-zinc-900/80 border border-zinc-800 rounded-3xl p-10 md:p-14 shadow-2xl min-h-[280px] md:min-h-[260px]">
               <div className="flex flex-col md:flex-row md:items-start gap-6">
                 {/* Icon */}
-                <div className="flex-shrink-0 w-16 h-16 bg-violet-600 rounded-2xl flex items-center justify-center transition-all duration-500">
-                  {currentFeature.icon}
+                <div className="flex-shrink-0 w-16 h-16 bg-white rounded-2xl flex items-center justify-center transition-all duration-500">
+                  <div className="text-zinc-900">{currentFeature.icon}</div>
                 </div>
 
                 {/* Content */}
@@ -167,13 +167,13 @@ export default function FeaturesCards() {
                   <h3 className="text-2xl md:text-3xl font-bold text-white mb-3 min-h-[2.25rem]">
                     {displayedTitle}
                     {isTyping && displayedDesc.length === 0 && (
-                      <span className="animate-pulse text-violet-400">|</span>
+                      <span className="animate-pulse text-slate-400">|</span>
                     )}
                   </h3>
                   <p className="text-zinc-400 text-lg leading-relaxed min-h-[4.5rem]">
                     {displayedDesc}
                     {isTyping && displayedDesc.length > 0 && (
-                      <span className="animate-pulse text-violet-400">|</span>
+                      <span className="animate-pulse text-slate-400">|</span>
                     )}
                   </p>
                 </div>
@@ -185,10 +185,10 @@ export default function FeaturesCards() {
                   <button
                     key={index}
                     onClick={() => setActiveIndex(index)}
-                    className="h-2 rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:ring-offset-2 focus:ring-offset-zinc-900"
+                    className="h-2 rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/30 focus:ring-offset-2 focus:ring-offset-zinc-900"
                     style={{
                       width: index === activeIndex ? '2.5rem' : '0.5rem',
-                      backgroundColor: index === activeIndex ? 'rgb(124, 58, 237)' : 'rgb(63, 63, 70)',
+                      backgroundColor: index === activeIndex ? 'rgb(255, 255, 255)' : 'rgb(63, 63, 70)',
                     }}
                     aria-label={`Go to feature: ${feature.title}`}
                     aria-selected={index === activeIndex}

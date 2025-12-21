@@ -88,12 +88,12 @@ export default function HowItWorks() {
                 {/* Step Card */}
                 <div className="relative bg-zinc-900/50 border border-zinc-800 rounded-2xl p-8 text-center">
                   {/* Step Number */}
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-violet-600 rounded-full text-sm font-bold text-white">
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-white rounded-full text-sm font-bold text-zinc-900">
                     {step.number}
                   </div>
 
                   {/* Icon */}
-                  <div className="w-16 h-16 mx-auto mb-6 mt-2 bg-zinc-800 rounded-2xl flex items-center justify-center text-violet-400">
+                  <div className="w-16 h-16 mx-auto mb-6 mt-2 bg-zinc-800 rounded-2xl flex items-center justify-center text-slate-400">
                     {step.icon}
                   </div>
 

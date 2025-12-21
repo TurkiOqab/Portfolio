@@ -106,7 +106,7 @@ export default function ProfilePictureStep({ data, updateData, userId }: StepPro
             <div className="text-center mb-6">
                 <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
                     Add a{" "}
-                    <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
+                    <span className="text-slate-400">
                         profile picture
                     </span>
                 </h1>
@@ -160,7 +160,7 @@ export default function ProfilePictureStep({ data, updateData, userId }: StepPro
                     <button
                         onClick={() => fileInputRef.current?.click()}
                         disabled={isUploading}
-                        className="px-6 py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white font-medium rounded-xl hover:from-violet-500 hover:to-purple-500 transition-all disabled:opacity-50 flex items-center gap-2"
+                        className="px-6 py-3 bg-white text-zinc-900 font-medium rounded-xl hover:bg-zinc-100 transition-all disabled:opacity-50 flex items-center gap-2"
                     >
                         {isUploading ? (
                             <>

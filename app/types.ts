@@ -69,6 +69,6 @@ export const defaultPortfolioData: PortfolioData = {
         linkedin: "",
         twitter: "",
     },
-    theme: "violet",
+    theme: "slate",
     font: "outfit",
 };

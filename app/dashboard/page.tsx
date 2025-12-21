@@ -63,7 +63,7 @@ export default async function DashboardPage() {
     const font = getFont(portfolio.font || 'outfit')
 
     // Get theme configuration
-    const theme = getTheme(portfolio.theme || 'violet')
+    const theme = getTheme(portfolio.theme || 'slate')
 
     return (
         <div className={`min-h-screen bg-zinc-950 relative overflow-hidden ${font.className}`}>

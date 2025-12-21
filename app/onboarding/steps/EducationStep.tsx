@@ -69,7 +69,7 @@ export default function EducationStep({ data, updateData }: StepProps) {
             <div className="text-center">
                 <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
                     Your{" "}
-                    <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
+                    <span className="text-slate-400">
                         education
                     </span>
                 </h1>
@@ -90,7 +90,7 @@ export default function EducationStep({ data, updateData }: StepProps) {
                                 setCurrentEducation((prev) => ({ ...prev, institution: e.target.value }))
                             }
                             placeholder="Harvard University"
-                            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 transition-all"
+                            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-600 transition-all"
                         />
                     </div>
                     <div>
@@ -102,7 +102,7 @@ export default function EducationStep({ data, updateData }: StepProps) {
                             onChange={(e) =>
                                 setCurrentEducation((prev) => ({ ...prev, degreeLevel: e.target.value }))
                             }
-                            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white focus:outline-none focus:border-violet-500 transition-all"
+                            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white focus:outline-none focus:border-zinc-600 transition-all"
                         >
                             <option value="">Select level</option>
                             {DEGREE_LEVELS.map((level) => (
@@ -126,7 +126,7 @@ export default function EducationStep({ data, updateData }: StepProps) {
                                 setCurrentEducation((prev) => ({ ...prev, degreeName: e.target.value }))
                             }
                             placeholder="Computer Science"
-                            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 transition-all"
+                            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-600 transition-all"
                         />
                     </div>
                     <div>
@@ -140,7 +140,7 @@ export default function EducationStep({ data, updateData }: StepProps) {
                                 setCurrentEducation((prev) => ({ ...prev, gpa: e.target.value }))
                             }
                             placeholder="3.8 / 4.0"
-                            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 transition-all"
+                            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-600 transition-all"
                         />
                     </div>
                 </div>
@@ -156,7 +156,7 @@ export default function EducationStep({ data, updateData }: StepProps) {
                             onChange={(e) =>
                                 setCurrentEducation((prev) => ({ ...prev, startDate: e.target.value }))
                             }
-                            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white focus:outline-none focus:border-violet-500 transition-all"
+                            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white focus:outline-none focus:border-zinc-600 transition-all"
                         />
                     </div>
                     <div>
@@ -169,7 +169,7 @@ export default function EducationStep({ data, updateData }: StepProps) {
                             onChange={(e) =>
                                 setCurrentEducation((prev) => ({ ...prev, endDate: e.target.value }))
                             }
-                            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white focus:outline-none focus:border-violet-500 transition-all"
+                            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white focus:outline-none focus:border-zinc-600 transition-all"
                         />
                     </div>
                 </div>
@@ -177,7 +177,7 @@ export default function EducationStep({ data, updateData }: StepProps) {
                 <button
                     onClick={addEducation}
                     disabled={!currentEducation.institution.trim() || !currentEducation.degreeLevel}
-                    className="w-full py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white font-medium rounded-xl hover:from-violet-500 hover:to-purple-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full py-3 bg-white text-zinc-900 font-medium rounded-xl hover:bg-zinc-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     {isEditing ? "Update Education" : "+ Add Education"}
                 </button>
@@ -205,7 +205,7 @@ export default function EducationStep({ data, updateData }: StepProps) {
                             <div className="flex gap-2">
                                 <button
                                     onClick={() => editEducation(edu)}
-                                    className="p-2 text-zinc-400 hover:text-violet-400 transition-colors"
+                                    className="p-2 text-zinc-400 hover:text-white transition-colors"
                                 >
                                     ✎
                                 </button>

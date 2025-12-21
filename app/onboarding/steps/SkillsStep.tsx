@@ -119,7 +119,7 @@ export default function SkillsStep({ data, updateData }: StepProps) {
             <div className="text-center">
                 <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
                     What are your{" "}
-                    <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
+                    <span className="text-slate-400">
                         skills?
                     </span>
                 </h1>
@@ -144,7 +144,7 @@ export default function SkillsStep({ data, updateData }: StepProps) {
                             className={`
                                 flex flex-col items-center justify-center gap-2 p-4 rounded-xl border transition-all duration-200
                                 ${selected
-                                    ? "bg-violet-600/20 border-violet-500 ring-1 ring-violet-500/50"
+                                    ? "bg-white/10 border-white ring-1 ring-white/30"
                                     : "bg-zinc-900/50 border-zinc-800 hover:border-zinc-600 hover:bg-zinc-800/50"
                                 }
                             `}
@@ -157,7 +157,7 @@ export default function SkillsStep({ data, updateData }: StepProps) {
                                 {skill.name}
                             </span>
                             {selected && (
-                                <div className="absolute top-1 right-1 w-2 h-2 bg-violet-500 rounded-full" />
+                                <div className="absolute top-1 right-1 w-2 h-2 bg-white rounded-full" />
                             )}
                         </button>
                     );
@@ -176,13 +176,13 @@ export default function SkillsStep({ data, updateData }: StepProps) {
                             return (
                                 <span
                                     key={skill}
-                                    className="inline-flex items-center gap-2 px-3 py-1.5 bg-violet-600/20 border border-violet-500/30 rounded-full text-sm text-violet-300"
+                                    className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/10 border border-white/20 rounded-full text-sm text-zinc-300"
                                 >
                                     {Icon && <Icon className="w-4 h-4" style={{ color: skillData?.color }} />}
                                     {skill}
                                     <button
                                         onClick={() => toggleSkill(skill)}
-                                        className="w-4 h-4 flex items-center justify-center rounded-full bg-violet-500/30 hover:bg-violet-500/50 transition-colors text-xs"
+                                        className="w-4 h-4 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition-colors text-xs"
                                     >
                                         ×
                                     </button>

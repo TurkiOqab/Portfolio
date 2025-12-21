@@ -69,7 +69,7 @@ export default function ResetPasswordPage() {
     if (isChecking) {
         return (
             <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-                <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+                <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin" />
             </div>
         )
     }
@@ -77,23 +77,23 @@ export default function ResetPasswordPage() {
     return (
         <div className="min-h-screen bg-zinc-950 flex items-center justify-center px-6">
             {/* Background Effects */}
-            <div className="absolute inset-0 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950" />
-            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-violet-600/10 rounded-full blur-3xl" />
-            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl" />
+            <div className="absolute inset-0 bg-zinc-950" />
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-slate-600/5 rounded-full blur-3xl" />
+            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-zinc-700/5 rounded-full blur-3xl" />
 
             <div className="relative z-10 w-full max-w-md">
                 {/* Logo */}
                 <div className="text-center mb-8">
                     <Link href="/" className="inline-block">
-                        <h1 className="text-3xl font-bold bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
+                        <h1 className="text-3xl font-bold text-white">
                             DevFolio
                         </h1>
                     </Link>
-                    <p className="text-zinc-400 mt-2">Set new password</p>
+                    <p className="text-zinc-500 mt-2">Set new password</p>
                 </div>
 
                 {/* Reset Form */}
-                <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-8 backdrop-blur-sm">
+                <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-8">
                     {!isValidSession ? (
                         <div className="text-center">
                             <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -107,7 +107,7 @@ export default function ResetPasswordPage() {
                             </p>
                             <Link
                                 href="/forgot-password"
-                                className="inline-block px-6 py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white font-medium rounded-xl hover:from-violet-500 hover:to-purple-500 transition-all"
+                                className="inline-block px-6 py-3 bg-white text-zinc-900 font-medium rounded-xl hover:bg-zinc-100 transition-all"
                             >
                                 Request New Link
                             </Link>
@@ -133,7 +133,7 @@ export default function ResetPasswordPage() {
                             )}
 
                             <div>
-                                <label htmlFor="password" className="block text-sm font-medium text-zinc-300 mb-2">
+                                <label htmlFor="password" className="block text-sm font-medium text-zinc-400 mb-2">
                                     New Password
                                 </label>
                                 <input
@@ -143,13 +143,13 @@ export default function ResetPasswordPage() {
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
                                     minLength={6}
-                                    className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all"
+                                    className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-zinc-600 transition-all"
                                     placeholder="••••••••"
                                 />
                             </div>
 
                             <div>
-                                <label htmlFor="confirmPassword" className="block text-sm font-medium text-zinc-300 mb-2">
+                                <label htmlFor="confirmPassword" className="block text-sm font-medium text-zinc-400 mb-2">
                                     Confirm New Password
                                 </label>
                                 <input
@@ -159,7 +159,7 @@ export default function ResetPasswordPage() {
                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                     required
                                     minLength={6}
-                                    className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all"
+                                    className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-zinc-600 transition-all"
                                     placeholder="••••••••"
                                 />
                             </div>
@@ -167,7 +167,7 @@ export default function ResetPasswordPage() {
                             <button
                                 type="submit"
                                 disabled={isLoading}
-                                className="w-full py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white font-medium rounded-xl hover:from-violet-500 hover:to-purple-500 transition-all duration-300 shadow-lg shadow-purple-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-full py-3 bg-white text-zinc-900 font-medium rounded-xl hover:bg-zinc-100 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {isLoading ? (
                                     <span className="flex items-center justify-center gap-2">

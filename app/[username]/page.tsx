@@ -55,7 +55,7 @@ export default async function PortfolioPage({ params }: PageProps) {
     }
 
     // Get theme and font
-    const theme = getTheme(portfolio.theme || 'violet')
+    const theme = getTheme(portfolio.theme || 'slate')
     const font = getFont(portfolio.font || 'outfit')
 
     // Fetch projects

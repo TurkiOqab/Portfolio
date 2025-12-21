@@ -20,7 +20,7 @@ export default function BioStep({ data, updateData }: StepProps) {
             <div className="text-center">
                 <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
                     Tell us about{" "}
-                    <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
+                    <span className="text-slate-400">
                         yourself
                     </span>
                 </h1>
@@ -40,7 +40,7 @@ export default function BioStep({ data, updateData }: StepProps) {
                     rows={6}
                     className={`w-full px-4 py-4 bg-zinc-900 border rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-1 transition-all text-lg resize-none ${bioLength > 0 && !isValid
                         ? "border-amber-500/50 focus:border-amber-500 focus:ring-amber-500"
-                        : "border-zinc-800 focus:border-violet-500 focus:ring-violet-500"
+                        : "border-zinc-800 focus:border-zinc-600 focus:ring-white/20"
                         }`}
                 />
                 <div className="mt-2 flex justify-end items-center">

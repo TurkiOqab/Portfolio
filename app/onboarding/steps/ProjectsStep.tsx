@@ -275,7 +275,7 @@ export default function ProjectsStep({ data, updateData, onSkip, userId }: StepP
             <div className="text-center">
                 <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
                     Showcase your{" "}
-                    <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
+                    <span className="text-slate-400">
                         work
                     </span>
                 </h1>
@@ -296,7 +296,7 @@ export default function ProjectsStep({ data, updateData, onSkip, userId }: StepP
                                 setCurrentProject((prev) => ({ ...prev, title: e.target.value }))
                             }
                             placeholder="E-Commerce Platform"
-                            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 transition-all"
+                            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-600 transition-all"
                         />
                     </div>
                     <div>
@@ -338,13 +338,13 @@ export default function ProjectsStep({ data, updateData, onSkip, userId }: StepP
                             return (
                                 <span
                                     key={tag}
-                                    className="inline-flex items-center gap-2 px-3 py-1.5 bg-violet-600/20 border border-violet-500/30 rounded-full text-sm text-violet-300"
+                                    className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/10 border border-white/20 rounded-full text-sm text-zinc-300"
                                 >
                                     {Icon && <Icon className="w-4 h-4" style={{ color: tagData?.color }} />}
                                     {tag}
                                     <button
                                         onClick={() => removeTag(tag)}
-                                        className="w-4 h-4 flex items-center justify-center rounded-full bg-violet-500/30 hover:bg-violet-500/50 transition-colors text-xs"
+                                        className="w-4 h-4 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition-colors text-xs"
                                     >
                                         ×
                                     </button>
@@ -372,7 +372,7 @@ export default function ProjectsStep({ data, updateData, onSkip, userId }: StepP
                                         className={`
                                             flex flex-col items-center justify-center gap-1.5 p-3 rounded-lg border transition-all duration-200
                                             ${selected
-                                                ? "bg-violet-600/20 border-violet-500 ring-1 ring-violet-500/50"
+                                                ? "bg-white/10 border-white ring-1 ring-white/30"
                                                 : disabled
                                                     ? "bg-zinc-900/30 border-zinc-800 opacity-40 cursor-not-allowed"
                                                     : "bg-zinc-900/50 border-zinc-700 hover:border-zinc-600 hover:bg-zinc-800/50"
@@ -407,7 +407,7 @@ export default function ProjectsStep({ data, updateData, onSkip, userId }: StepP
                         }
                         placeholder="A brief description of your project..."
                         rows={3}
-                        className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 transition-all resize-none"
+                        className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-600 transition-all resize-none"
                     />
                 </div>
 
@@ -492,7 +492,7 @@ export default function ProjectsStep({ data, updateData, onSkip, userId }: StepP
                             onChange={(e) =>
                                 setCurrentProject((prev) => ({ ...prev, startDate: e.target.value }))
                             }
-                            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 transition-all"
+                            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-600 transition-all"
                         />
                     </div>
                     <div>
@@ -505,7 +505,7 @@ export default function ProjectsStep({ data, updateData, onSkip, userId }: StepP
                             onChange={(e) =>
                                 setCurrentProject((prev) => ({ ...prev, endDate: e.target.value }))
                             }
-                            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 transition-all"
+                            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-600 transition-all"
                         />
                     </div>
                 </div>
@@ -523,7 +523,7 @@ export default function ProjectsStep({ data, updateData, onSkip, userId }: StepP
                                 setCurrentProject((prev) => ({ ...prev, liveUrl: e.target.value }));
                             }}
                             placeholder="https://myproject.com"
-                            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 transition-all"
+                            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-600 transition-all"
                         />
                     </div>
                     <div>
@@ -541,7 +541,7 @@ export default function ProjectsStep({ data, updateData, onSkip, userId }: StepP
                                 }));
                             }}
                             placeholder="https://github.com/user/repo"
-                            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 transition-all"
+                            className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-600 transition-all"
                         />
                     </div>
                 </div>
@@ -549,7 +549,7 @@ export default function ProjectsStep({ data, updateData, onSkip, userId }: StepP
                 <button
                     onClick={addProject}
                     disabled={!currentProject.title.trim()}
-                    className="w-full py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white font-medium rounded-xl hover:from-violet-500 hover:to-purple-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full py-3 bg-white text-zinc-900 font-medium rounded-xl hover:bg-zinc-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     {isEditing ? "Update Project" : "+ Add Project"}
                 </button>
@@ -582,7 +582,7 @@ export default function ProjectsStep({ data, updateData, onSkip, userId }: StepP
                             <div className="flex gap-2">
                                 <button
                                     onClick={() => editProject(project)}
-                                    className="p-2 text-zinc-400 hover:text-violet-400 transition-colors"
+                                    className="p-2 text-zinc-400 hover:text-white transition-colors"
                                 >
                                     ✎
                                 </button>

@@ -44,7 +44,7 @@ export default function DashboardError({
                     <div className="flex flex-col sm:flex-row gap-3 justify-center">
                         <button
                             onClick={reset}
-                            className="px-6 py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white rounded-lg font-medium hover:from-violet-500 hover:to-purple-500 transition-all duration-200"
+                            className="px-6 py-3 bg-white text-zinc-900 rounded-lg font-medium hover:bg-zinc-100 transition-all duration-200"
                         >
                             Try again
                         </button>

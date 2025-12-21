@@ -32,7 +32,7 @@ export default function PortfolioContentStep({ data, updateData, onSkip, userId 
             <div className="text-center">
                 <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
                     Build your{" "}
-                    <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
+                    <span className="text-slate-400">
                         portfolio
                     </span>
                 </h1>
@@ -50,7 +50,7 @@ export default function PortfolioContentStep({ data, updateData, onSkip, userId 
                             onClick={() => setActiveTab(tab.id)}
                             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                                 activeTab === tab.id
-                                    ? "bg-violet-600 text-white"
+                                    ? "bg-white text-zinc-900"
                                     : "text-zinc-400 hover:text-white"
                             }`}
                         >
@@ -58,7 +58,7 @@ export default function PortfolioContentStep({ data, updateData, onSkip, userId 
                             {tab.count > 0 && (
                                 <span className={`ml-2 px-1.5 py-0.5 rounded-full text-xs ${
                                     activeTab === tab.id
-                                        ? "bg-violet-500 text-white"
+                                        ? "bg-white text-zinc-900"
                                         : "bg-zinc-700 text-zinc-300"
                                 }`}>
                                     {tab.count}

@@ -139,7 +139,7 @@ function FontPreview({ font, isSelected, onClick }: {
 }
 
 export default function ThemeStep({ data, updateData }: StepProps) {
-    const selectedThemeId = data.theme || 'violet';
+    const selectedThemeId = data.theme || 'slate';
     const selectedTheme = getTheme(selectedThemeId);
     const selectedFontId = data.font || 'outfit';
     const selectedFont = getFont(selectedFontId);
@@ -149,7 +149,7 @@ export default function ThemeStep({ data, updateData }: StepProps) {
             <div className="text-center">
                 <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
                     Choose your{" "}
-                    <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
+                    <span className="text-slate-400">
                         style
                     </span>
                 </h1>
@@ -161,7 +161,7 @@ export default function ThemeStep({ data, updateData }: StepProps) {
             {/* Live Preview */}
             <div className="transition-all duration-500">
                 <p className="text-sm text-zinc-500 mb-2 text-center">
-                    Preview: <span className={`font-medium ${selectedTheme.textAccent}`}>{selectedTheme.name}</span> theme with <span className="font-medium text-violet-400">{selectedFont.displayName}</span> font
+                    Preview: <span className={`font-medium ${selectedTheme.textAccent}`}>{selectedTheme.name}</span> theme with <span className="font-medium text-white">{selectedFont.displayName}</span> font
                 </p>
                 <LivePreview theme={selectedTheme} font={selectedFont} name={data.name} />
             </div>
