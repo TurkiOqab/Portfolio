@@ -152,7 +152,6 @@ export default function PortfolioMockup() {
               {/* Main Heading with Typewriter */}
               <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 tracking-tight min-h-[2.5rem] md:min-h-[3rem]">
                 {renderTypedText()}
-                <span className="animate-pulse text-slate-400">|</span>
               </h3>
 
               {/* Bio */}

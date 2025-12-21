@@ -70,7 +70,6 @@ export default function LandingHero() {
         {/* Main Heading with Typing Effect */}
         <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight leading-tight min-h-[1.2em] md:min-h-[2.4em]">
           {renderText()}
-          <span className={`inline-block w-[3px] h-[0.9em] bg-slate-500 ml-1 align-middle ${isTypingComplete ? 'animate-pulse' : ''}`} />
         </h1>
 
         {/* Subheading */}
