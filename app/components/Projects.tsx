@@ -198,18 +198,19 @@ export default function Projects({ projects, theme }: ProjectsProps) {
     return (
         <section id="projects" className="py-24 relative">
             <div className="max-w-6xl mx-auto px-6 relative z-10">
-                {/* Section Header */}
+                {/* Section Header with enhanced styling */}
                 <div className="text-center mb-20">
-                    <span className={`${theme.textAccent} text-sm font-medium tracking-widest uppercase mb-4 block`}>
+                    <span className={`inline-flex items-center gap-2 px-4 py-1.5 ${theme.textAccent} text-sm font-medium tracking-widest uppercase mb-6 bg-zinc-900/50 rounded-full border border-zinc-800/50`}>
+                        <span className={`w-1.5 h-1.5 rounded-full bg-gradient-to-r ${theme.primaryGradient}`} />
                         Featured Work
                     </span>
-                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+                    <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
                         My{" "}
                         <span className={`bg-gradient-to-r ${theme.primaryGradient} bg-clip-text text-transparent`}>
                             Projects
                         </span>
                     </h2>
-                    <p className="text-zinc-400 max-w-2xl mx-auto text-lg">
+                    <p className="text-zinc-400 max-w-2xl mx-auto text-lg leading-relaxed">
                         A selection of my recent work. Each project represents a unique
                         challenge and showcases my expertise in different technologies.
                     </p>
@@ -289,11 +290,11 @@ export default function Projects({ projects, theme }: ProjectsProps) {
                                     <div className="flex-1 pb-4">
                                         <div
                                             data-card-inner
-                                            className="group relative bg-zinc-900/80 border rounded-2xl p-6 md:p-8"
+                                            className="group relative bg-zinc-900/80 backdrop-blur-sm border rounded-2xl p-6 md:p-8 hover-shimmer overflow-hidden"
                                             style={{
                                                 borderColor: index === 0 ? "#52525b" : "rgba(39, 39, 42, 0.5)",
                                                 boxShadow: index === 0 ? "0 25px 50px -12px rgba(139, 92, 246, 0.15)" : "none",
-                                                transition: "border-color 0.4s ease-out, box-shadow 0.4s ease-out",
+                                                transition: "border-color 0.4s ease-out, box-shadow 0.4s ease-out, transform 0.3s ease-out",
                                             }}
                                         >
                                             {/* Badge */}
@@ -317,9 +318,9 @@ export default function Projects({ projects, theme }: ProjectsProps) {
                                                 </div>
                                             )}
 
-                                            {/* Stack - Above Title */}
+                                            {/* Stack - Above Title with enhanced styling */}
                                             {project.tags.length > 0 && (
-                                                <div className="mb-4">
+                                                <div className="mb-5">
                                                     <div className="flex flex-wrap gap-2">
                                                         {project.tags.map((tag) => {
                                                             const tagData = TAG_ICONS[tag];
@@ -328,10 +329,10 @@ export default function Projects({ projects, theme }: ProjectsProps) {
                                                             return (
                                                                 <span
                                                                     key={tag}
-                                                                    className="inline-flex items-center gap-2 px-3 py-1.5 bg-zinc-800/50 text-zinc-300 text-sm rounded-full border border-zinc-700/50"
+                                                                    className="inline-flex items-center gap-2 px-3 py-1.5 bg-zinc-800/60 text-zinc-300 text-sm rounded-full border border-zinc-700/40 hover:border-zinc-600 hover:bg-zinc-800/80 transition-all duration-200 cursor-default"
                                                                 >
                                                                     {Icon && <Icon className="w-4 h-4" style={{ color: tagData.color }} />}
-                                                                    {tag}
+                                                                    <span className="font-medium">{tag}</span>
                                                                 </span>
                                                             );
                                                         })}

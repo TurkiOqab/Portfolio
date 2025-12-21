@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/app/lib/supabase/client'
+import { getTheme, ThemeConfig } from '@/app/lib/themes'
 
 export default function SettingsPage() {
     const router = useRouter()
@@ -20,6 +21,7 @@ export default function SettingsPage() {
     const [email, setEmail] = useState('')
     const [newEmail, setNewEmail] = useState('')
     const [isPublished, setIsPublished] = useState(true)
+    const [theme, setTheme] = useState<ThemeConfig>(getTheme('violet'))
     const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
 
     useEffect(() => {
@@ -44,12 +46,15 @@ export default function SettingsPage() {
 
             const { data: portfolio } = await supabase
                 .from('portfolios')
-                .select('is_published')
+                .select('is_published, theme')
                 .eq('user_id', user.id)
                 .single()
 
             if (profile) setUsername(profile.username)
-            if (portfolio) setIsPublished(portfolio.is_published)
+            if (portfolio) {
+                setIsPublished(portfolio.is_published)
+                setTheme(getTheme(portfolio.theme || 'violet'))
+            }
 
             setIsLoading(false)
         }
@@ -177,26 +182,54 @@ export default function SettingsPage() {
     if (isLoading) {
         return (
             <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-                <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+                <div className={`w-8 h-8 border-2 border-t-transparent rounded-full animate-spin ${theme.accentColor.replace('bg-', 'border-')}`} />
             </div>
         )
     }
 
     return (
-        <div className="min-h-screen bg-zinc-950">
+        <div className="min-h-screen bg-zinc-950 relative overflow-hidden">
+            {/* Grain texture overlay */}
+            <div className="grain-overlay" />
+
+            {/* Global Background Effects */}
+            <div className="fixed inset-0 bg-zinc-950 z-0" />
+
+            {/* Enhanced gradient mesh background - themed */}
+            <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+                <div className={`absolute top-0 left-1/4 w-[600px] h-[600px] ${theme.orb1} rounded-full blur-3xl animate-float`} />
+                <div className={`absolute bottom-0 right-1/4 w-[500px] h-[500px] ${theme.orb2} rounded-full blur-3xl animate-float-delayed`} />
+            </div>
+
+            {/* Grid Pattern */}
+            <div
+                className="fixed inset-0 opacity-[0.04] z-0 pointer-events-none"
+                style={{
+                    backgroundImage: `linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)`,
+                    backgroundSize: '64px 64px',
+                }}
+            />
+
+            {/* Radial gradient overlay for depth */}
+            <div className="fixed inset-0 z-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(9,9,11,0.8)_70%)]" />
+
             {/* Header */}
-            <header className="bg-zinc-900/50 border-b border-zinc-800">
+            <header className="relative z-10 bg-zinc-950/70 border-b border-zinc-800/30 backdrop-blur-xl">
                 <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-                    <Link href="/dashboard" className="text-2xl font-bold bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
-                        DevFolio
+                    <Link href="/dashboard" className="group text-2xl font-bold text-white flex items-center gap-2">
+                        <span className={`w-8 h-8 bg-gradient-to-br ${theme.primaryGradient} rounded-lg flex items-center justify-center text-sm font-bold ${theme.shadowColor} shadow-lg group-hover:shadow-xl transition-shadow duration-300`}>D</span>
+                        <span className="bg-gradient-to-r from-white to-zinc-300 bg-clip-text text-transparent">DevFolio</span>
                     </Link>
-                    <Link href="/dashboard" className="text-sm text-zinc-400 hover:text-white transition-colors">
-                        ← Back to Dashboard
+                    <Link href="/dashboard" className={`text-sm ${theme.textAccent} hover:text-white transition-colors flex items-center gap-2`}>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        Back to Dashboard
                     </Link>
                 </div>
             </header>
 
-            <main className="max-w-2xl mx-auto px-6 py-12">
+            <main className="relative z-10 max-w-2xl mx-auto px-6 py-12">
                 <h1 className="text-3xl font-bold text-white mb-8">Settings</h1>
 
                 {message && (
@@ -209,23 +242,23 @@ export default function SettingsPage() {
                 )}
 
                 {/* Profile Section */}
-                <div className="mb-8 p-6 bg-zinc-900/50 border border-zinc-800 rounded-2xl">
-                    <h2 className="text-xl font-semibold text-white mb-4">Profile</h2>
+                <div className="mb-8 p-6 bg-zinc-900/50 border border-zinc-800/50 rounded-2xl backdrop-blur-sm">
+                    <h2 className="text-xl font-bold text-white mb-6">Profile</h2>
 
-                    <div className="mb-4">
-                        <label className="block text-sm text-zinc-400 mb-2">Username</label>
-                        <div className="px-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-xl text-zinc-300">
+                    <div className="mb-6">
+                        <label className="block text-sm text-zinc-400 mb-2 font-medium">Username</label>
+                        <div className={`px-4 py-3 bg-zinc-800/50 border border-zinc-700/50 rounded-xl ${theme.textAccent}`}>
                             {username}
                         </div>
-                        <p className="text-xs text-zinc-500 mt-1">Username cannot be changed</p>
+                        <p className="text-xs text-zinc-500 mt-2">Username cannot be changed</p>
                     </div>
 
                     <div className="mb-4">
-                        <label className="block text-sm text-zinc-400 mb-2">Email</label>
+                        <label className="block text-sm text-zinc-400 mb-2 font-medium">Email</label>
                         {!showEmailEdit ? (
                             <>
                                 <div className="flex items-center gap-3">
-                                    <div className="flex-1 px-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-xl text-zinc-300">
+                                    <div className="flex-1 px-4 py-3 bg-zinc-800/50 border border-zinc-700/50 rounded-xl text-zinc-300">
                                         {email}
                                     </div>
                                     <button
@@ -233,7 +266,7 @@ export default function SettingsPage() {
                                             setShowEmailEdit(true)
                                             setNewEmail('')
                                         }}
-                                        className="px-4 py-3 text-sm text-violet-400 hover:text-violet-300 border border-zinc-700 rounded-xl hover:border-violet-500/50 transition-colors"
+                                        className={`px-4 py-3 text-sm ${theme.textAccent} border border-zinc-700/50 rounded-xl hover:border-zinc-600 hover:bg-zinc-800/50 transition-all`}
                                     >
                                         Change
                                     </button>
@@ -246,13 +279,13 @@ export default function SettingsPage() {
                                     value={newEmail}
                                     onChange={(e) => setNewEmail(e.target.value)}
                                     placeholder="Enter new email address"
-                                    className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all"
+                                    className={`w-full px-4 py-3 bg-zinc-800/50 border border-zinc-700/50 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition-all`}
                                 />
                                 <div className="flex gap-3">
                                     <button
                                         onClick={handleUpdateEmail}
                                         disabled={isUpdatingEmail}
-                                        className="px-4 py-2 bg-violet-600 hover:bg-violet-500 text-white text-sm rounded-lg transition-colors disabled:opacity-50"
+                                        className={`px-4 py-2 ${theme.accentColor} ${theme.buttonText} text-sm rounded-lg transition-colors disabled:opacity-50 hover:opacity-90`}
                                     >
                                         {isUpdatingEmail ? 'Sending...' : 'Update Email'}
                                     </button>
@@ -275,21 +308,19 @@ export default function SettingsPage() {
                 </div>
 
                 {/* Visibility Section */}
-                <div className="mb-8 p-6 bg-zinc-900/50 border border-zinc-800 rounded-2xl">
-                    <h2 className="text-xl font-semibold text-white mb-4">Visibility</h2>
+                <div className="mb-8 p-6 bg-zinc-900/50 border border-zinc-800/50 rounded-2xl backdrop-blur-sm">
+                    <h2 className="text-xl font-bold text-white mb-6">Visibility</h2>
 
-                    <label className="flex items-center justify-between cursor-pointer">
+                    <label className="flex items-center justify-between cursor-pointer p-4 bg-zinc-800/30 rounded-xl border border-zinc-700/30 hover:border-zinc-600/50 transition-all">
                         <div>
                             <p className="text-white font-medium">Public Portfolio</p>
-                            <p className="text-sm text-zinc-400">When disabled, your portfolio won&apos;t be visible to others</p>
+                            <p className="text-sm text-zinc-400 mt-1">When disabled, your portfolio won&apos;t be visible to others</p>
                         </div>
                         <button
                             onClick={() => setIsPublished(!isPublished)}
-                            className={`relative w-14 h-8 rounded-full transition-colors ${isPublished ? 'bg-violet-600' : 'bg-zinc-700'
-                                }`}
+                            className={`relative w-14 h-8 rounded-full transition-all duration-300 ${isPublished ? theme.accentColor : 'bg-zinc-700'}`}
                         >
-                            <div className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full transition-transform ${isPublished ? 'translate-x-6' : 'translate-x-0'
-                                }`} />
+                            <div className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full transition-transform duration-300 shadow-md ${isPublished ? 'translate-x-6' : 'translate-x-0'}`} />
                         </button>
                     </label>
                 </div>
@@ -298,19 +329,19 @@ export default function SettingsPage() {
                 <button
                     onClick={handleSave}
                     disabled={isSaving}
-                    className="w-full mb-8 py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white font-medium rounded-xl hover:from-violet-500 hover:to-purple-500 transition-all disabled:opacity-50"
+                    className={`w-full mb-8 py-3.5 bg-gradient-to-r ${theme.primaryGradient} ${theme.buttonText} font-semibold rounded-xl transition-all disabled:opacity-50 ${theme.shadowColor} shadow-lg hover:shadow-xl hover:scale-[1.01]`}
                 >
                     {isSaving ? 'Saving...' : 'Save Changes'}
                 </button>
 
                 {/* Danger Zone */}
-                <div className="p-6 bg-red-500/5 border border-red-500/20 rounded-2xl">
-                    <h2 className="text-xl font-semibold text-red-400 mb-4">Danger Zone</h2>
+                <div className="p-6 bg-red-500/5 border border-red-500/20 rounded-2xl backdrop-blur-sm">
+                    <h2 className="text-xl font-bold text-red-400 mb-4">Danger Zone</h2>
 
                     {!showDeleteConfirm ? (
                         <button
                             onClick={() => setShowDeleteConfirm(true)}
-                            className="px-6 py-3 bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl hover:bg-red-500/20 transition-colors"
+                            className="px-6 py-3 bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl hover:bg-red-500/20 hover:border-red-500/50 transition-all"
                         >
                             Delete Account
                         </button>
@@ -319,17 +350,17 @@ export default function SettingsPage() {
                             <p className="text-red-300">
                                 Are you sure? This will permanently delete your account and portfolio.
                             </p>
-                            <div className="flex gap-4">
+                            <div className="flex flex-wrap gap-4">
                                 <button
                                     onClick={handleDeleteAccount}
                                     disabled={isDeleting}
-                                    className="px-6 py-3 bg-red-600 text-white rounded-xl hover:bg-red-500 transition-colors disabled:opacity-50"
+                                    className="px-6 py-3 bg-red-600 text-white font-medium rounded-xl hover:bg-red-500 transition-all disabled:opacity-50 shadow-lg shadow-red-500/20"
                                 >
                                     {isDeleting ? 'Deleting...' : 'Yes, Delete Everything'}
                                 </button>
                                 <button
                                     onClick={() => setShowDeleteConfirm(false)}
-                                    className="px-6 py-3 border border-zinc-700 text-zinc-300 rounded-xl hover:bg-zinc-800 transition-colors"
+                                    className="px-6 py-3 border border-zinc-700 text-zinc-300 rounded-xl hover:bg-zinc-800/50 hover:border-zinc-600 transition-all"
                                 >
                                     Cancel
                                 </button>

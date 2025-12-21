@@ -223,8 +223,13 @@ export default function Hero({ name, title, bio, skills, theme }: HeroProps) {
     return (
         <section
             id="home"
-            className="min-h-screen flex items-center justify-center relative pt-16"
+            className="min-h-screen flex items-center justify-center relative pt-16 overflow-hidden"
         >
+            {/* Floating gradient orbs - themed */}
+            <div className={`absolute top-1/4 left-1/4 w-72 h-72 ${theme.orb1} rounded-full blur-3xl animate-float pointer-events-none`} />
+            <div className={`absolute bottom-1/4 right-1/4 w-96 h-96 ${theme.orb2} rounded-full blur-3xl animate-float-delayed pointer-events-none`} />
+            <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] ${theme.orb1} rounded-full blur-3xl animate-glow pointer-events-none opacity-50`} />
+
             <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
                 {/* Main Heading with Typewriter */}
                 <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-6 tracking-tight">
@@ -232,36 +237,40 @@ export default function Hero({ name, title, bio, skills, theme }: HeroProps) {
                 </h1>
 
                 {/* Bio */}
-                <p className="text-xl md:text-2xl text-zinc-400 mb-8 max-w-2xl mx-auto leading-relaxed">
+                <p className="text-xl md:text-2xl text-zinc-400 mb-10 max-w-2xl mx-auto leading-relaxed">
                     {bio || "A passionate developer crafting beautiful digital experiences."}
                 </p>
 
-                {/* Scrolling Tech Stack */}
+                {/* Scrolling Tech Stack with enhanced styling */}
                 {skills.length > 0 && (
-                    <div className="relative w-full overflow-hidden mb-12">
+                    <div className="relative w-full overflow-hidden mb-14">
+                        {/* Gradient fade edges */}
+                        <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-zinc-950 to-transparent z-10 pointer-events-none" />
+                        <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-zinc-950 to-transparent z-10 pointer-events-none" />
+
                         <div className="flex animate-scroll">
                             {[...skills, ...skills, ...skills].map((skill, index) => (
                                 <div
                                     key={`${skill}-${index}`}
-                                    className="flex items-center gap-3 px-8 text-zinc-400 whitespace-nowrap"
+                                    className="flex items-center gap-3 px-6 py-2 mx-2 text-zinc-400 whitespace-nowrap bg-zinc-900/40 rounded-full border border-zinc-800/50 hover:border-zinc-700 hover:bg-zinc-900/60 transition-all duration-300"
                                 >
                                     <SkillIcon skill={skill} />
-                                    <span className="text-lg font-medium">{skill}</span>
+                                    <span className="text-sm font-medium">{skill}</span>
                                 </div>
                             ))}
                         </div>
                     </div>
                 )}
 
-                {/* CTA Buttons */}
+                {/* CTA Buttons with enhanced effects */}
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                     <a
                         href="#projects"
-                        className={`group px-8 py-4 bg-gradient-to-r ${theme.primaryGradient} ${theme.buttonText} font-medium rounded-full hover:opacity-90 transition-all duration-300 shadow-lg ${theme.shadowColor} flex items-center gap-2`}
+                        className={`group px-8 py-4 bg-gradient-to-r ${theme.primaryGradient} ${theme.buttonText} font-semibold rounded-full hover:opacity-90 transition-all duration-300 shadow-lg ${theme.shadowColor} flex items-center gap-2 hover:scale-[1.02] hover:shadow-xl`}
                     >
                         View My Work
                         <svg
-                            className="w-5 h-5 group-hover:translate-x-1 transition-transform"
+                            className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -276,9 +285,17 @@ export default function Hero({ name, title, bio, skills, theme }: HeroProps) {
                     </a>
                     <a
                         href="#contact"
-                        className="px-8 py-4 border border-zinc-700 text-white font-medium rounded-full hover:bg-zinc-800/50 hover:border-zinc-600 transition-all duration-300"
+                        className="group px-8 py-4 border border-zinc-700 text-white font-medium rounded-full hover:bg-zinc-800/50 hover:border-zinc-500 transition-all duration-300 hover:scale-[1.02]"
                     >
                         Contact Me
+                        <svg
+                            className="w-4 h-4 inline-block ml-2 group-hover:translate-y-0.5 transition-transform duration-300"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                        </svg>
                     </a>
                 </div>
             </div>
