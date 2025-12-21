@@ -87,8 +87,30 @@ export default async function PortfolioPage({ params }: PageProps) {
         contact: portfolio.contact || { email: '' },
     }
 
+    // JSON-LD structured data for person/portfolio
+    const personJsonLd = {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        name: portfolio.name,
+        description: portfolio.bio,
+        url: `https://devfolio.app/${username}`,
+        image: portfolio.avatar_url || undefined,
+        jobTitle: portfolio.title,
+        sameAs: [
+            portfolioData.contact.github,
+            portfolioData.contact.linkedin,
+            portfolioData.contact.twitter,
+        ].filter(Boolean),
+    }
+
     return (
         <div className={`min-h-screen bg-zinc-950 relative overflow-hidden ${font.className}`}>
+            {/* JSON-LD Structured Data */}
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+            />
+
             {/* Track views for non-owners */}
             {!isOwner && <ViewTracker portfolioId={portfolio.id} />}
 

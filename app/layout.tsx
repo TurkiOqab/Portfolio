@@ -100,20 +100,32 @@ export const metadata: Metadata = {
     type: "website",
     url: "https://devfolio.app",
     siteName: "DevFolio",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "DevFolio - Create your professional developer portfolio",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "DevFolio | Developer Portfolios",
     description: "Create your professional developer portfolio in minutes.",
-    images: ["/og-image.png"],
+  },
+};
+
+// JSON-LD structured data for SEO
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "DevFolio",
+  description: "Create your professional developer portfolio in minutes. Stand out to recruiters and clients with a stunning portfolio.",
+  url: "https://devfolio.app",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+  creator: {
+    "@type": "Organization",
+    name: "DevFolio",
+    url: "https://devfolio.app",
   },
 };
 
@@ -126,6 +138,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body
         className={`
           ${inter.variable}
