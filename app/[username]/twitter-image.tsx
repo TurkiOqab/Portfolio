@@ -1,7 +1,13 @@
 import { ImageResponse } from 'next/og'
-import { createClient } from '@/app/lib/supabase/server'
+import { createClient } from '@supabase/supabase-js'
 
 export const runtime = 'edge'
+
+// Create a simple Supabase client for edge runtime (no cookies needed for public data)
+const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
 
 export const alt = 'Portfolio'
 export const size = {
@@ -28,7 +34,6 @@ function getThemeColors(themeId: string) {
 
 export default async function Image({ params }: { params: Promise<{ username: string }> }) {
     const { username } = await params
-    const supabase = await createClient()
 
     // Fetch profile and portfolio
     const { data: profile } = await supabase
