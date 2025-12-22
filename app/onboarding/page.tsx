@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/app/lib/supabase/client";
 import { PortfolioData, defaultPortfolioData } from "../types";
+import CVImportStep from "./steps/CVImportStep";
 import NameStep from "./steps/NameStep";
 import BioStep from "./steps/BioStep";
 import SkillsStep from "./steps/SkillsStep";
@@ -15,7 +16,7 @@ import MediaUploadStep from "./steps/MediaUploadStep";
 import ThemeStep from "./steps/ThemeStep";
 import { isValidEmail } from "../lib/validation";
 
-const TOTAL_STEPS = 7;
+const TOTAL_STEPS = 8;
 
 export default function OnboardingPage() {
     const router = useRouter();
@@ -104,17 +105,20 @@ export default function OnboardingPage() {
     const canProceed = (): boolean => {
         switch (currentStep) {
             case 1:
-                return data.name.trim().length > 0 && data.title.trim().length > 0;
+                // CV import - always can proceed (optional step)
+                return true;
             case 2:
-                return data.bio.trim().length >= 20;
+                return data.name.trim().length > 0 && data.title.trim().length > 0;
             case 3:
-                return data.skills.length >= 3;
+                return data.bio.trim().length >= 20;
             case 4:
-                return isValidEmail(data.contact.email);
+                return data.skills.length >= 3;
             case 5:
+                return isValidEmail(data.contact.email);
+            case 6:
                 // Portfolio content - at least one item in any category
                 return data.education.length >= 1 || data.experience.length >= 1 || data.projects.length >= 1;
-            case 6:
+            case 7:
                 // Media upload - optional
                 return true;
             default:
@@ -125,20 +129,23 @@ export default function OnboardingPage() {
     const getValidationMessage = (): string | null => {
         switch (currentStep) {
             case 1:
+                // CV import - no validation needed
+                return null;
+            case 2:
                 if (!data.name.trim()) return "Please enter your name";
                 if (!data.title.trim()) return "Please enter your professional title";
                 return null;
-            case 2:
+            case 3:
                 if (data.bio.trim().length < 20) return `Bio must be at least 20 characters (${data.bio.trim().length}/20)`;
                 return null;
-            case 3:
+            case 4:
                 if (data.skills.length < 3) return `Please add at least 3 skills (${data.skills.length}/3)`;
                 return null;
-            case 4:
+            case 5:
                 if (!data.contact.email.trim()) return "Please enter your email address";
                 if (!isValidEmail(data.contact.email)) return "Please enter a valid email address";
                 return null;
-            case 5:
+            case 6:
                 if (data.education.length === 0 && data.experience.length === 0 && data.projects.length === 0)
                     return "Add at least one education, experience, or project entry";
                 return null;
@@ -240,6 +247,7 @@ export default function OnboardingPage() {
     }
 
     const stepTitles = [
+        "Import your CV",
         "Let's get started",
         "Tell us about yourself",
         "What are your skills?",
@@ -291,26 +299,29 @@ export default function OnboardingPage() {
 
             {/* Step Content */}
             <div className="flex-1 flex items-center justify-center pt-28 pb-32 px-6 relative z-10 overflow-y-auto">
-                <div className={`w-full ${currentStep === 5 ? 'max-w-4xl' : 'max-w-2xl'}`}>
+                <div className={`w-full ${currentStep === 6 ? 'max-w-4xl' : 'max-w-2xl'}`}>
                     {currentStep === 1 && (
-                        <NameStep data={data} updateData={updateData} />
+                        <CVImportStep data={data} updateData={updateData} onSkip={skipStep} />
                     )}
                     {currentStep === 2 && (
-                        <BioStep data={data} updateData={updateData} />
+                        <NameStep data={data} updateData={updateData} />
                     )}
                     {currentStep === 3 && (
-                        <SkillsStep data={data} updateData={updateData} />
+                        <BioStep data={data} updateData={updateData} />
                     )}
                     {currentStep === 4 && (
-                        <ContactStep data={data} updateData={updateData} />
+                        <SkillsStep data={data} updateData={updateData} />
                     )}
                     {currentStep === 5 && (
+                        <ContactStep data={data} updateData={updateData} />
+                    )}
+                    {currentStep === 6 && (
                         <PortfolioContentStep data={data} updateData={updateData} userId={userId || undefined} />
                     )}
-                    {currentStep === 6 && userId && (
+                    {currentStep === 7 && userId && (
                         <MediaUploadStep data={data} updateData={updateData} userId={userId} />
                     )}
-                    {currentStep === 7 && (
+                    {currentStep === 8 && (
                         <ThemeStep data={data} updateData={updateData} />
                     )}
                 </div>
@@ -344,8 +355,8 @@ export default function OnboardingPage() {
                             ← Back
                         </button>
                         <div className="flex items-center gap-3">
-                            {/* Skip button for optional steps (5: Portfolio Content, 6: Media) */}
-                            {(currentStep === 5 || currentStep === 6) && (
+                            {/* Skip button for optional steps (1: CV Import, 6: Portfolio Content, 7: Media) */}
+                            {(currentStep === 1 || currentStep === 6 || currentStep === 7) && (
                                 <button
                                     onClick={skipStep}
                                     className="px-6 py-3 text-zinc-400 hover:text-white border border-zinc-700 rounded-full transition-colors hover:border-zinc-500"
