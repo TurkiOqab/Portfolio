@@ -17,7 +17,7 @@ function LivePreview({ theme, font, name }: { theme: ThemeConfig; font: FontConf
     const isLightMode = theme.mode === 'light'
 
     return (
-        <div className={`relative ${isLightMode ? 'bg-zinc-50 border-zinc-200' : 'bg-zinc-950 border-zinc-800'} rounded-2xl overflow-hidden border ${font.className}`}>
+        <div className={`relative ${isLightMode ? 'bg-zinc-100 border-zinc-300' : 'bg-zinc-950 border-zinc-800'} rounded-2xl overflow-hidden border ${font.className}`}>
             {/* Background orbs */}
             <div className={`absolute top-0 left-1/4 w-48 h-48 ${theme.orb1} rounded-full blur-3xl`} />
             <div className={`absolute bottom-0 right-1/4 w-48 h-48 ${theme.orb2} rounded-full blur-3xl`} />
@@ -26,11 +26,11 @@ function LivePreview({ theme, font, name }: { theme: ThemeConfig; font: FontConf
             <div className="relative z-10 p-6">
                 {/* Hero section mockup */}
                 <div className="text-center mb-4">
-                    <div className={`w-12 h-12 ${isLightMode ? 'bg-zinc-200' : 'bg-zinc-800'} rounded-full mx-auto mb-3`} />
-                    <h2 className={`text-xl font-bold ${isLightMode ? 'text-zinc-900' : ''} bg-gradient-to-r ${theme.primaryGradient} bg-clip-text text-transparent`}>
+                    <div className={`w-12 h-12 ${isLightMode ? 'bg-zinc-300' : 'bg-zinc-800'} rounded-full mx-auto mb-3`} />
+                    <h2 className={`text-xl font-bold ${isLightMode ? 'text-zinc-900' : `bg-gradient-to-r ${theme.primaryGradient} bg-clip-text text-transparent`}`}>
                         {name || "Your Name"}
                     </h2>
-                    <p className={`${isLightMode ? 'text-zinc-500' : theme.textMuted} text-xs mt-1`}>Full Stack Developer</p>
+                    <p className={`${isLightMode ? 'text-zinc-600' : theme.textMuted} text-xs mt-1`}>Full Stack Developer</p>
                 </div>
 
                 {/* Skills mockup */}
@@ -38,7 +38,7 @@ function LivePreview({ theme, font, name }: { theme: ThemeConfig; font: FontConf
                     {["React", "Node.js", "TypeScript"].map((skill) => (
                         <span
                             key={skill}
-                            className={`px-2 py-0.5 text-[10px] rounded-full ${isLightMode ? 'bg-zinc-200 text-zinc-700' : 'bg-zinc-800/50 text-zinc-400'}`}
+                            className={`px-2 py-0.5 text-[10px] rounded-full ${isLightMode ? 'bg-zinc-200 text-zinc-700 border border-zinc-300' : 'bg-zinc-800/50 text-zinc-400'}`}
                         >
                             {skill}
                         </span>
@@ -47,7 +47,7 @@ function LivePreview({ theme, font, name }: { theme: ThemeConfig; font: FontConf
 
                 {/* Button mockup */}
                 <div className="flex justify-center">
-                    <div className={`px-4 py-1.5 bg-gradient-to-r ${theme.primaryGradient} rounded-lg ${theme.shadowColor} shadow-lg`}>
+                    <div className={`px-4 py-1.5 ${isLightMode ? 'bg-zinc-900' : `bg-gradient-to-r ${theme.primaryGradient}`} rounded-lg ${theme.shadowColor} shadow-lg`}>
                         <span className={`${theme.buttonText} text-xs font-medium`}>Contact Me</span>
                     </div>
                 </div>
