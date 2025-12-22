@@ -7,14 +7,16 @@ interface StepProps {
     data: PortfolioData;
     updateData: (updates: Partial<PortfolioData>) => void;
     onSkip: () => void;
+    isReturningUser?: boolean;
 }
 
-export default function CVImportStep({ data, updateData, onSkip }: StepProps) {
+export default function CVImportStep({ data, updateData, onSkip, isReturningUser = false }: StepProps) {
     const [isUploading, setIsUploading] = useState(false);
     const [isParsing, setIsParsing] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [fileName, setFileName] = useState<string | null>(null);
     const [parseSuccess, setParseSuccess] = useState(false);
+    const [showUpload, setShowUpload] = useState(!isReturningUser);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,6 +92,59 @@ export default function CVImportStep({ data, updateData, onSkip }: StepProps) {
             fileInputRef.current.value = "";
         }
     };
+
+    // Returning user prompt
+    if (isReturningUser && !showUpload) {
+        return (
+            <div className="space-y-8">
+                <div className="text-center">
+                    <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                        Welcome{" "}
+                        <span className="text-slate-400">back!</span>
+                    </h1>
+                    <p className="text-zinc-400 text-lg">
+                        Would you like to update your portfolio from a new CV?
+                    </p>
+                </div>
+
+                <div className="max-w-md mx-auto space-y-4">
+                    <button
+                        onClick={() => setShowUpload(true)}
+                        className="w-full p-6 rounded-2xl border-2 border-zinc-700 hover:border-white bg-zinc-900/50 hover:bg-zinc-800/50 transition-all duration-300 text-left group"
+                    >
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
+                                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p className="text-white font-medium">Import from CV</p>
+                                <p className="text-zinc-500 text-sm">Update your portfolio with new CV data</p>
+                            </div>
+                        </div>
+                    </button>
+
+                    <button
+                        onClick={onSkip}
+                        className="w-full p-6 rounded-2xl border-2 border-zinc-800 hover:border-zinc-600 bg-zinc-900/30 hover:bg-zinc-900/50 transition-all duration-300 text-left group"
+                    >
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-xl bg-zinc-800 flex items-center justify-center group-hover:bg-zinc-700 transition-colors">
+                                <svg className="w-6 h-6 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p className="text-white font-medium">Continue editing</p>
+                                <p className="text-zinc-500 text-sm">Keep your existing data and make changes</p>
+                            </div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-8">
@@ -194,35 +249,37 @@ export default function CVImportStep({ data, updateData, onSkip }: StepProps) {
                         disabled={isUploading}
                         className="text-zinc-400 hover:text-white transition-colors text-sm disabled:opacity-50"
                     >
-                        Skip and enter manually →
+                        {isReturningUser ? "← Go back" : "Skip and enter manually →"}
                     </button>
                 </div>
             )}
 
-            {/* What We Extract */}
-            <div className="max-w-lg mx-auto">
-                <p className="text-zinc-500 text-sm text-center mb-4">What we&apos;ll extract from your CV:</p>
-                <div className="grid grid-cols-2 gap-3">
-                    {[
-                        { icon: "👤", label: "Name & Title" },
-                        { icon: "📝", label: "Bio & Summary" },
-                        { icon: "💼", label: "Work Experience" },
-                        { icon: "🎓", label: "Education" },
-                        { icon: "🛠️", label: "Skills & Tools" },
-                        { icon: "🚀", label: "Projects" },
-                        { icon: "📧", label: "Contact Info" },
-                        { icon: "🔗", label: "Social Links" },
-                    ].map((item) => (
-                        <div
-                            key={item.label}
-                            className="flex items-center gap-2 px-3 py-2 bg-zinc-900/50 rounded-lg border border-zinc-800"
-                        >
-                            <span className="text-lg">{item.icon}</span>
-                            <span className="text-zinc-400 text-sm">{item.label}</span>
-                        </div>
-                    ))}
+            {/* What We Extract - only show for new users */}
+            {!isReturningUser && (
+                <div className="max-w-lg mx-auto">
+                    <p className="text-zinc-500 text-sm text-center mb-4">What we&apos;ll extract from your CV:</p>
+                    <div className="grid grid-cols-2 gap-3">
+                        {[
+                            { icon: "👤", label: "Name & Title" },
+                            { icon: "📝", label: "Bio & Summary" },
+                            { icon: "💼", label: "Work Experience" },
+                            { icon: "🎓", label: "Education" },
+                            { icon: "🛠️", label: "Skills & Tools" },
+                            { icon: "🚀", label: "Projects" },
+                            { icon: "📧", label: "Contact Info" },
+                            { icon: "🔗", label: "Social Links" },
+                        ].map((item) => (
+                            <div
+                                key={item.label}
+                                className="flex items-center gap-2 px-3 py-2 bg-zinc-900/50 rounded-lg border border-zinc-800"
+                            >
+                                <span className="text-lg">{item.icon}</span>
+                                <span className="text-zinc-400 text-sm">{item.label}</span>
+                            </div>
+                        ))}
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 }

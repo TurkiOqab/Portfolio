@@ -28,6 +28,7 @@ export default function OnboardingPage() {
     const [userId, setUserId] = useState<string | null>(null);
     const [username, setUsername] = useState<string | null>(null);
     const [saveError, setSaveError] = useState<string | null>(null);
+    const [isReturningUser, setIsReturningUser] = useState(false);
 
     useEffect(() => {
         const loadUserData = async () => {
@@ -90,6 +91,9 @@ export default function OnboardingPage() {
                     theme: portfolio.theme || "slate",
                     font: portfolio.font || "outfit",
                 });
+
+                // Mark as returning user (will show CV import prompt)
+                setIsReturningUser(true);
             }
 
             setIsLoading(false);
@@ -301,7 +305,7 @@ export default function OnboardingPage() {
             <div className="flex-1 flex items-center justify-center pt-28 pb-32 px-6 relative z-10 overflow-y-auto">
                 <div className={`w-full ${currentStep === 6 ? 'max-w-4xl' : 'max-w-2xl'}`}>
                     {currentStep === 1 && (
-                        <CVImportStep data={data} updateData={updateData} onSkip={skipStep} />
+                        <CVImportStep data={data} updateData={updateData} onSkip={skipStep} isReturningUser={isReturningUser} />
                     )}
                     {currentStep === 2 && (
                         <NameStep data={data} updateData={updateData} />
