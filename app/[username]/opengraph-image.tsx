@@ -10,32 +10,14 @@ export const size = {
 }
 export const contentType = 'image/png'
 
-// Theme colors for OG images (hex values since we can't use Tailwind)
-const themeColors: Record<string, { primary: string; accent: string; orb: string }> = {
-    violet: { primary: '#7c3aed', accent: '#a78bfa', orb: 'rgba(124, 58, 237, 0.2)' },
-    blue: { primary: '#2563eb', accent: '#60a5fa', orb: 'rgba(37, 99, 235, 0.2)' },
-    emerald: { primary: '#059669', accent: '#34d399', orb: 'rgba(5, 150, 105, 0.2)' },
-    rose: { primary: '#e11d48', accent: '#fb7185', orb: 'rgba(225, 29, 72, 0.2)' },
-    cyan: { primary: '#0891b2', accent: '#22d3ee', orb: 'rgba(8, 145, 178, 0.2)' },
-    orange: { primary: '#ea580c', accent: '#fb923c', orb: 'rgba(234, 88, 12, 0.2)' },
-    slate: { primary: '#64748b', accent: '#94a3b8', orb: 'rgba(71, 85, 105, 0.2)' },
-    white: { primary: '#ffffff', accent: '#e4e4e7', orb: 'rgba(255, 255, 255, 0.1)' },
-}
-
-function getThemeColors(themeId: string) {
-    return themeColors[themeId] || themeColors.slate
-}
-
 export default async function Image({ params }: { params: Promise<{ username: string }> }) {
     const { username } = await params
 
-    // Create Supabase client inside function for edge runtime compatibility
     const supabase = createClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     )
 
-    // Fetch profile and portfolio
     const { data: profile } = await supabase
         .from('profiles')
         .select('*')
@@ -66,15 +48,13 @@ export default async function Image({ params }: { params: Promise<{ username: st
 
     const { data: portfolio } = await supabase
         .from('portfolios')
-        .select('name, title, bio, avatar_url, theme')
+        .select('name, title, bio, skills')
         .eq('user_id', profile.id)
         .single()
 
-    const name = portfolio?.name || username
     const title = portfolio?.title || 'Developer'
-    const avatarUrl = portfolio?.avatar_url
-    const initial = name.charAt(0).toUpperCase()
-    const colors = getThemeColors(portfolio?.theme || 'slate')
+    const bio = portfolio?.bio || 'A passionate developer crafting digital experiences.'
+    const skills = (portfolio?.skills || ['JavaScript', 'React', 'Node.js']).slice(0, 6)
 
     return new ImageResponse(
         (
@@ -83,134 +63,167 @@ export default async function Image({ params }: { params: Promise<{ username: st
                     height: '100%',
                     width: '100%',
                     display: 'flex',
-                    flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    backgroundColor: '#09090b',
-                    position: 'relative',
+                    backgroundColor: '#0c0c0c',
+                    padding: '40px',
                 }}
             >
-                {/* Theme-colored gradient orbs */}
+                {/* Browser Window */}
                 <div
                     style={{
-                        position: 'absolute',
-                        top: '-100px',
-                        left: '50px',
-                        width: '500px',
-                        height: '500px',
-                        background: `radial-gradient(circle, ${colors.orb} 0%, transparent 70%)`,
-                        borderRadius: '50%',
-                    }}
-                />
-                <div
-                    style={{
-                        position: 'absolute',
-                        bottom: '-100px',
-                        right: '50px',
-                        width: '400px',
-                        height: '400px',
-                        background: `radial-gradient(circle, ${colors.orb} 0%, transparent 70%)`,
-                        borderRadius: '50%',
-                    }}
-                />
-
-
-                {/* Content */}
-                <div
-                    style={{
+                        width: '100%',
+                        height: '100%',
                         display: 'flex',
                         flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        zIndex: 10,
+                        backgroundColor: '#18181b',
+                        borderRadius: '16px',
+                        overflow: 'hidden',
+                        border: '1px solid #27272a',
                     }}
                 >
-                    {/* Avatar */}
-                    {avatarUrl ? (
-                        <img
-                            src={avatarUrl}
-                            alt={name}
-                            width={120}
-                            height={120}
-                            style={{
-                                borderRadius: '60px',
-                                border: `3px solid ${colors.primary}40`,
-                                marginBottom: '28px',
-                                objectFit: 'cover',
-                            }}
-                        />
-                    ) : (
+                    {/* Browser Chrome */}
+                    <div
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            padding: '16px 20px',
+                            backgroundColor: '#1f1f23',
+                            borderBottom: '1px solid #27272a',
+                            gap: '12px',
+                        }}
+                    >
+                        {/* Traffic Lights */}
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                            <div style={{ width: '12px', height: '12px', borderRadius: '6px', backgroundColor: '#ef4444' }} />
+                            <div style={{ width: '12px', height: '12px', borderRadius: '6px', backgroundColor: '#eab308' }} />
+                            <div style={{ width: '12px', height: '12px', borderRadius: '6px', backgroundColor: '#22c55e' }} />
+                        </div>
+                        {/* URL Bar */}
                         <div
                             style={{
-                                width: '120px',
-                                height: '120px',
-                                borderRadius: '60px',
-                                background: `linear-gradient(135deg, ${colors.primary} 0%, ${colors.accent} 100%)`,
+                                flex: 1,
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                fontSize: 48,
-                                fontWeight: 'bold',
-                                color: 'white',
-                                marginBottom: '28px',
+                                backgroundColor: '#27272a',
+                                borderRadius: '8px',
+                                padding: '8px 16px',
+                                marginLeft: '20px',
+                                marginRight: '20px',
                             }}
                         >
-                            {initial}
+                            <span style={{ color: '#22c55e', marginRight: '8px', fontSize: '14px' }}>🔒</span>
+                            <span style={{ color: '#a1a1aa', fontSize: '14px' }}>dfolio.dev/{username}</span>
                         </div>
-                    )}
-
-                    {/* Name */}
-                    <div
-                        style={{
-                            fontSize: 56,
-                            fontWeight: 700,
-                            color: 'white',
-                            marginBottom: '12px',
-                            textAlign: 'center',
-                            letterSpacing: '-1px',
-                        }}
-                    >
-                        {name}
                     </div>
 
-                    {/* Title */}
+                    {/* Browser Content */}
                     <div
                         style={{
-                            fontSize: 28,
-                            color: colors.accent,
-                            marginBottom: '32px',
-                            textAlign: 'center',
+                            flex: 1,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            padding: '40px 60px',
+                            backgroundColor: '#09090b',
                         }}
                     >
-                        {title}
+                        {/* Title */}
+                        <div
+                            style={{
+                                fontSize: 64,
+                                fontWeight: 700,
+                                color: 'white',
+                                marginBottom: '20px',
+                                textAlign: 'center',
+                                letterSpacing: '-2px',
+                            }}
+                        >
+                            {title}
+                        </div>
+
+                        {/* Bio */}
+                        <div
+                            style={{
+                                fontSize: 24,
+                                color: '#a1a1aa',
+                                textAlign: 'center',
+                                maxWidth: '800px',
+                                marginBottom: '40px',
+                                lineHeight: 1.4,
+                            }}
+                        >
+                            {bio.length > 100 ? bio.substring(0, 100) + '...' : bio}
+                        </div>
+
+                        {/* Skills */}
+                        <div
+                            style={{
+                                display: 'flex',
+                                gap: '16px',
+                                flexWrap: 'wrap',
+                                justifyContent: 'center',
+                                marginBottom: '40px',
+                            }}
+                        >
+                            {skills.map((skill: string) => (
+                                <div
+                                    key={skill}
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '8px',
+                                        color: '#d4d4d8',
+                                        fontSize: '18px',
+                                    }}
+                                >
+                                    <span>{skill}</span>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* CTA Buttons */}
+                        <div
+                            style={{
+                                display: 'flex',
+                                gap: '16px',
+                            }}
+                        >
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    padding: '14px 28px',
+                                    backgroundColor: 'white',
+                                    color: '#09090b',
+                                    borderRadius: '50px',
+                                    fontSize: '18px',
+                                    fontWeight: 600,
+                                }}
+                            >
+                                View My Work
+                                <span style={{ marginLeft: '4px' }}>→</span>
+                            </div>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    padding: '14px 28px',
+                                    backgroundColor: 'transparent',
+                                    color: 'white',
+                                    borderRadius: '50px',
+                                    fontSize: '18px',
+                                    fontWeight: 500,
+                                    border: '1px solid #3f3f46',
+                                }}
+                            >
+                                Contact Me
+                            </div>
+                        </div>
                     </div>
-
-                    {/* Accent line */}
-                    <div
-                        style={{
-                            width: 60,
-                            height: 3,
-                            background: `linear-gradient(to right, ${colors.primary}, ${colors.accent})`,
-                            borderRadius: 2,
-                        }}
-                    />
-                </div>
-
-                {/* Footer */}
-                <div
-                    style={{
-                        position: 'absolute',
-                        bottom: 40,
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        fontSize: 18,
-                        color: '#52525b',
-                    }}
-                >
-                    <span style={{ color: colors.accent }}>dfolio.dev</span>
-                    <span>/</span>
-                    <span>{username}</span>
                 </div>
             </div>
         ),
