@@ -40,6 +40,12 @@ export default function LandingPage() {
           </Link>
           <div className="flex items-center gap-2 sm:gap-4">
             <Link
+              href="/pricing"
+              className="text-zinc-400 hover:text-white transition-colors px-2 sm:px-4 py-2 text-sm sm:text-base font-medium whitespace-nowrap"
+            >
+              Pricing
+            </Link>
+            <Link
               href="/login"
               className="text-zinc-400 hover:text-white transition-colors px-2 sm:px-4 py-2 text-sm sm:text-base font-medium whitespace-nowrap"
             >
