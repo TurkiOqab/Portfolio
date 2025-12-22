@@ -16,6 +16,7 @@ export default function SettingsPage() {
     const [isDeleting, setIsDeleting] = useState(false)
     const [isUpdatingEmail, setIsUpdatingEmail] = useState(false)
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+    const [deleteConfirmText, setDeleteConfirmText] = useState('')
     const [showEmailEdit, setShowEmailEdit] = useState(false)
     const [isSigningOut, setIsSigningOut] = useState(false)
     const [isExporting, setIsExporting] = useState(false)
@@ -484,16 +485,31 @@ export default function SettingsPage() {
                             <p className="text-red-300">
                                 Are you sure? This will permanently delete your account and portfolio.
                             </p>
+                            <div>
+                                <label className="block text-sm text-zinc-400 mb-2">
+                                    Type <span className="text-red-400 font-mono font-semibold">confirm</span> to delete your account
+                                </label>
+                                <input
+                                    type="text"
+                                    value={deleteConfirmText}
+                                    onChange={(e) => setDeleteConfirmText(e.target.value)}
+                                    placeholder="confirm"
+                                    className="w-full px-4 py-3 bg-zinc-800/50 border border-red-500/30 rounded-xl text-white placeholder-zinc-600 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all"
+                                />
+                            </div>
                             <div className="flex flex-wrap gap-4">
                                 <button
                                     onClick={handleDeleteAccount}
-                                    disabled={isDeleting}
-                                    className="px-6 py-3 bg-red-600 text-white font-medium rounded-xl hover:bg-red-500 transition-all disabled:opacity-50 shadow-lg shadow-red-500/20"
+                                    disabled={isDeleting || deleteConfirmText !== 'confirm'}
+                                    className="px-6 py-3 bg-red-600 text-white font-medium rounded-xl hover:bg-red-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-red-500/20"
                                 >
                                     {isDeleting ? 'Deleting...' : 'Yes, Delete Everything'}
                                 </button>
                                 <button
-                                    onClick={() => setShowDeleteConfirm(false)}
+                                    onClick={() => {
+                                        setShowDeleteConfirm(false)
+                                        setDeleteConfirmText('')
+                                    }}
                                     className="px-6 py-3 border border-zinc-700 text-zinc-300 rounded-xl hover:bg-zinc-800/50 hover:border-zinc-600 transition-all"
                                 >
                                     Cancel

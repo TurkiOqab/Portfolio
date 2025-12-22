@@ -230,11 +230,12 @@ export default async function DashboardPage() {
 
                 {/* Theme & Font Selection */}
                 <div className="p-6 bg-zinc-900/50 border border-zinc-800/50 rounded-2xl mb-10">
-                    <h2 className="text-lg font-semibold text-white mb-4">Customize Style</h2>
+                    <h2 className="text-lg font-semibold text-white mb-6">Customize Style</h2>
                     <ThemeFontSelector
                         initialTheme={portfolio.theme || 'slate'}
                         initialFont={portfolio.font || 'outfit'}
                         userId={user.id}
+                        portfolioName={portfolio.name}
                     />
                 </div>
 
