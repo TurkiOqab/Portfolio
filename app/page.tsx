@@ -103,6 +103,7 @@ export default function LandingPage() {
           <div className="flex items-center gap-6 text-sm text-zinc-500">
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
             <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
+            <Link href="/refund" className="hover:text-white transition-colors">Refund</Link>
             <a href="mailto:support@dfolio.dev" className="hover:text-white transition-colors">Contact</a>
           </div>
         </div>
