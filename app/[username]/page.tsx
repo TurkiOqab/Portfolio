@@ -103,8 +103,10 @@ export default async function PortfolioPage({ params }: PageProps) {
         ].filter(Boolean),
     }
 
+    const isLightMode = theme.mode === 'light';
+
     return (
-        <div className={`min-h-screen bg-zinc-950 relative overflow-hidden ${font.className}`}>
+        <div className={`min-h-screen ${theme.bgPrimary} relative overflow-hidden ${font.className}`}>
             {/* JSON-LD Structured Data */}
             <script
                 type="application/ld+json"
@@ -115,15 +117,17 @@ export default async function PortfolioPage({ params }: PageProps) {
             {!isOwner && <ViewTracker portfolioId={portfolio.id} />}
 
             {/* Global Background Effects */}
-            <div className="fixed inset-0 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 z-0" />
+            <div className={`fixed inset-0 ${isLightMode ? 'bg-gradient-to-br from-white via-zinc-50 to-white' : 'bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950'} z-0`} />
             <div className={`fixed top-1/4 left-1/4 w-96 h-96 ${theme.orb1} rounded-full blur-3xl animate-pulse z-0 pointer-events-none`} />
             <div className={`fixed bottom-1/4 right-1/4 w-96 h-96 ${theme.orb2} rounded-full blur-3xl animate-pulse z-0 pointer-events-none`} />
 
             {/* Grid Pattern */}
             <div
-                className="fixed inset-0 opacity-10 z-0 pointer-events-none"
+                className={`fixed inset-0 ${isLightMode ? 'opacity-30' : 'opacity-10'} z-0 pointer-events-none`}
                 style={{
-                    backgroundImage: `linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)`,
+                    backgroundImage: isLightMode
+                        ? `linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px)`
+                        : `linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)`,
                     backgroundSize: '60px 60px',
                 }}
             />

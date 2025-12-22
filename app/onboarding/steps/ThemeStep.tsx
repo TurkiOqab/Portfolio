@@ -10,8 +10,10 @@ interface StepProps {
 }
 
 function LivePreview({ theme, font, name }: { theme: ThemeConfig; font: FontConfig; name: string }) {
+    const isLightMode = theme.mode === 'light';
+
     return (
-        <div className={`relative bg-zinc-950 rounded-2xl overflow-hidden border border-zinc-800 ${font.className}`}>
+        <div className={`relative ${isLightMode ? 'bg-white border-zinc-200' : 'bg-zinc-950 border-zinc-800'} rounded-2xl overflow-hidden border ${font.className}`}>
             {/* Background orbs */}
             <div className={`absolute top-0 left-1/4 w-64 h-64 ${theme.orb1} rounded-full blur-3xl`} />
             <div className={`absolute bottom-0 right-1/4 w-64 h-64 ${theme.orb2} rounded-full blur-3xl`} />
@@ -20,11 +22,11 @@ function LivePreview({ theme, font, name }: { theme: ThemeConfig; font: FontConf
             <div className="relative z-10 p-8">
                 {/* Hero section mockup */}
                 <div className="text-center mb-6">
-                    <div className="w-16 h-16 bg-zinc-800 rounded-full mx-auto mb-4" />
+                    <div className={`w-16 h-16 ${isLightMode ? 'bg-zinc-200' : 'bg-zinc-800'} rounded-full mx-auto mb-4`} />
                     <h2 className={`text-2xl font-bold bg-gradient-to-r ${theme.primaryGradient} bg-clip-text text-transparent`}>
                         {name || "Your Name"}
                     </h2>
-                    <p className="text-zinc-400 text-sm mt-1">Full Stack Developer</p>
+                    <p className={`${theme.textMuted} text-sm mt-1`}>Full Stack Developer</p>
                 </div>
 
                 {/* Skills mockup */}
@@ -32,7 +34,7 @@ function LivePreview({ theme, font, name }: { theme: ThemeConfig; font: FontConf
                     {["React", "Node.js", "TypeScript"].map((skill) => (
                         <span
                             key={skill}
-                            className={`px-3 py-1 text-xs rounded-full ${theme.accentColor}/20 ${theme.textAccent}`}
+                            className={`px-3 py-1 text-xs rounded-full ${isLightMode ? 'bg-zinc-100 text-zinc-700' : 'bg-zinc-800/50 text-zinc-400'}`}
                         >
                             {skill}
                         </span>
@@ -43,15 +45,15 @@ function LivePreview({ theme, font, name }: { theme: ThemeConfig; font: FontConf
                 <div className="flex items-center gap-3">
                     <div className={`w-3 h-3 ${theme.timelineDot} rounded-full`} />
                     <div className="flex-1">
-                        <div className="h-2 w-24 bg-zinc-700 rounded mb-1" />
-                        <div className="h-1.5 w-16 bg-zinc-800 rounded" />
+                        <div className={`h-2 w-24 ${isLightMode ? 'bg-zinc-200' : 'bg-zinc-700'} rounded mb-1`} />
+                        <div className={`h-1.5 w-16 ${isLightMode ? 'bg-zinc-100' : 'bg-zinc-800'} rounded`} />
                     </div>
                 </div>
 
                 {/* Button mockup */}
                 <div className="mt-6 flex justify-center">
                     <div className={`px-6 py-2 bg-gradient-to-r ${theme.primaryGradient} rounded-lg ${theme.shadowColor} shadow-lg`}>
-                        <span className="text-white text-sm font-medium">Contact Me</span>
+                        <span className={`${theme.buttonText} text-sm font-medium`}>Contact Me</span>
                     </div>
                 </div>
             </div>
@@ -64,6 +66,8 @@ function ThemePreview({ theme, isSelected, onClick }: {
     isSelected: boolean;
     onClick: () => void;
 }) {
+    const isLightMode = theme.mode === 'light';
+
     return (
         <button
             onClick={onClick}
@@ -83,12 +87,20 @@ function ThemePreview({ theme, isSelected, onClick }: {
                 </div>
             )}
 
-            {/* Color swatches */}
-            <div className="flex gap-1 mb-2">
-                <div className={`w-6 h-6 rounded-full bg-gradient-to-r ${theme.primaryGradient}`} />
-                <div className={`w-6 h-6 rounded-full ${theme.orb1}`} />
-                <div className={`w-6 h-6 rounded-full ${theme.orb2}`} />
-            </div>
+            {/* Mini preview or color swatches */}
+            {isLightMode ? (
+                <div className="flex gap-1 mb-2">
+                    <div className="w-6 h-6 rounded-full bg-white border border-zinc-300" />
+                    <div className="w-6 h-6 rounded-full bg-zinc-100" />
+                    <div className="w-6 h-6 rounded-full bg-zinc-900" />
+                </div>
+            ) : (
+                <div className="flex gap-1 mb-2">
+                    <div className={`w-6 h-6 rounded-full bg-gradient-to-r ${theme.primaryGradient}`} />
+                    <div className={`w-6 h-6 rounded-full ${theme.orb1}`} />
+                    <div className={`w-6 h-6 rounded-full ${theme.orb2}`} />
+                </div>
+            )}
 
             {/* Theme info */}
             <h3 className="font-medium text-white text-sm">{theme.name}</h3>

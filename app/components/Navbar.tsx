@@ -17,6 +17,7 @@ export default function Navbar({ theme, isOwner = false }: NavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const isLightMode = theme.mode === 'light';
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -42,7 +43,7 @@ export default function Navbar({ theme, isOwner = false }: NavbarProps) {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-zinc-950/80 border-b border-zinc-800/50">
+    <nav className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md ${isLightMode ? 'bg-white/80 border-zinc-200' : 'bg-zinc-950/80 border-zinc-800/50'} border-b`}>
       <div className="max-w-6xl mx-auto px-6">
         <div className="flex items-center justify-between h-20">
           {/* Slogan with link to Dfolio */}
@@ -50,7 +51,7 @@ export default function Navbar({ theme, isOwner = false }: NavbarProps) {
             href="https://dfolio.dev"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs sm:text-sm font-medium text-zinc-500 hover:text-zinc-300 transition-colors"
+            className={`text-xs sm:text-sm font-medium ${isLightMode ? 'text-zinc-500 hover:text-zinc-700' : 'text-zinc-500 hover:text-zinc-300'} transition-colors`}
           >
             Portfolios for Developers
           </a>
@@ -61,7 +62,7 @@ export default function Navbar({ theme, isOwner = false }: NavbarProps) {
               <a
                 key={link.name}
                 href={link.href}
-                className={`text-lg font-semibold ${theme.textAccent} hover:text-white transition-all duration-300`}
+                className={`text-lg font-semibold ${theme.textAccent} ${isLightMode ? 'hover:text-zinc-900' : 'hover:text-white'} transition-all duration-300`}
               >
                 {link.name}
               </a>
@@ -72,7 +73,7 @@ export default function Navbar({ theme, isOwner = false }: NavbarProps) {
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className={`flex items-center gap-1 px-3 py-2 rounded-lg ${theme.textAccent} hover:text-white hover:bg-zinc-800/50 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/20`}
+                  className={`flex items-center gap-1 px-3 py-2 rounded-lg ${theme.textAccent} ${isLightMode ? 'hover:text-zinc-900 hover:bg-zinc-100' : 'hover:text-white hover:bg-zinc-800/50'} transition-all duration-300 focus:outline-none focus:ring-2 ${isLightMode ? 'focus:ring-zinc-900/20' : 'focus:ring-white/20'}`}
                   aria-label="Open navigation menu"
                   aria-expanded={isDropdownOpen}
                 >
@@ -88,10 +89,10 @@ export default function Navbar({ theme, isOwner = false }: NavbarProps) {
                 </button>
 
                 {isDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-zinc-900 border border-zinc-800 rounded-xl shadow-xl overflow-hidden">
+                  <div className={`absolute right-0 mt-2 w-48 ${isLightMode ? 'bg-white border-zinc-200' : 'bg-zinc-900 border-zinc-800'} border rounded-xl shadow-xl overflow-hidden`}>
                     <Link
                       href="/dashboard"
-                      className="flex items-center gap-3 px-4 py-3 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors"
+                      className={`flex items-center gap-3 px-4 py-3 text-sm ${isLightMode ? 'text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900' : 'text-zinc-300 hover:bg-zinc-800 hover:text-white'} transition-colors`}
                       onClick={() => setIsDropdownOpen(false)}
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -101,7 +102,7 @@ export default function Navbar({ theme, isOwner = false }: NavbarProps) {
                     </Link>
                     <Link
                       href="/dashboard/settings"
-                      className="flex items-center gap-3 px-4 py-3 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors"
+                      className={`flex items-center gap-3 px-4 py-3 text-sm ${isLightMode ? 'text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900' : 'text-zinc-300 hover:bg-zinc-800 hover:text-white'} transition-colors`}
                       onClick={() => setIsDropdownOpen(false)}
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -110,13 +111,13 @@ export default function Navbar({ theme, isOwner = false }: NavbarProps) {
                       </svg>
                       Settings
                     </Link>
-                    <div className="border-t border-zinc-800" />
+                    <div className={`border-t ${isLightMode ? 'border-zinc-200' : 'border-zinc-800'}`} />
                     <button
                       onClick={() => {
                         setIsDropdownOpen(false);
                         handleSignOut();
                       }}
-                      className="flex items-center gap-3 px-4 py-3 text-sm text-red-400 hover:bg-zinc-800 hover:text-red-300 transition-colors w-full text-left"
+                      className={`flex items-center gap-3 px-4 py-3 text-sm text-red-500 ${isLightMode ? 'hover:bg-zinc-100' : 'hover:bg-zinc-800'} hover:text-red-400 transition-colors w-full text-left`}
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -132,7 +133,7 @@ export default function Navbar({ theme, isOwner = false }: NavbarProps) {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 text-zinc-400 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white/20 rounded-lg"
+            className={`md:hidden p-2 ${isLightMode ? 'text-zinc-600 hover:text-zinc-900' : 'text-zinc-400 hover:text-white'} transition-colors focus:outline-none focus:ring-2 ${isLightMode ? 'focus:ring-zinc-900/20' : 'focus:ring-white/20'} rounded-lg`}
             aria-label={isMenuOpen ? "Close menu" : "Open menu"}
             aria-expanded={isMenuOpen}
           >
@@ -163,7 +164,7 @@ export default function Navbar({ theme, isOwner = false }: NavbarProps) {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-zinc-800/50">
+          <div className={`md:hidden py-4 border-t ${isLightMode ? 'border-zinc-200' : 'border-zinc-800/50'}`}>
             <div className="flex flex-col space-y-4">
               {navLinks.map((link) => (
                 <a
@@ -178,7 +179,7 @@ export default function Navbar({ theme, isOwner = false }: NavbarProps) {
               {/* Owner Links - Mobile */}
               {isOwner && (
                 <>
-                  <div className="border-t border-zinc-800/50 my-2" />
+                  <div className={`border-t ${isLightMode ? 'border-zinc-200' : 'border-zinc-800/50'} my-2`} />
                   <Link
                     href="/dashboard"
                     onClick={() => setIsMenuOpen(false)}
@@ -200,13 +201,13 @@ export default function Navbar({ theme, isOwner = false }: NavbarProps) {
                     </svg>
                     Settings
                   </Link>
-                  <div className="border-t border-zinc-800/50 my-2" />
+                  <div className={`border-t ${isLightMode ? 'border-zinc-200' : 'border-zinc-800/50'} my-2`} />
                   <button
                     onClick={() => {
                       setIsMenuOpen(false);
                       handleSignOut();
                     }}
-                    className="text-lg font-semibold text-red-400 flex items-center gap-2"
+                    className="text-lg font-semibold text-red-500 flex items-center gap-2"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />

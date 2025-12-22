@@ -190,13 +190,14 @@ function TypeWriter({ texts, theme }: { texts: string[]; theme: ThemeConfig }) {
     // Split the text to color only the name/title part
     const hiPart = "Hi, I'm ";
     const hasHiPrefix = texts[currentTextIndex].startsWith(hiPart);
+    const isLightMode = theme.mode === 'light';
 
     if (hasHiPrefix) {
         const displayedHi = currentText.substring(0, Math.min(currentText.length, hiPart.length));
         const displayedName = currentText.substring(hiPart.length);
         return (
             <span>
-                <span className="text-white">{displayedHi}</span>
+                <span className={isLightMode ? "text-zinc-900" : "text-white"}>{displayedHi}</span>
                 <span className={`bg-gradient-to-r ${theme.primaryGradient} bg-clip-text text-transparent`}>
                     {displayedName}
                 </span>
@@ -217,6 +218,7 @@ export default function Hero({ name, title, bio, skills, theme }: HeroProps) {
         `Hi, I'm ${name || "Your Name"}`,
         title || "Developer"
     ];
+    const isLightMode = theme.mode === 'light';
 
     return (
         <section
@@ -230,12 +232,12 @@ export default function Hero({ name, title, bio, skills, theme }: HeroProps) {
 
             <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
                 {/* Main Heading with Typewriter */}
-                <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-6 tracking-tight min-h-[1.2em]">
+                <h1 className={`text-5xl md:text-7xl lg:text-8xl font-bold ${theme.textPrimary} mb-6 tracking-tight min-h-[1.2em]`}>
                     <TypeWriter texts={typingTexts} theme={theme} />
                 </h1>
 
                 {/* Bio */}
-                <p className="text-xl md:text-2xl text-zinc-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+                <p className={`text-xl md:text-2xl ${theme.textMuted} mb-10 max-w-2xl mx-auto leading-relaxed`}>
                     {bio || "A passionate developer crafting beautiful digital experiences."}
                 </p>
 
@@ -243,14 +245,14 @@ export default function Hero({ name, title, bio, skills, theme }: HeroProps) {
                 {skills.length > 0 && (
                     <div className="relative w-full overflow-hidden mb-14">
                         {/* Gradient fade edges */}
-                        <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-zinc-950 to-transparent z-10 pointer-events-none" />
-                        <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-zinc-950 to-transparent z-10 pointer-events-none" />
+                        <div className={`absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r ${isLightMode ? 'from-white' : 'from-zinc-950'} to-transparent z-10 pointer-events-none`} />
+                        <div className={`absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l ${isLightMode ? 'from-white' : 'from-zinc-950'} to-transparent z-10 pointer-events-none`} />
 
                         <div className="flex animate-scroll">
                             {[...skills, ...skills, ...skills].map((skill, index) => (
                                 <div
                                     key={`${skill}-${index}`}
-                                    className="flex items-center gap-3 px-6 py-2 mx-2 text-zinc-400 whitespace-nowrap bg-zinc-900/40 rounded-full border border-zinc-800/50 hover:border-zinc-700 hover:bg-zinc-900/60 transition-all duration-300"
+                                    className={`flex items-center gap-3 px-6 py-2 mx-2 ${theme.textMuted} whitespace-nowrap ${isLightMode ? 'bg-zinc-100/80 border-zinc-200 hover:border-zinc-300 hover:bg-zinc-100' : 'bg-zinc-900/40 border-zinc-800/50 hover:border-zinc-700 hover:bg-zinc-900/60'} rounded-full border transition-all duration-300`}
                                 >
                                     <SkillIcon skill={skill} />
                                     <span className="text-sm font-medium">{skill}</span>
@@ -283,7 +285,7 @@ export default function Hero({ name, title, bio, skills, theme }: HeroProps) {
                     </a>
                     <a
                         href="#contact"
-                        className="group px-8 py-4 border border-zinc-700 text-white font-medium rounded-full hover:bg-zinc-800/50 hover:border-zinc-500 transition-all duration-300 hover:scale-[1.02]"
+                        className={`group px-8 py-4 border ${isLightMode ? 'border-zinc-300 text-zinc-900 hover:bg-zinc-100 hover:border-zinc-400' : 'border-zinc-700 text-white hover:bg-zinc-800/50 hover:border-zinc-500'} font-medium rounded-full transition-all duration-300 hover:scale-[1.02]`}
                     >
                         Contact Me
                         <svg
