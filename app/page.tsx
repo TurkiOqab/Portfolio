@@ -73,12 +73,9 @@ export default function LandingPage() {
         <div className="max-w-4xl mx-auto text-center">
           <div className="relative p-12 md:p-16 bg-zinc-900/50 border border-zinc-800/50 rounded-3xl overflow-hidden">
             <div className="relative z-10">
-              <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
+              <h2 className="text-3xl md:text-5xl font-bold text-white mb-10">
                 Build yours in <span className="text-slate-400">5 minutes</span>
               </h2>
-              <p className="text-zinc-400 text-lg md:text-xl mb-10 max-w-xl mx-auto">
-                Join thousands of developers showcasing their work with Dfolio.
-              </p>
               <Link
                 href="/signup"
                 className="group inline-flex items-center gap-2 px-8 py-4 bg-white text-zinc-900 font-semibold rounded-full hover:bg-zinc-100 transition-all duration-300"
