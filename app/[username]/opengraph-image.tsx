@@ -10,6 +10,22 @@ export const size = {
 }
 export const contentType = 'image/png'
 
+// Theme colors for OG images (hex values since we can't use Tailwind)
+const themeColors: Record<string, { primary: string; accent: string; orb: string }> = {
+    violet: { primary: '#7c3aed', accent: '#a78bfa', orb: 'rgba(124, 58, 237, 0.2)' },
+    blue: { primary: '#2563eb', accent: '#60a5fa', orb: 'rgba(37, 99, 235, 0.2)' },
+    emerald: { primary: '#059669', accent: '#34d399', orb: 'rgba(5, 150, 105, 0.2)' },
+    rose: { primary: '#e11d48', accent: '#fb7185', orb: 'rgba(225, 29, 72, 0.2)' },
+    cyan: { primary: '#0891b2', accent: '#22d3ee', orb: 'rgba(8, 145, 178, 0.2)' },
+    orange: { primary: '#ea580c', accent: '#fb923c', orb: 'rgba(234, 88, 12, 0.2)' },
+    slate: { primary: '#64748b', accent: '#94a3b8', orb: 'rgba(71, 85, 105, 0.2)' },
+    white: { primary: '#ffffff', accent: '#e4e4e7', orb: 'rgba(255, 255, 255, 0.1)' },
+}
+
+function getThemeColors(themeId: string) {
+    return themeColors[themeId] || themeColors.slate
+}
+
 export default async function Image({ params }: { params: Promise<{ username: string }> }) {
     const { username } = await params
     const supabase = await createClient()
@@ -27,13 +43,13 @@ export default async function Image({ params }: { params: Promise<{ username: st
                 <div
                     style={{
                         fontSize: 48,
-                        background: 'linear-gradient(135deg, #18181b 0%, #27272a 100%)',
+                        background: '#09090b',
                         width: '100%',
                         height: '100%',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        color: 'white',
+                        color: '#71717a',
                     }}
                 >
                     Portfolio Not Found
@@ -45,13 +61,15 @@ export default async function Image({ params }: { params: Promise<{ username: st
 
     const { data: portfolio } = await supabase
         .from('portfolios')
-        .select('name, title, bio, avatar_url')
+        .select('name, title, bio, avatar_url, theme')
         .eq('user_id', profile.id)
         .single()
 
     const name = portfolio?.name || username
     const title = portfolio?.title || 'Developer'
     const avatarUrl = portfolio?.avatar_url
+    const initial = name.charAt(0).toUpperCase()
+    const colors = getThemeColors(portfolio?.theme || 'slate')
 
     return new ImageResponse(
         (
@@ -63,31 +81,41 @@ export default async function Image({ params }: { params: Promise<{ username: st
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    background: 'linear-gradient(135deg, #18181b 0%, #27272a 50%, #18181b 100%)',
+                    backgroundColor: '#09090b',
                     position: 'relative',
                 }}
             >
-                {/* Background gradient orbs */}
+                {/* Theme-colored gradient orbs */}
                 <div
                     style={{
                         position: 'absolute',
-                        top: '10%',
-                        left: '10%',
-                        width: '400px',
-                        height: '400px',
+                        top: '-100px',
+                        left: '50px',
+                        width: '500px',
+                        height: '500px',
+                        background: `radial-gradient(circle, ${colors.orb} 0%, transparent 70%)`,
                         borderRadius: '50%',
-                        background: 'radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%)',
                     }}
                 />
                 <div
                     style={{
                         position: 'absolute',
-                        bottom: '10%',
-                        right: '10%',
+                        bottom: '-100px',
+                        right: '50px',
                         width: '400px',
                         height: '400px',
+                        background: `radial-gradient(circle, ${colors.orb} 0%, transparent 70%)`,
                         borderRadius: '50%',
-                        background: 'radial-gradient(circle, rgba(168, 85, 247, 0.3) 0%, transparent 70%)',
+                    }}
+                />
+
+                {/* Grid pattern overlay */}
+                <div
+                    style={{
+                        position: 'absolute',
+                        inset: 0,
+                        backgroundImage: 'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)',
+                        backgroundSize: '64px 64px',
                     }}
                 />
 
@@ -102,28 +130,48 @@ export default async function Image({ params }: { params: Promise<{ username: st
                     }}
                 >
                     {/* Avatar */}
-                    {avatarUrl && (
+                    {avatarUrl ? (
                         <img
                             src={avatarUrl}
                             alt={name}
-                            width={140}
-                            height={140}
+                            width={120}
+                            height={120}
                             style={{
-                                borderRadius: '70px',
-                                border: '4px solid rgba(139, 92, 246, 0.5)',
-                                marginBottom: '24px',
+                                borderRadius: '60px',
+                                border: `3px solid ${colors.primary}40`,
+                                marginBottom: '28px',
+                                objectFit: 'cover',
                             }}
                         />
+                    ) : (
+                        <div
+                            style={{
+                                width: '120px',
+                                height: '120px',
+                                borderRadius: '60px',
+                                background: `linear-gradient(135deg, ${colors.primary} 0%, ${colors.accent} 100%)`,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: 48,
+                                fontWeight: 'bold',
+                                color: 'white',
+                                marginBottom: '28px',
+                            }}
+                        >
+                            {initial}
+                        </div>
                     )}
 
                     {/* Name */}
                     <div
                         style={{
-                            fontSize: 64,
-                            fontWeight: 'bold',
+                            fontSize: 56,
+                            fontWeight: 700,
                             color: 'white',
                             marginBottom: '12px',
                             textAlign: 'center',
+                            letterSpacing: '-1px',
                         }}
                     >
                         {name}
@@ -132,31 +180,41 @@ export default async function Image({ params }: { params: Promise<{ username: st
                     {/* Title */}
                     <div
                         style={{
-                            fontSize: 32,
-                            background: 'linear-gradient(90deg, #a78bfa, #c084fc)',
-                            backgroundClip: 'text',
-                            color: 'transparent',
-                            marginBottom: '24px',
+                            fontSize: 28,
+                            color: colors.accent,
+                            marginBottom: '32px',
                             textAlign: 'center',
                         }}
                     >
                         {title}
                     </div>
 
-                    {/* Dfolio branding */}
+                    {/* Accent line */}
                     <div
                         style={{
-                            fontSize: 20,
-                            color: '#71717a',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
+                            width: 60,
+                            height: 3,
+                            background: `linear-gradient(to right, ${colors.primary}, ${colors.accent})`,
+                            borderRadius: 2,
                         }}
-                    >
-                        <span style={{ color: '#a78bfa' }}>Dfolio</span>
-                        <span>|</span>
-                        <span>@{username}</span>
-                    </div>
+                    />
+                </div>
+
+                {/* Footer */}
+                <div
+                    style={{
+                        position: 'absolute',
+                        bottom: 40,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        fontSize: 18,
+                        color: '#52525b',
+                    }}
+                >
+                    <span style={{ color: colors.accent }}>dfolio.dev</span>
+                    <span>/</span>
+                    <span>{username}</span>
                 </div>
             </div>
         ),

@@ -21,115 +21,99 @@ export default async function Image() {
                     alignItems: 'center',
                     justifyContent: 'center',
                     backgroundColor: '#09090b',
-                    backgroundImage: 'radial-gradient(circle at 25% 25%, #1e293b 0%, transparent 50%), radial-gradient(circle at 75% 75%, #27272a 0%, transparent 50%)',
+                    position: 'relative',
                 }}
             >
-                {/* Logo */}
+                {/* Subtle gradient orbs */}
+                <div
+                    style={{
+                        position: 'absolute',
+                        top: '-200px',
+                        left: '100px',
+                        width: '600px',
+                        height: '600px',
+                        background: 'radial-gradient(circle, rgba(71, 85, 105, 0.15) 0%, transparent 70%)',
+                        borderRadius: '50%',
+                    }}
+                />
+                <div
+                    style={{
+                        position: 'absolute',
+                        bottom: '-200px',
+                        right: '100px',
+                        width: '500px',
+                        height: '500px',
+                        background: 'radial-gradient(circle, rgba(63, 63, 70, 0.15) 0%, transparent 70%)',
+                        borderRadius: '50%',
+                    }}
+                />
+
+                {/* Grid pattern overlay */}
+                <div
+                    style={{
+                        position: 'absolute',
+                        inset: 0,
+                        backgroundImage: 'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)',
+                        backgroundSize: '64px 64px',
+                    }}
+                />
+
+                {/* Content */}
                 <div
                     style={{
                         display: 'flex',
+                        flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        marginBottom: 40,
+                        zIndex: 10,
                     }}
                 >
+                    {/* Brand */}
                     <div
                         style={{
-                            width: 80,
-                            height: 80,
-                            background: 'linear-gradient(135deg, #64748b 0%, #475569 100%)',
-                            borderRadius: 20,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontSize: 48,
-                            fontWeight: 'bold',
+                            fontSize: 72,
+                            fontWeight: 700,
                             color: 'white',
-                            marginRight: 20,
-                        }}
-                    >
-                        D
-                    </div>
-                    <span
-                        style={{
-                            fontSize: 64,
-                            fontWeight: 'bold',
-                            background: 'linear-gradient(to right, #ffffff, #a1a1aa)',
-                            backgroundClip: 'text',
-                            color: 'transparent',
+                            letterSpacing: '-2px',
+                            marginBottom: 24,
                         }}
                     >
                         Dfolio
-                    </span>
-                </div>
+                    </div>
 
-                {/* Tagline */}
-                <div
-                    style={{
-                        fontSize: 36,
-                        color: '#a1a1aa',
-                        marginBottom: 60,
-                        textAlign: 'center',
-                        maxWidth: 800,
-                    }}
-                >
-                    Create your professional developer portfolio in minutes
-                </div>
+                    {/* Tagline */}
+                    <div
+                        style={{
+                            fontSize: 32,
+                            color: '#a1a1aa',
+                            textAlign: 'center',
+                            maxWidth: 700,
+                            lineHeight: 1.4,
+                        }}
+                    >
+                        Developer portfolios, done right.
+                    </div>
 
-                {/* Features */}
-                <div
-                    style={{
-                        display: 'flex',
-                        gap: 40,
-                    }}
-                >
-                    {['Beautiful Themes', 'Easy Setup', 'Free Forever'].map((feature) => (
-                        <div
-                            key={feature}
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 12,
-                                color: '#71717a',
-                                fontSize: 24,
-                            }}
-                        >
-                            <div
-                                style={{
-                                    width: 24,
-                                    height: 24,
-                                    borderRadius: 12,
-                                    background: 'linear-gradient(135deg, #64748b 0%, #475569 100%)',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                }}
-                            >
-                                <svg
-                                    width="14"
-                                    height="14"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="white"
-                                    strokeWidth="3"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                >
-                                    <polyline points="20 6 9 17 4 12" />
-                                </svg>
-                            </div>
-                            {feature}
-                        </div>
-                    ))}
+                    {/* Accent line */}
+                    <div
+                        style={{
+                            width: 80,
+                            height: 4,
+                            background: 'linear-gradient(to right, #64748b, #475569)',
+                            borderRadius: 2,
+                            marginTop: 48,
+                        }}
+                    />
                 </div>
 
                 {/* URL */}
                 <div
                     style={{
                         position: 'absolute',
-                        bottom: 40,
-                        fontSize: 20,
+                        bottom: 48,
+                        fontSize: 18,
                         color: '#52525b',
+                        letterSpacing: '0.5px',
                     }}
                 >
                     dfolio.dev
