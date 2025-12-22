@@ -180,21 +180,12 @@ export async function generateMetadata({ params }: PageProps) {
             description,
             type: 'profile',
             url: `https://dfolio.dev/${username}`,
-            images: portfolio?.avatar_url ? [
-                {
-                    url: portfolio.avatar_url,
-                    width: 400,
-                    height: 400,
-                    alt: `${portfolio.name}'s profile picture`,
-                }
-            ] : [],
             siteName: 'Dfolio',
         },
         twitter: {
-            card: 'summary',
+            card: 'summary_large_image',
             title,
             description,
-            images: portfolio?.avatar_url ? [portfolio.avatar_url] : [],
         },
     }
 }
