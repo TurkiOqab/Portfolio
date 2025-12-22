@@ -8,9 +8,10 @@ interface StepProps {
     updateData: (updates: Partial<PortfolioData>) => void;
     onSkip: () => void;
     isReturningUser?: boolean;
+    onAnalyzingChange?: (isAnalyzing: boolean) => void;
 }
 
-export default function CVImportStep({ data, updateData, onSkip, isReturningUser = false }: StepProps) {
+export default function CVImportStep({ data, updateData, onSkip, isReturningUser = false, onAnalyzingChange }: StepProps) {
     const [isUploading, setIsUploading] = useState(false);
     const [isParsing, setIsParsing] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -37,6 +38,7 @@ export default function CVImportStep({ data, updateData, onSkip, isReturningUser
         setFileName(file.name);
         setIsUploading(true);
         setIsParsing(true);
+        onAnalyzingChange?.(true);
 
         try {
             // Send to API for parsing
@@ -71,6 +73,7 @@ export default function CVImportStep({ data, updateData, onSkip, isReturningUser
                     linkedin: parsedData.contact?.linkedin || data.contact.linkedin,
                     twitter: parsedData.contact?.twitter || data.contact.twitter,
                 },
+                cvImported: true,
             });
 
             setParseSuccess(true);
@@ -82,6 +85,7 @@ export default function CVImportStep({ data, updateData, onSkip, isReturningUser
 
         setIsUploading(false);
         setIsParsing(false);
+        onAnalyzingChange?.(false);
     };
 
     const handleReset = () => {

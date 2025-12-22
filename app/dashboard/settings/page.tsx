@@ -324,10 +324,7 @@ export default function SettingsPage() {
             {/* Header */}
             <header className="relative z-10 bg-zinc-950/70 border-b border-zinc-800/30 backdrop-blur-xl">
                 <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-                    <Link href="/dashboard" className="group text-2xl font-bold text-white flex items-center gap-2">
-                        <span className={`w-8 h-8 bg-gradient-to-br ${theme.primaryGradient} rounded-lg flex items-center justify-center text-sm font-bold ${theme.shadowColor} shadow-lg group-hover:shadow-xl transition-shadow duration-300`}>D</span>
-                        <span className="bg-gradient-to-r from-white to-zinc-300 bg-clip-text text-transparent">Dfolio</span>
-                    </Link>
+                    <h1 className="text-xl font-semibold text-white">Settings</h1>
                     <Link href="/dashboard" className={`text-sm ${theme.textAccent} hover:text-white transition-colors flex items-center gap-2`}>
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -338,8 +335,6 @@ export default function SettingsPage() {
             </header>
 
             <main className="relative z-10 max-w-2xl mx-auto px-6 py-12">
-                <h1 className="text-3xl font-bold text-white mb-8">Settings</h1>
-
                 {message && (
                     <div className={`mb-6 p-4 rounded-xl border ${message.type === 'success'
                         ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'

@@ -52,6 +52,7 @@ export interface PortfolioData {
     contact: ContactInfo;
     theme: string;
     font: string;
+    cvImported?: boolean; // Tracks if data was imported from CV in current session
 }
 
 // Default empty portfolio for new users

@@ -5,6 +5,7 @@ import { getFont } from '@/app/lib/fonts'
 import { getTheme } from '@/app/lib/themes'
 import ProfileAvatar from '@/app/components/ProfileAvatar'
 import CopyLinkButton from '@/app/components/CopyLinkButton'
+import ThemeFontSelector from '@/app/components/ThemeFontSelector'
 
 export const dynamic = 'force-dynamic'
 
@@ -227,28 +228,19 @@ export default async function DashboardPage() {
                     </div>
                 </div>
 
+                {/* Theme & Font Selection */}
+                <div className="p-6 bg-zinc-900/50 border border-zinc-800/50 rounded-2xl mb-10">
+                    <h2 className="text-lg font-semibold text-white mb-4">Customize Style</h2>
+                    <ThemeFontSelector
+                        initialTheme={portfolio.theme || 'slate'}
+                        initialFont={portfolio.font || 'outfit'}
+                        userId={user.id}
+                    />
+                </div>
+
                 {/* Quick Links */}
                 <div className="space-y-3">
                     <h2 className="text-sm font-medium text-zinc-500 uppercase tracking-wider mb-4">Quick Actions</h2>
-
-                    <Link
-                        href="/dashboard/settings"
-                        className="group flex items-center gap-4 p-4 bg-zinc-900/30 border border-zinc-800/50 rounded-xl hover:bg-zinc-900/50 hover:border-zinc-700/50 transition-all"
-                    >
-                        <div className="w-10 h-10 bg-zinc-800/80 rounded-lg flex items-center justify-center">
-                            <svg className="w-5 h-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                        </div>
-                        <div className="flex-1">
-                            <h3 className="font-medium text-white">Settings</h3>
-                            <p className="text-sm text-zinc-500">Theme, font & account preferences</p>
-                        </div>
-                        <svg className="w-5 h-5 text-zinc-600 group-hover:text-zinc-400 group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                    </Link>
 
                     <Link
                         href="/onboarding"
@@ -262,6 +254,25 @@ export default async function DashboardPage() {
                         <div className="flex-1">
                             <h3 className="font-medium text-white">Manage Content</h3>
                             <p className="text-sm text-zinc-500">Edit projects, experience & skills</p>
+                        </div>
+                        <svg className="w-5 h-5 text-zinc-600 group-hover:text-zinc-400 group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                    </Link>
+
+                    <Link
+                        href="/dashboard/settings"
+                        className="group flex items-center gap-4 p-4 bg-zinc-900/30 border border-zinc-800/50 rounded-xl hover:bg-zinc-900/50 hover:border-zinc-700/50 transition-all"
+                    >
+                        <div className="w-10 h-10 bg-zinc-800/80 rounded-lg flex items-center justify-center">
+                            <svg className="w-5 h-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                        </div>
+                        <div className="flex-1">
+                            <h3 className="font-medium text-white">Settings</h3>
+                            <p className="text-sm text-zinc-500">Account & visibility preferences</p>
                         </div>
                         <svg className="w-5 h-5 text-zinc-600 group-hover:text-zinc-400 group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

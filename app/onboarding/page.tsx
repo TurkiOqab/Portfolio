@@ -3,7 +3,7 @@
 export const dynamic = 'force-dynamic';
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/app/lib/supabase/client";
 import { PortfolioData, defaultPortfolioData } from "../types";
 import CVImportStep from "./steps/CVImportStep";
@@ -20,6 +20,7 @@ const TOTAL_STEPS = 8;
 
 export default function OnboardingPage() {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const supabase = createClient();
     const [currentStep, setCurrentStep] = useState(1);
     const [data, setData] = useState<PortfolioData>(defaultPortfolioData);
@@ -29,6 +30,7 @@ export default function OnboardingPage() {
     const [username, setUsername] = useState<string | null>(null);
     const [saveError, setSaveError] = useState<string | null>(null);
     const [isReturningUser, setIsReturningUser] = useState(false);
+    const [isAnalyzingCV, setIsAnalyzingCV] = useState(false);
 
     useEffect(() => {
         const loadUserData = async () => {
@@ -94,13 +96,22 @@ export default function OnboardingPage() {
 
                 // Mark as returning user (will show CV import prompt)
                 setIsReturningUser(true);
+
+                // Check for direct step navigation via query param
+                const stepParam = searchParams.get('step');
+                if (stepParam) {
+                    const targetStep = parseInt(stepParam, 10);
+                    if (targetStep >= 1 && targetStep <= TOTAL_STEPS) {
+                        setCurrentStep(targetStep);
+                    }
+                }
             }
 
             setIsLoading(false);
         };
 
         loadUserData();
-    }, [router, supabase]);
+    }, [router, supabase, searchParams]);
 
     const updateData = (updates: Partial<PortfolioData>) => {
         setData((prev) => ({ ...prev, ...updates }));
@@ -305,7 +316,7 @@ export default function OnboardingPage() {
             <div className="flex-1 flex items-center justify-center pt-28 pb-32 px-6 relative z-10 overflow-y-auto">
                 <div className={`w-full ${currentStep === 6 ? 'max-w-4xl' : 'max-w-2xl'}`}>
                     {currentStep === 1 && (
-                        <CVImportStep data={data} updateData={updateData} onSkip={skipStep} isReturningUser={isReturningUser} />
+                        <CVImportStep data={data} updateData={updateData} onSkip={skipStep} isReturningUser={isReturningUser} onAnalyzingChange={setIsAnalyzingCV} />
                     )}
                     {currentStep === 2 && (
                         <NameStep data={data} updateData={updateData} />
@@ -370,7 +381,7 @@ export default function OnboardingPage() {
                             )}
                             <button
                                 onClick={nextStep}
-                                disabled={!canProceed() || isSaving}
+                                disabled={!canProceed() || isSaving || isAnalyzingCV || currentStep === 7}
                                 className="px-8 py-3 bg-white text-zinc-900 font-medium rounded-full hover:bg-zinc-100 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                             >
                                 {isSaving ? (
