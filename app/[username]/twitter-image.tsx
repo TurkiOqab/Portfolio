@@ -3,12 +3,6 @@ import { createClient } from '@supabase/supabase-js'
 
 export const runtime = 'edge'
 
-// Create a simple Supabase client for edge runtime (no cookies needed for public data)
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
-
 export const alt = 'Portfolio'
 export const size = {
     width: 1200,
@@ -34,6 +28,12 @@ function getThemeColors(themeId: string) {
 
 export default async function Image({ params }: { params: Promise<{ username: string }> }) {
     const { username } = await params
+
+    // Create Supabase client inside function for edge runtime compatibility
+    const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
 
     // Fetch profile and portfolio
     const { data: profile } = await supabase
@@ -114,15 +114,6 @@ export default async function Image({ params }: { params: Promise<{ username: st
                     }}
                 />
 
-                {/* Grid pattern overlay */}
-                <div
-                    style={{
-                        position: 'absolute',
-                        inset: 0,
-                        backgroundImage: 'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)',
-                        backgroundSize: '64px 64px',
-                    }}
-                />
 
                 {/* Content */}
                 <div
