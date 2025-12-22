@@ -1,13 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/app/lib/supabase/client'
 import { validatePassword } from '@/app/lib/validation'
 
 export default function SignupPage() {
-    const router = useRouter()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
@@ -18,6 +16,7 @@ export default function SignupPage() {
     const [isLoading, setIsLoading] = useState(false)
     const [usernameStatus, setUsernameStatus] = useState<'idle' | 'checking' | 'available' | 'taken'>('idle')
     const [acceptedTerms, setAcceptedTerms] = useState(false)
+    const [signupSuccess, setSignupSuccess] = useState(false)
 
     const checkUsername = async (value: string) => {
         if (value.length < 3) {
@@ -121,8 +120,49 @@ export default function SignupPage() {
         }
 
         setIsLoading(false)
-        router.push('/onboarding')
-        router.refresh()
+        setSignupSuccess(true)
+    }
+
+    if (signupSuccess) {
+        return (
+            <div className="min-h-screen bg-zinc-950 flex items-center justify-center px-6">
+                <div className="absolute inset-0 bg-zinc-950" />
+                <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-slate-600/5 rounded-full blur-3xl" />
+                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-zinc-700/5 rounded-full blur-3xl" />
+
+                <div className="relative z-10 w-full max-w-md">
+                    <div className="text-center mb-8">
+                        <Link href="/" className="inline-block">
+                            <h1 className="text-3xl font-bold text-white">Dfolio</h1>
+                        </Link>
+                    </div>
+
+                    <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-8 text-center">
+                        <div className="w-16 h-16 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <svg className="w-8 h-8 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <h2 className="text-2xl font-bold text-white mb-2">Check your email</h2>
+                        <p className="text-zinc-400 mb-6">
+                            We&apos;ve sent a verification link to <span className="text-white">{email}</span>.
+                            Click the link to verify your account and get started.
+                        </p>
+                        <div className="space-y-3">
+                            <p className="text-zinc-500 text-sm">
+                                Didn&apos;t receive the email? Check your spam folder.
+                            </p>
+                            <Link
+                                href="/login"
+                                className="inline-block text-white hover:text-zinc-300 transition-colors text-sm"
+                            >
+                                Back to login
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
     }
 
     return (

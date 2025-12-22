@@ -31,16 +31,34 @@ function getVisitorId(): string {
     return visitorId;
 }
 
-export default function LikeButton({ portfolioId, theme, isOwner }: LikeButtonProps) {
+export default function LikeButton({ portfolioId, theme, isOwner: isOwnerProp }: LikeButtonProps) {
     const [liked, setLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const [isAnimating, setIsAnimating] = useState(false);
     const [showSignupPrompt, setShowSignupPrompt] = useState(false);
+    const [isOwner, setIsOwner] = useState(isOwnerProp ?? false);
     const supabase = createClient();
 
     useEffect(() => {
         const fetchLikeData = async () => {
+            let ownerDetected = isOwnerProp ?? false;
+
+            // Double-check ownership on client side
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                const { data: portfolio } = await supabase
+                    .from("portfolios")
+                    .select("user_id")
+                    .eq("id", portfolioId)
+                    .single();
+
+                if (portfolio?.user_id === user.id) {
+                    ownerDetected = true;
+                    setIsOwner(true);
+                }
+            }
+
             // Always fetch like count (for owners too)
             const { count } = await supabase
                 .from("portfolio_likes")
@@ -50,7 +68,7 @@ export default function LikeButton({ portfolioId, theme, isOwner }: LikeButtonPr
             setLikeCount(count || 0);
 
             // Only check visitor like status for non-owners
-            if (!isOwner) {
+            if (!ownerDetected) {
                 const visitorId = getVisitorId();
                 if (visitorId) {
                     const { data } = await supabase
@@ -67,7 +85,7 @@ export default function LikeButton({ portfolioId, theme, isOwner }: LikeButtonPr
         };
 
         fetchLikeData();
-    }, [portfolioId, supabase, isOwner]);
+    }, [portfolioId, supabase, isOwnerProp]);
 
     // Show read-only view for portfolio owner
     if (isOwner) {
@@ -95,6 +113,9 @@ export default function LikeButton({ portfolioId, theme, isOwner }: LikeButtonPr
     }
 
     const handleLike = async () => {
+        // Prevent owner from liking their own portfolio
+        if (isOwner) return;
+
         const visitorId = getVisitorId();
 
         // Show signup prompt if no consent/visitor ID

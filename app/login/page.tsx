@@ -53,6 +53,8 @@ export default function LoginPage() {
                 lockoutUntil.current = Date.now() + 60000
                 setError('Too many failed attempts. Please try again in 60 seconds.')
                 setIsRateLimited(true)
+            } else if (error.message.toLowerCase().includes('email not confirmed')) {
+                setError('Please verify your email before signing in. Check your inbox for the verification link.')
             } else {
                 setError('Invalid email or password')
             }
