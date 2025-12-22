@@ -3,6 +3,7 @@ import LandingHero from './components/LandingHero'
 import FeaturesCards from './components/FeaturesCards'
 import PortfolioMockup from './components/PortfolioMockup'
 import HowItWorks from './components/HowItWorks'
+import RotatingSlogan from './components/RotatingSlogan'
 
 export default function LandingPage() {
   return (
@@ -35,7 +36,7 @@ export default function LandingPage() {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-zinc-950/80 backdrop-blur-xl border-b border-zinc-800/50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="text-xs sm:text-base font-medium text-zinc-400 hover:text-white transition-colors whitespace-nowrap">
-            Portfolios for Developers
+            <RotatingSlogan />
           </Link>
           <div className="flex items-center gap-2 sm:gap-4">
             <Link
@@ -73,9 +74,12 @@ export default function LandingPage() {
         <div className="max-w-4xl mx-auto text-center">
           <div className="relative p-12 md:p-16 bg-zinc-900/50 border border-zinc-800/50 rounded-3xl overflow-hidden">
             <div className="relative z-10">
-              <h2 className="text-3xl md:text-5xl font-bold text-white mb-10">
+              <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
                 Build yours in <span className="text-slate-400">5 minutes</span>
               </h2>
+              <p className="text-zinc-400 text-lg mb-10 max-w-md mx-auto">
+                No design skills needed. Add your projects, customize your style, and go live instantly.
+              </p>
               <Link
                 href="/signup"
                 className="group inline-flex items-center gap-2 px-8 py-4 bg-white text-zinc-900 font-semibold rounded-full hover:bg-zinc-100 transition-all duration-300"
