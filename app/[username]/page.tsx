@@ -10,6 +10,9 @@ import Projects from '@/app/components/Projects'
 import Footer from '@/app/components/Footer'
 import ViewTracker from '@/app/components/ViewTracker'
 
+// Force dynamic rendering to check authentication on each request
+export const dynamic = 'force-dynamic'
+
 interface PageProps {
     params: Promise<{ username: string }>
 }
