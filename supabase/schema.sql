@@ -126,6 +126,10 @@ create policy "Anyone can view likes count"
 create policy "Anyone can insert likes"
   on public.portfolio_likes for insert with check (true);
 
+-- Note: Delete policy is permissive because likes use anonymous visitor_id
+-- The client-side code filters by visitor_id, but this can't be enforced server-side
+-- without authentication. This is an accepted trade-off for the anonymous like feature.
+-- Impact is low: worst case is minor manipulation of like counts.
 create policy "Anyone can delete their own likes"
   on public.portfolio_likes for delete using (true);
 

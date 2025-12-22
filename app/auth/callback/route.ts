@@ -32,7 +32,7 @@ export async function GET(request: Request) {
             const { data: portfolio } = await supabase
                 .from('portfolios')
                 .select('id')
-                .eq('id', data.user.id)
+                .eq('user_id', data.user.id)
                 .single()
 
             // New users without a portfolio should go to onboarding
