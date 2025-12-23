@@ -1,11 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { createClient } from '@/app/lib/supabase/client'
 import { validatePassword } from '@/app/lib/validation'
 
 export default function SignupPage() {
+    const router = useRouter()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
@@ -143,6 +145,32 @@ export default function SignupPage() {
         setSignupSuccess(true)
     }
 
+    // Poll for verification status when signup is successful
+    const checkVerification = useCallback(async () => {
+        try {
+            const response = await fetch('/api/check-verification')
+            const data = await response.json()
+
+            if (data.verified) {
+                router.push('/onboarding')
+            }
+        } catch (err) {
+            console.error('Error checking verification:', err)
+        }
+    }, [router])
+
+    useEffect(() => {
+        if (!signupSuccess) return
+
+        // Poll every 3 seconds
+        const interval = setInterval(checkVerification, 3000)
+
+        // Also check immediately
+        checkVerification()
+
+        return () => clearInterval(interval)
+    }, [signupSuccess, checkVerification])
+
     if (signupSuccess) {
         return (
             <div className="min-h-screen bg-zinc-950 flex items-center justify-center px-6">
@@ -166,8 +194,15 @@ export default function SignupPage() {
                         <h2 className="text-2xl font-bold text-white mb-2">Check your email</h2>
                         <p className="text-zinc-400 mb-6">
                             We&apos;ve sent a verification link to <span className="text-white">{email}</span>.
-                            Click the link to verify your account and get started.
+                            Click the link to verify your account.
                         </p>
+                        <div className="flex items-center justify-center gap-2 text-zinc-500 text-sm mb-4">
+                            <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                            </svg>
+                            <span>Waiting for verification...</span>
+                        </div>
                         <div className="space-y-3">
                             <p className="text-zinc-500 text-sm">
                                 Didn&apos;t receive the email? Check your spam folder.

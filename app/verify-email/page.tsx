@@ -1,15 +1,13 @@
 'use client'
 
 import { useEffect, useState, Suspense } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { createClient } from '@/app/lib/supabase/client'
 
 function VerifyEmailContent() {
     const searchParams = useSearchParams()
-    const router = useRouter()
     const token = searchParams.get('token')
-    const [status, setStatus] = useState<'verifying' | 'signing-in' | 'success' | 'error'>('verifying')
+    const [status, setStatus] = useState<'verifying' | 'success' | 'error'>('verifying')
     const [errorMessage, setErrorMessage] = useState('')
 
     useEffect(() => {
@@ -19,9 +17,8 @@ function VerifyEmailContent() {
             return
         }
 
-        const verifyAndLogin = async () => {
+        const verifyEmail = async () => {
             try {
-                // Step 1: Verify the email
                 const response = await fetch('/api/verify-email', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -36,41 +33,15 @@ function VerifyEmailContent() {
                     return
                 }
 
-                // Step 2: Auto-login if we got a magic link token
-                if (data.autoLogin && data.tokenHash) {
-                    setStatus('signing-in')
-
-                    const supabase = createClient()
-
-                    // Use the magic link token to sign in
-                    const { error: signInError } = await supabase.auth.verifyOtp({
-                        token_hash: data.tokenHash,
-                        type: 'magiclink',
-                    })
-
-                    if (signInError) {
-                        console.error('Auto sign-in error:', signInError)
-                        // Still show success - they can manually log in
-                        setStatus('success')
-                        return
-                    }
-
-                    // Successfully signed in - redirect to onboarding
-                    router.push('/onboarding')
-                    return
-                }
-
-                // No auto-login available
                 setStatus('success')
-            } catch (err) {
-                console.error('Verification error:', err)
+            } catch {
                 setStatus('error')
                 setErrorMessage('Something went wrong. Please try again.')
             }
         }
 
-        verifyAndLogin()
-    }, [token, router])
+        verifyEmail()
+    }, [token])
 
     return (
         <>
@@ -87,19 +58,6 @@ function VerifyEmailContent() {
                 </>
             )}
 
-            {status === 'signing-in' && (
-                <>
-                    <div className="w-16 h-16 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <svg className="w-8 h-8 text-emerald-400 animate-spin" viewBox="0 0 24 24" fill="none">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                        </svg>
-                    </div>
-                    <h2 className="text-2xl font-bold text-white mb-2">Email verified!</h2>
-                    <p className="text-zinc-400">Signing you in...</p>
-                </>
-            )}
-
             {status === 'success' && (
                 <>
                     <div className="w-16 h-16 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -109,13 +67,18 @@ function VerifyEmailContent() {
                     </div>
                     <h2 className="text-2xl font-bold text-white mb-2">Email verified!</h2>
                     <p className="text-zinc-400 mb-6">
-                        Your account is now verified. Sign in to start building your portfolio.
+                        Your email has been verified. You can close this tab and return to where you signed up.
                     </p>
+                    <div className="bg-zinc-800/50 border border-zinc-700 rounded-xl p-4 mb-6">
+                        <p className="text-zinc-300 text-sm">
+                            The page where you signed up will automatically redirect you to get started.
+                        </p>
+                    </div>
                     <Link
                         href="/login"
-                        className="inline-block w-full py-3 bg-white text-zinc-900 font-medium rounded-xl hover:bg-zinc-100 transition-all duration-300"
+                        className="inline-block text-zinc-400 hover:text-white transition-colors text-sm"
                     >
-                        Sign in
+                        Or sign in on this device
                     </Link>
                 </>
             )}
