@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
@@ -68,6 +68,10 @@ export default function MarkdownEditor({
 }: MarkdownEditorProps) {
     const [showLinkInput, setShowLinkInput] = useState(false);
     const [linkUrl, setLinkUrl] = useState("");
+    const [, setForceUpdate] = useState(0);
+
+    // Force re-render when editor state changes (for toolbar button active states)
+    const forceUpdate = useCallback(() => setForceUpdate(n => n + 1), []);
 
     const editor = useEditor({
         extensions: [
@@ -98,6 +102,10 @@ export default function MarkdownEditor({
                 return;
             }
             onChange(html);
+            forceUpdate();
+        },
+        onSelectionUpdate: () => {
+            forceUpdate();
         },
         editorProps: {
             attributes: {
