@@ -224,16 +224,16 @@ export default function Hero({ name, title, bio, skills, theme }: HeroProps) {
     return (
         <section
             id="home"
-            className="min-h-screen flex items-center justify-center relative pt-16 overflow-x-hidden"
+            className="min-h-screen flex items-center justify-center relative pt-16"
         >
             {/* Floating gradient orbs - themed */}
             <div className={`absolute top-1/4 left-1/4 w-72 h-72 ${theme.orb1} rounded-full blur-3xl animate-float pointer-events-none`} />
             <div className={`absolute bottom-1/4 right-1/4 w-96 h-96 ${theme.orb2} rounded-full blur-3xl animate-float-delayed pointer-events-none`} />
             <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] ${theme.orb1} rounded-full blur-3xl animate-glow pointer-events-none opacity-50`} />
 
-            <div className="relative z-10 max-w-7xl mx-auto px-8 text-center">
+            <div className="relative z-10 max-w-7xl mx-auto px-8 text-center overflow-visible">
                 {/* Main Heading with Typewriter */}
-                <h1 className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold ${theme.textPrimary} mb-8 tracking-tight leading-[1.15] break-words`}>
+                <h1 className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold ${theme.textPrimary} mb-8 tracking-tight leading-snug py-2`}>
                     <TypeWriter texts={typingTexts} theme={theme} />
                 </h1>
 
