@@ -1,10 +1,17 @@
 import { Resend } from 'resend'
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/app/lib/supabase/server'
+import { createClient } from '@supabase/supabase-js'
 import crypto from 'crypto'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
+
+// Use service role for admin operations (bypasses RLS)
+const supabaseAdmin = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } }
+)
 
 export async function POST(request: NextRequest) {
     try {
@@ -19,16 +26,14 @@ export async function POST(request: NextRequest) {
         const token = crypto.randomBytes(32).toString('hex')
         const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
 
-        const supabase = await createClient()
-
         // Delete any existing tokens for this user
-        await supabase
+        await supabaseAdmin
             .from('verification_tokens')
             .delete()
             .eq('user_id', userId)
 
         // Store the token
-        const { error: tokenError } = await supabase
+        const { error: tokenError } = await supabaseAdmin
             .from('verification_tokens')
             .insert({
                 user_id: userId,
