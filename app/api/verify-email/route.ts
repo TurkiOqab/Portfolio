@@ -66,6 +66,17 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Verification link has expired. Please sign up again.' }, { status: 400 })
         }
 
+        // Get user email for magic link generation
+        const { data: userData, error: userError } = await supabaseAdmin.auth.admin.getUserById(tokenData.user_id)
+
+        if (userError || !userData.user) {
+            console.error('User lookup error:', userError)
+            return NextResponse.json({ error: 'User not found' }, { status: 400 })
+        }
+
+        const userEmail = userData.user.email
+        console.log('User email found:', userEmail)
+
         // Update user's email_verified in profiles table
         console.log('Updating email_verified in profiles...')
         const { error: updateError } = await supabaseAdmin
@@ -80,6 +91,27 @@ export async function POST(request: NextRequest) {
 
         console.log('User email verified successfully')
 
+        // Generate a magic link for auto-login
+        console.log('Generating magic link for auto-login...')
+        const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
+            type: 'magiclink',
+            email: userEmail!,
+        })
+
+        if (linkError) {
+            console.error('Magic link generation error:', linkError)
+            // Still return success - user can manually log in
+            // Delete the used token
+            await supabaseAdmin
+                .from('verification_tokens')
+                .delete()
+                .eq('token', token)
+
+            return NextResponse.json({ success: true, autoLogin: false })
+        }
+
+        console.log('Magic link generated successfully')
+
         // Delete the used token
         const { error: deleteError } = await supabaseAdmin
             .from('verification_tokens')
@@ -92,7 +124,14 @@ export async function POST(request: NextRequest) {
         }
 
         console.log('Verification complete')
-        return NextResponse.json({ success: true })
+
+        // Return the token hash for client-side auto-login
+        return NextResponse.json({
+            success: true,
+            autoLogin: true,
+            tokenHash: linkData.properties.hashed_token,
+            email: userEmail
+        })
     } catch (error) {
         console.error('Unexpected error:', error)
         return NextResponse.json({
