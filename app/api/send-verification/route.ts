@@ -4,11 +4,11 @@ import { createClient } from '@/app/lib/supabase/server'
 import crypto from 'crypto'
 
 export const runtime = 'nodejs'
-
-const resend = new Resend(process.env.RESEND_API_KEY)
+export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
     try {
+        const resend = new Resend(process.env.RESEND_API_KEY)
         const { email, userId } = await request.json()
 
         if (!email || !userId) {
