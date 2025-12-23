@@ -20,6 +20,9 @@ export default function SignupPage() {
     const [emailStatus, setEmailStatus] = useState<'idle' | 'checking' | 'available' | 'taken'>('idle')
     const [acceptedTerms, setAcceptedTerms] = useState(false)
     const [signupSuccess, setSignupSuccess] = useState(false)
+    const [userId, setUserId] = useState<string | null>(null)
+    const [resendCooldown, setResendCooldown] = useState(0)
+    const [isResending, setIsResending] = useState(false)
 
     const checkUsername = async (value: string) => {
         if (value.length < 3) {
@@ -160,6 +163,9 @@ export default function SignupPage() {
             return
         }
 
+        // Store userId for potential resend
+        setUserId(authData.user.id)
+
         // Send verification email via Resend
         try {
             const response = await fetch('/api/send-verification', {
@@ -182,12 +188,47 @@ export default function SignupPage() {
 
         setIsLoading(false)
         setSignupSuccess(true)
+        setResendCooldown(60) // Start 60-second cooldown
     }
+
+    // Handle resend verification email
+    const handleResendVerification = async () => {
+        if (resendCooldown > 0 || !userId) return
+
+        setIsResending(true)
+        try {
+            const response = await fetch('/api/send-verification', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, userId }),
+            })
+
+            if (response.ok) {
+                setResendCooldown(60) // Reset cooldown
+            }
+        } catch (err) {
+            console.error('Failed to resend verification email:', err)
+        }
+        setIsResending(false)
+    }
+
+    // Cooldown timer effect
+    useEffect(() => {
+        if (resendCooldown <= 0) return
+
+        const timer = setInterval(() => {
+            setResendCooldown(prev => prev - 1)
+        }, 1000)
+
+        return () => clearInterval(timer)
+    }, [resendCooldown])
 
     // Poll for verification status when signup is successful
     const checkVerification = useCallback(async () => {
         try {
-            const response = await fetch('/api/check-verification')
+            const response = await fetch('/api/check-verification', {
+                credentials: 'include',
+            })
             const data = await response.json()
 
             if (data.verified) {
@@ -235,20 +276,39 @@ export default function SignupPage() {
                             We&apos;ve sent a verification link to <span className="text-white">{email}</span>.
                             Click the link to verify your account.
                         </p>
-                        <div className="flex items-center justify-center gap-2 text-zinc-500 text-sm mb-4">
+                        <div className="flex items-center justify-center gap-2 text-zinc-500 text-sm mb-6">
                             <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                             </svg>
                             <span>Waiting for verification...</span>
                         </div>
-                        <div className="space-y-3">
+                        <div className="space-y-4">
+                            <button
+                                onClick={handleResendVerification}
+                                disabled={resendCooldown > 0 || isResending}
+                                className="w-full py-3 bg-zinc-800 text-white font-medium rounded-xl hover:bg-zinc-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {isResending ? (
+                                    <span className="flex items-center justify-center gap-2">
+                                        <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                                        </svg>
+                                        Sending...
+                                    </span>
+                                ) : resendCooldown > 0 ? (
+                                    `Resend in ${resendCooldown}s`
+                                ) : (
+                                    'Resend verification email'
+                                )}
+                            </button>
                             <p className="text-zinc-500 text-sm">
                                 Didn&apos;t receive the email? Check your spam folder.
                             </p>
                             <Link
                                 href="/login"
-                                className="inline-block text-white hover:text-zinc-300 transition-colors text-sm"
+                                className="inline-block text-zinc-400 hover:text-white transition-colors text-sm"
                             >
                                 Back to login
                             </Link>
