@@ -66,19 +66,19 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Verification link has expired. Please sign up again.' }, { status: 400 })
         }
 
-        // Update user's email_confirmed_at using admin API
-        console.log('Updating user email confirmation status...')
-        const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(
-            tokenData.user_id,
-            { email_confirm: true }
-        )
+        // Update user's email_verified in profiles table
+        console.log('Updating email_verified in profiles...')
+        const { error: updateError } = await supabaseAdmin
+            .from('profiles')
+            .update({ email_verified: true })
+            .eq('id', tokenData.user_id)
 
         if (updateError) {
             console.error('Update error:', updateError)
             return NextResponse.json({ error: 'Failed to verify email: ' + updateError.message }, { status: 500 })
         }
 
-        console.log('User email confirmed successfully')
+        console.log('User email verified successfully')
 
         // Delete the used token
         const { error: deleteError } = await supabaseAdmin

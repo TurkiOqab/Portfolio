@@ -35,16 +35,33 @@ export async function updateSession(request: NextRequest) {
         data: { user },
     } = await supabase.auth.getUser()
 
-    // Protected routes
+    // Protected routes that require authentication AND email verification
     const protectedPaths = ['/dashboard', '/onboarding']
     const isProtectedPath = protectedPaths.some(path =>
         request.nextUrl.pathname.startsWith(path)
     )
 
+    // Redirect to login if not authenticated
     if (isProtectedPath && !user) {
         const url = request.nextUrl.clone()
         url.pathname = '/login'
         return NextResponse.redirect(url)
+    }
+
+    // Check email verification for protected routes
+    if (isProtectedPath && user) {
+        const { data: profile } = await supabase
+            .from('profiles')
+            .select('email_verified')
+            .eq('id', user.id)
+            .single()
+
+        // If profile doesn't exist or email not verified, redirect to verification pending page
+        if (!profile || !profile.email_verified) {
+            const url = request.nextUrl.clone()
+            url.pathname = '/verify-pending'
+            return NextResponse.redirect(url)
+        }
     }
 
     // Redirect logged in users away from auth pages
@@ -54,9 +71,23 @@ export async function updateSession(request: NextRequest) {
     )
 
     if (isAuthPath && user) {
-        const url = request.nextUrl.clone()
-        url.pathname = '/dashboard'
-        return NextResponse.redirect(url)
+        // Check if verified before redirecting to dashboard
+        const { data: profile } = await supabase
+            .from('profiles')
+            .select('email_verified')
+            .eq('id', user.id)
+            .single()
+
+        if (profile?.email_verified) {
+            const url = request.nextUrl.clone()
+            url.pathname = '/dashboard'
+            return NextResponse.redirect(url)
+        } else {
+            // Not verified, redirect to verify-pending
+            const url = request.nextUrl.clone()
+            url.pathname = '/verify-pending'
+            return NextResponse.redirect(url)
+        }
     }
 
     // IMPORTANT: You *must* return the supabaseResponse object as it is.

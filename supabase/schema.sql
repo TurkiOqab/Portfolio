@@ -8,8 +8,18 @@ create extension if not exists "uuid-ossp";
 create table public.profiles (
   id uuid references auth.users on delete cascade primary key,
   username text unique not null,
+  email_verified boolean default false,
   created_at timestamp with time zone default now(),
   updated_at timestamp with time zone default now()
+);
+
+-- Email verification tokens table
+create table public.verification_tokens (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users on delete cascade,
+  token text unique not null,
+  expires_at timestamp with time zone not null,
+  created_at timestamp with time zone default now()
 );
 
 -- Portfolios table
