@@ -3,6 +3,7 @@
 import { useEffect, useRef, useCallback } from "react";
 import { Project } from "../types";
 import { ThemeConfig } from "../lib/themes";
+import MarkdownRenderer from "./MarkdownRenderer";
 import {
     SiAmazonwebservices,
     SiAndroid,
@@ -402,9 +403,9 @@ export default function Projects({ projects, theme }: ProjectsProps) {
                                             )}
 
                                             {/* Description */}
-                                            <p className="text-zinc-400 text-base leading-relaxed mb-6">
-                                                {project.description}
-                                            </p>
+                                            <div className="text-zinc-400 text-base leading-relaxed mb-6">
+                                                <MarkdownRenderer content={project.description} />
+                                            </div>
 
                                             {/* Links */}
                                             <div className="flex items-center gap-6 pt-2">

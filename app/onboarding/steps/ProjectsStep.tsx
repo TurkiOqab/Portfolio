@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import { PortfolioData, Project } from "../../types";
 import { isValidProjectUrl } from "@/app/lib/validation";
 import { createClient } from "@/app/lib/supabase/client";
+import MarkdownEditor from "../../components/editor/MarkdownEditor";
 import {
     SiAmazonwebservices,
     SiAndroid,
@@ -467,17 +468,18 @@ export default function ProjectsStep({ data, updateData, onSkip, userId }: StepP
                     <label className="block text-sm font-medium text-zinc-300 mb-2">
                         Description
                     </label>
-                    <textarea
+                    <MarkdownEditor
                         value={currentProject.description}
-                        onChange={(e) =>
+                        onChange={(description) =>
                             setCurrentProject((prev) => ({
                                 ...prev,
-                                description: e.target.value,
+                                description,
                             }))
                         }
                         placeholder="A brief description of your project..."
-                        rows={3}
-                        className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-600 transition-all resize-none"
+                        minHeight="120px"
+                        showPreview={true}
+                        showCharCount={false}
                     />
                 </div>
 

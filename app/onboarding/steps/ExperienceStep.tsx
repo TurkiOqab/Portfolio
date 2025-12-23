@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { PortfolioData, WorkExperience } from "../../types";
+import MarkdownEditor from "../../components/editor/MarkdownEditor";
 
 interface StepProps {
     data: PortfolioData;
@@ -172,14 +173,15 @@ export default function ExperienceStep({ data, updateData }: StepProps) {
                     <label className="block text-sm font-medium text-zinc-300 mb-2">
                         Duties & Responsibilities
                     </label>
-                    <textarea
+                    <MarkdownEditor
                         value={currentExperience.duties}
-                        onChange={(e) =>
-                            setCurrentExperience((prev) => ({ ...prev, duties: e.target.value }))
+                        onChange={(duties) =>
+                            setCurrentExperience((prev) => ({ ...prev, duties }))
                         }
                         placeholder="Describe your key responsibilities and achievements..."
-                        rows={3}
-                        className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-600 transition-all resize-none"
+                        minHeight="120px"
+                        showPreview={true}
+                        showCharCount={false}
                     />
                 </div>
 

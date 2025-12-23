@@ -1,5 +1,6 @@
 import { WorkExperience } from '@/app/types'
 import { ThemeConfig } from '../lib/themes'
+import MarkdownRenderer from './MarkdownRenderer'
 
 interface ExperienceSectionProps {
     experience: WorkExperience[]
@@ -73,9 +74,9 @@ export default function ExperienceSection({ experience, theme }: ExperienceSecti
                                     </div>
                                     <p className={`${theme.textAccent} mt-2 font-medium`}>{exp.company}</p>
                                     {exp.duties && (
-                                        <p className="text-zinc-400 text-sm mt-3 leading-relaxed whitespace-pre-line">
-                                            {exp.duties}
-                                        </p>
+                                        <div className="text-zinc-400 text-sm mt-3 leading-relaxed">
+                                            <MarkdownRenderer content={exp.duties} />
+                                        </div>
                                     )}
                                 </div>
                             </div>

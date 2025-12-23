@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { ThemeConfig } from "../lib/themes";
+import MarkdownRenderer from "./MarkdownRenderer";
 import {
     SiReact,
     SiNextdotjs,
@@ -237,9 +238,12 @@ export default function Hero({ name, title, bio, skills, theme }: HeroProps) {
                 </h1>
 
                 {/* Bio */}
-                <p className={`text-xl md:text-2xl ${theme.textMuted} mb-10 max-w-2xl mx-auto leading-relaxed`}>
-                    {bio || "A passionate developer crafting beautiful digital experiences."}
-                </p>
+                <div className={`text-xl md:text-2xl ${theme.textMuted} mb-10 max-w-2xl mx-auto leading-relaxed`}>
+                    <MarkdownRenderer
+                        content={bio || "A passionate developer crafting beautiful digital experiences."}
+                        isLightMode={isLightMode}
+                    />
+                </div>
 
                 {/* Scrolling Tech Stack with enhanced styling */}
                 {skills.length > 0 && (
