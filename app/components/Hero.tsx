@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ThemeConfig } from "../lib/themes";
 import MarkdownRenderer from "./MarkdownRenderer";
 import {
@@ -158,6 +158,38 @@ function TypeWriter({ texts, theme }: { texts: string[]; theme: ThemeConfig }) {
     const [currentTextIndex, setCurrentTextIndex] = useState(0);
     const [currentText, setCurrentText] = useState("");
     const [isDeleting, setIsDeleting] = useState(false);
+    const [fontSize, setFontSize] = useState(72); // Start with max font size in px
+    const containerRef = useRef<HTMLSpanElement>(null);
+    const textRef = useRef<HTMLSpanElement>(null);
+
+    // Calculate font size based on text length and container width
+    useEffect(() => {
+        const calculateFontSize = () => {
+            if (!containerRef.current) return;
+
+            const containerWidth = containerRef.current.parentElement?.clientWidth || window.innerWidth - 64;
+            const fullText = texts[currentTextIndex];
+
+            // Base font sizes
+            const maxFontSize = 72; // px - for short text
+            const minFontSize = 24; // px - minimum readable size
+
+            // Estimate: average character width is roughly 0.6 of font size for bold text
+            const charWidthRatio = 0.55;
+            const textLength = fullText.length;
+
+            // Calculate what font size would make the text fit
+            const idealFontSize = containerWidth / (textLength * charWidthRatio);
+
+            // Clamp between min and max
+            const newFontSize = Math.max(minFontSize, Math.min(maxFontSize, idealFontSize));
+            setFontSize(newFontSize);
+        };
+
+        calculateFontSize();
+        window.addEventListener('resize', calculateFontSize);
+        return () => window.removeEventListener('resize', calculateFontSize);
+    }, [texts, currentTextIndex]);
 
     useEffect(() => {
         const fullText = texts[currentTextIndex];
@@ -193,23 +225,28 @@ function TypeWriter({ texts, theme }: { texts: string[]; theme: ThemeConfig }) {
     const hasHiPrefix = texts[currentTextIndex].startsWith(hiPart);
     const isLightMode = theme.mode === 'light';
 
-    if (hasHiPrefix) {
-        const displayedHi = currentText.substring(0, Math.min(currentText.length, hiPart.length));
-        const displayedName = currentText.substring(hiPart.length);
-        return (
-            <span>
-                <span className={isLightMode ? "text-zinc-900" : "text-white"}>{displayedHi}</span>
-                <span className={`bg-gradient-to-r ${theme.primaryGradient} bg-clip-text text-transparent`}>
-                    {displayedName}
-                </span>
+    const content = hasHiPrefix ? (
+        <>
+            <span className={isLightMode ? "text-zinc-900" : "text-white"}>
+                {currentText.substring(0, Math.min(currentText.length, hiPart.length))}
             </span>
-        );
-    }
-
-    // For title without "Hi, I'm", show all in gradient
-    return (
+            <span className={`bg-gradient-to-r ${theme.primaryGradient} bg-clip-text text-transparent`}>
+                {currentText.substring(hiPart.length)}
+            </span>
+        </>
+    ) : (
         <span className={`bg-gradient-to-r ${theme.primaryGradient} bg-clip-text text-transparent`}>
             {currentText}
+        </span>
+    );
+
+    return (
+        <span
+            ref={containerRef}
+            className="whitespace-nowrap inline-block w-full"
+            style={{ fontSize: `${fontSize}px` }}
+        >
+            <span ref={textRef}>{content}</span>
         </span>
     );
 }
@@ -233,7 +270,7 @@ export default function Hero({ name, title, bio, skills, theme }: HeroProps) {
 
             <div className="relative z-10 max-w-7xl mx-auto px-8 text-center overflow-visible">
                 {/* Main Heading with Typewriter */}
-                <h1 className={`text-[clamp(1.5rem,5vw,4.5rem)] font-bold ${theme.textPrimary} mb-8 tracking-tight whitespace-nowrap`}>
+                <h1 className={`font-bold ${theme.textPrimary} mb-8 tracking-tight`}>
                     <TypeWriter texts={typingTexts} theme={theme} />
                 </h1>
 
