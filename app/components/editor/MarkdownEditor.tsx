@@ -107,6 +107,9 @@ export default function MarkdownEditor({
         onSelectionUpdate: () => {
             forceUpdate();
         },
+        onTransaction: () => {
+            forceUpdate();
+        },
         editorProps: {
             attributes: {
                 class: "prose prose-invert prose-sm max-w-none focus:outline-none",
