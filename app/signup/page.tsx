@@ -119,6 +119,26 @@ export default function SignupPage() {
             return
         }
 
+        // Send verification email via Resend
+        try {
+            const response = await fetch('/api/send-verification', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email,
+                    userId: authData.user.id,
+                }),
+            })
+
+            if (!response.ok) {
+                const data = await response.json()
+                console.error('Failed to send verification email:', data.error)
+                // Still show success - user was created, they can request new email later
+            }
+        } catch (err) {
+            console.error('Failed to send verification email:', err)
+        }
+
         setIsLoading(false)
         setSignupSuccess(true)
     }
