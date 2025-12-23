@@ -1,14 +1,73 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { createClient } from '@/app/lib/supabase/client'
 
 export default function VerifyPendingPage() {
+    const router = useRouter()
     const [isResending, setIsResending] = useState(false)
     const [resendMessage, setResendMessage] = useState<string | null>(null)
+    const [resendCooldown, setResendCooldown] = useState(0)
+    const [userId, setUserId] = useState<string | null>(null)
+
+    // Get user on mount
+    useEffect(() => {
+        const getUser = async () => {
+            const supabase = createClient()
+            const { data: { user } } = await supabase.auth.getUser()
+            if (user) {
+                setUserId(user.id)
+            }
+        }
+        getUser()
+    }, [])
+
+    // Poll for verification status
+    const checkVerification = useCallback(async () => {
+        if (!userId) return
+
+        try {
+            const response = await fetch(`/api/check-verification?userId=${userId}`, {
+                credentials: 'include',
+            })
+            const data = await response.json()
+
+            if (data.verified) {
+                router.push('/onboarding')
+            }
+        } catch (err) {
+            console.error('Error checking verification:', err)
+        }
+    }, [router, userId])
+
+    useEffect(() => {
+        if (!userId) return
+
+        // Poll every 3 seconds
+        const interval = setInterval(checkVerification, 3000)
+
+        // Also check immediately
+        checkVerification()
+
+        return () => clearInterval(interval)
+    }, [userId, checkVerification])
+
+    // Cooldown timer effect
+    useEffect(() => {
+        if (resendCooldown <= 0) return
+
+        const timer = setInterval(() => {
+            setResendCooldown(prev => prev - 1)
+        }, 1000)
+
+        return () => clearInterval(timer)
+    }, [resendCooldown])
 
     const handleResendEmail = async () => {
+        if (resendCooldown > 0) return
+
         setIsResending(true)
         setResendMessage(null)
 
@@ -33,6 +92,7 @@ export default function VerifyPendingPage() {
 
             if (response.ok) {
                 setResendMessage('Verification email sent! Check your inbox.')
+                setResendCooldown(60) // Start 60-second cooldown
             } else {
                 const data = await response.json()
                 setResendMessage(data.error || 'Failed to send email. Please try again.')
@@ -70,9 +130,17 @@ export default function VerifyPendingPage() {
                         </svg>
                     </div>
                     <h2 className="text-2xl font-bold text-white mb-2">Verify your email</h2>
-                    <p className="text-zinc-400 mb-6">
+                    <p className="text-zinc-400 mb-4">
                         Please check your inbox and click the verification link to access your account.
                     </p>
+
+                    <div className="flex items-center justify-center gap-2 text-zinc-500 text-sm mb-6">
+                        <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                        </svg>
+                        <span>Waiting for verification...</span>
+                    </div>
 
                     {resendMessage && (
                         <div className={`p-3 rounded-xl mb-4 ${resendMessage.includes('sent') ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}`}>
@@ -83,7 +151,7 @@ export default function VerifyPendingPage() {
                     <div className="space-y-3">
                         <button
                             onClick={handleResendEmail}
-                            disabled={isResending}
+                            disabled={isResending || resendCooldown > 0}
                             className="w-full py-3 bg-white text-zinc-900 font-medium rounded-xl hover:bg-zinc-100 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {isResending ? (
@@ -94,6 +162,8 @@ export default function VerifyPendingPage() {
                                     </svg>
                                     Sending...
                                 </span>
+                            ) : resendCooldown > 0 ? (
+                                `Resend in ${resendCooldown}s`
                             ) : (
                                 'Resend verification email'
                             )}

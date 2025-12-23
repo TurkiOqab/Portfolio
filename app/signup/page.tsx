@@ -225,8 +225,10 @@ export default function SignupPage() {
 
     // Poll for verification status when signup is successful
     const checkVerification = useCallback(async () => {
+        if (!userId) return
+
         try {
-            const response = await fetch('/api/check-verification', {
+            const response = await fetch(`/api/check-verification?userId=${userId}`, {
                 credentials: 'include',
             })
             const data = await response.json()
@@ -237,10 +239,10 @@ export default function SignupPage() {
         } catch (err) {
             console.error('Error checking verification:', err)
         }
-    }, [router])
+    }, [router, userId])
 
     useEffect(() => {
-        if (!signupSuccess) return
+        if (!signupSuccess || !userId) return
 
         // Poll every 3 seconds
         const interval = setInterval(checkVerification, 3000)
@@ -249,7 +251,7 @@ export default function SignupPage() {
         checkVerification()
 
         return () => clearInterval(interval)
-    }, [signupSuccess, checkVerification])
+    }, [signupSuccess, userId, checkVerification])
 
     if (signupSuccess) {
         return (
