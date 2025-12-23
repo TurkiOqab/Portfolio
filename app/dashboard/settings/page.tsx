@@ -138,64 +138,23 @@ export default function SettingsPage() {
         setMessage(null)
 
         try {
-            const { data: { user } } = await supabase.auth.getUser()
-            if (!user) {
-                setMessage({ type: 'error', text: 'Unable to verify user session' })
-                setIsDeleting(false)
-                return
+            const response = await fetch('/api/delete-account', {
+                method: 'DELETE',
+            })
+
+            if (!response.ok) {
+                const data = await response.json()
+                throw new Error(data.error || 'Failed to delete account')
             }
 
-            // Get portfolio ID first for analytics deletion
-            const { data: portfolio } = await supabase
-                .from('portfolios')
-                .select('id')
-                .eq('user_id', user.id)
-                .single()
-
-            if (portfolio) {
-                // Delete analytics data (GDPR compliance - Right to be Forgotten)
-                await supabase
-                    .from('portfolio_views')
-                    .delete()
-                    .eq('portfolio_id', portfolio.id)
-
-                await supabase
-                    .from('portfolio_likes')
-                    .delete()
-                    .eq('portfolio_id', portfolio.id)
-            }
-
-            // Delete portfolio and projects (cascade)
-            const { error: portfolioError } = await supabase
-                .from('portfolios')
-                .delete()
-                .eq('user_id', user.id)
-
-            if (portfolioError) {
-                console.error('Failed to delete portfolio:', portfolioError)
-                throw new Error('Failed to delete portfolio data')
-            }
-
-            // Delete profile
-            const { error: profileError } = await supabase
-                .from('profiles')
-                .delete()
-                .eq('id', user.id)
-
-            if (profileError) {
-                console.error('Failed to delete profile:', profileError)
-                throw new Error('Failed to delete profile data')
-            }
-
-            // Sign out
+            // Sign out locally and redirect
             await supabase.auth.signOut()
-
             router.push('/')
         } catch (error) {
             console.error('Account deletion failed:', error)
             setMessage({
                 type: 'error',
-                text: 'Failed to delete account. Please try again or contact support.'
+                text: error instanceof Error ? error.message : 'Failed to delete account. Please try again or contact support.'
             })
             setIsDeleting(false)
             setShowDeleteConfirm(false)

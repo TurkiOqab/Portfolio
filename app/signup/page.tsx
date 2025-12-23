@@ -17,6 +17,7 @@ export default function SignupPage() {
     const [error, setError] = useState<string | null>(null)
     const [isLoading, setIsLoading] = useState(false)
     const [usernameStatus, setUsernameStatus] = useState<'idle' | 'checking' | 'available' | 'taken'>('idle')
+    const [emailStatus, setEmailStatus] = useState<'idle' | 'checking' | 'available' | 'taken'>('idle')
     const [acceptedTerms, setAcceptedTerms] = useState(false)
     const [signupSuccess, setSignupSuccess] = useState(false)
 
@@ -57,6 +58,39 @@ export default function SignupPage() {
         return () => clearTimeout(timeoutId)
     }
 
+    const checkEmail = async (value: string) => {
+        // Basic email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        if (!emailRegex.test(value)) {
+            setEmailStatus('idle')
+            return
+        }
+
+        setEmailStatus('checking')
+
+        try {
+            const response = await fetch('/api/check-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: value }),
+            })
+
+            const data = await response.json()
+            setEmailStatus(data.available ? 'available' : 'taken')
+        } catch (err) {
+            console.error('Failed to check email:', err)
+            setEmailStatus('idle')
+        }
+    }
+
+    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value
+        setEmail(value)
+
+        const timeoutId = setTimeout(() => checkEmail(value), 500)
+        return () => clearTimeout(timeoutId)
+    }
+
     const handleSignup = async (e: React.FormEvent) => {
         e.preventDefault()
         setError(null)
@@ -68,6 +102,11 @@ export default function SignupPage() {
 
         if (usernameStatus === 'taken') {
             setError('Username is already taken')
+            return
+        }
+
+        if (emailStatus === 'taken') {
+            setError('This email is already registered. Please sign in instead.')
             return
         }
 
@@ -299,15 +338,45 @@ export default function SignupPage() {
                             <label htmlFor="email" className="block text-sm font-medium text-zinc-400 mb-2">
                                 Email
                             </label>
-                            <input
-                                id="email"
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                                className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-zinc-600 transition-all"
-                                placeholder="you@example.com"
-                            />
+                            <div className="relative">
+                                <input
+                                    id="email"
+                                    type="email"
+                                    value={email}
+                                    onChange={handleEmailChange}
+                                    required
+                                    className="w-full px-4 pr-10 py-3 bg-zinc-800/50 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-zinc-600 transition-all"
+                                    placeholder="you@example.com"
+                                />
+                                {emailStatus === 'checking' && (
+                                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                        <svg className="w-5 h-5 text-zinc-400 animate-spin" viewBox="0 0 24 24" fill="none">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                                        </svg>
+                                    </div>
+                                )}
+                                {emailStatus === 'available' && (
+                                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                        <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </div>
+                                )}
+                                {emailStatus === 'taken' && (
+                                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                        <svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </div>
+                                )}
+                            </div>
+                            {emailStatus === 'taken' && (
+                                <p className="text-red-400 text-xs mt-1">This email is already registered</p>
+                            )}
+                            {emailStatus === 'available' && (
+                                <p className="text-emerald-400 text-xs mt-1">Email is available!</p>
+                            )}
                         </div>
 
                         <div>
@@ -417,7 +486,7 @@ export default function SignupPage() {
 
                         <button
                             type="submit"
-                            disabled={isLoading || usernameStatus === 'taken' || !acceptedTerms || (confirmPassword !== '' && password !== confirmPassword)}
+                            disabled={isLoading || usernameStatus === 'taken' || emailStatus === 'taken' || !acceptedTerms || (confirmPassword !== '' && password !== confirmPassword)}
                             className="w-full py-3 bg-white text-zinc-900 font-medium rounded-xl hover:bg-zinc-100 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {isLoading ? (
