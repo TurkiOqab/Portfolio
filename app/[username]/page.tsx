@@ -109,7 +109,7 @@ export default async function PortfolioPage({ params }: PageProps) {
     const isLightMode = theme.mode === 'light';
 
     return (
-        <div className={`min-h-screen ${theme.bgPrimary} relative overflow-hidden ${font.className}`}>
+        <div className={`min-h-screen ${theme.bgPrimary} relative overflow-x-hidden ${font.className}`}>
             {/* JSON-LD Structured Data */}
             <script
                 type="application/ld+json"

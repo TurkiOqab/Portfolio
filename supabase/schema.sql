@@ -1,191 +1,297 @@
--- DevFolio Database Schema
--- Run this in your Supabase SQL Editor
+-- ============================================================================
+-- DFOLIO DATABASE SCHEMA
+-- Version: 2.0
+-- Last Updated: 2024-12-23
+--
+-- This is the single source of truth for the database schema.
+-- Run this in Supabase SQL Editor for a fresh setup.
+-- ============================================================================
 
--- Enable UUID extension
-create extension if not exists "uuid-ossp";
+-- ============================================================================
+-- 1. EXTENSIONS
+-- ============================================================================
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- Users profile table (extends Supabase auth.users)
-create table public.profiles (
-  id uuid references auth.users on delete cascade primary key,
-  username text unique not null,
-  email_verified boolean default false,
-  created_at timestamp with time zone default now(),
-  updated_at timestamp with time zone default now()
+-- ============================================================================
+-- 2. TABLES
+-- ============================================================================
+
+-- ----------------------------------------------------------------------------
+-- 2.1 PROFILES (linked to auth.users)
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.profiles (
+    id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+    username TEXT UNIQUE,
+    email_verified BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Email verification tokens table
-create table public.verification_tokens (
-  id uuid primary key default gen_random_uuid(),
-  user_id uuid references auth.users on delete cascade,
-  email text not null,
-  token text unique not null,
-  expires_at timestamp with time zone not null,
-  created_at timestamp with time zone default now()
+-- ----------------------------------------------------------------------------
+-- 2.2 PORTFOLIOS (main portfolio data)
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.portfolios (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE UNIQUE,
+    name TEXT,
+    title TEXT,
+    bio TEXT,
+    skills TEXT[] DEFAULT '{}',
+    contact JSONB DEFAULT '{}',
+    theme TEXT DEFAULT 'slate',
+    font TEXT DEFAULT 'outfit',
+    is_published BOOLEAN DEFAULT TRUE,
+    education JSONB DEFAULT '[]',
+    experience JSONB DEFAULT '[]',
+    cv_url TEXT,
+    avatar_url TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Portfolios table
-create table public.portfolios (
-  id uuid primary key default gen_random_uuid(),
-  user_id uuid references public.profiles(id) on delete cascade unique,
-  name text not null,
-  title text,
-  bio text,
-  skills text[] default '{}',
-  education jsonb default '[]',
-  experience jsonb default '[]',
-  contact jsonb default '{}',
-  theme text default 'default',
-  is_published boolean default true,
-  created_at timestamp with time zone default now(),
-  updated_at timestamp with time zone default now()
+-- ----------------------------------------------------------------------------
+-- 2.3 PROJECTS
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.projects (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    portfolio_id UUID REFERENCES public.portfolios(id) ON DELETE CASCADE,
+    title TEXT NOT NULL,
+    description TEXT,
+    tags TEXT[] DEFAULT '{}',
+    live_url TEXT,
+    github_url TEXT,
+    image_url TEXT,
+    display_order INT4 DEFAULT 0,
+    start_date TEXT,
+    end_date TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Projects table
-create table public.projects (
-  id uuid primary key default gen_random_uuid(),
-  portfolio_id uuid references public.portfolios(id) on delete cascade,
-  title text not null,
-  description text,
-  tags text[] default '{}',
-  image_url text,
-  live_url text,
-  github_url text,
-  display_order integer default 0,
-  created_at timestamp with time zone default now()
+-- ----------------------------------------------------------------------------
+-- 2.4 PORTFOLIO VIEWS (analytics)
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.portfolio_views (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    portfolio_id UUID REFERENCES public.portfolios(id) ON DELETE CASCADE,
+    visitor_id TEXT NOT NULL,
+    referrer TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Enable Row Level Security
-alter table public.profiles enable row level security;
-alter table public.portfolios enable row level security;
-alter table public.projects enable row level security;
-
--- Profiles policies
-create policy "Public profiles are viewable by everyone" 
-  on public.profiles for select using (true);
-
-create policy "Users can insert their own profile" 
-  on public.profiles for insert with check (auth.uid() = id);
-
-create policy "Users can update own profile" 
-  on public.profiles for update using (auth.uid() = id);
-
-create policy "Users can delete own profile" 
-  on public.profiles for delete using (auth.uid() = id);
-
--- Portfolios policies
-create policy "Published portfolios are viewable by everyone" 
-  on public.portfolios for select using (is_published = true or auth.uid() = user_id);
-
-create policy "Users can insert own portfolio" 
-  on public.portfolios for insert with check (auth.uid() = user_id);
-
-create policy "Users can update own portfolio" 
-  on public.portfolios for update using (auth.uid() = user_id);
-
-create policy "Users can delete own portfolio" 
-  on public.portfolios for delete using (auth.uid() = user_id);
-
--- Projects policies
-create policy "Projects are viewable with published portfolio" 
-  on public.projects for select using (
-    exists (
-      select 1 from public.portfolios 
-      where id = portfolio_id and (is_published = true or user_id = auth.uid())
-    )
-  );
-
-create policy "Users can insert own projects" 
-  on public.projects for insert with check (
-    exists (
-      select 1 from public.portfolios 
-      where id = portfolio_id and user_id = auth.uid()
-    )
-  );
-
-create policy "Users can update own projects" 
-  on public.projects for update using (
-    exists (
-      select 1 from public.portfolios 
-      where id = portfolio_id and user_id = auth.uid()
-    )
-  );
-
-create policy "Users can delete own projects" 
-  on public.projects for delete using (
-    exists (
-      select 1 from public.portfolios 
-      where id = portfolio_id and user_id = auth.uid()
-    )
-  );
-
--- Likes table (tracks portfolio likes by visitors)
-create table public.portfolio_likes (
-  id uuid primary key default gen_random_uuid(),
-  portfolio_id uuid references public.portfolios(id) on delete cascade,
-  visitor_id text not null,
-  created_at timestamp with time zone default now(),
-  unique(portfolio_id, visitor_id)
+-- ----------------------------------------------------------------------------
+-- 2.5 PORTFOLIO LIKES
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.portfolio_likes (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    portfolio_id UUID REFERENCES public.portfolios(id) ON DELETE CASCADE,
+    visitor_id TEXT NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(portfolio_id, visitor_id)
 );
 
--- Enable Row Level Security for likes
-alter table public.portfolio_likes enable row level security;
-
--- Likes policies
-create policy "Anyone can view likes count"
-  on public.portfolio_likes for select using (true);
-
-create policy "Anyone can insert likes"
-  on public.portfolio_likes for insert with check (true);
-
--- Note: Delete policy is permissive because likes use anonymous visitor_id
--- The client-side code filters by visitor_id, but this can't be enforced server-side
--- without authentication. This is an accepted trade-off for the anonymous like feature.
--- Impact is low: worst case is minor manipulation of like counts.
-create policy "Anyone can delete their own likes"
-  on public.portfolio_likes for delete using (true);
-
--- Create indexes for better performance
-create index idx_profiles_username on public.profiles(username);
-create index idx_portfolios_user_id on public.portfolios(user_id);
-create index idx_projects_portfolio_id on public.projects(portfolio_id);
-create index idx_portfolio_likes_portfolio_id on public.portfolio_likes(portfolio_id);
-create index idx_portfolio_likes_visitor_id on public.portfolio_likes(visitor_id);
-
--- Function to handle new user signup
-create or replace function public.handle_new_user()
-returns trigger as $$
-begin
-  insert into public.profiles (id, username)
-  values (new.id, new.raw_user_meta_data->>'username');
-  return new;
-end;
-$$ language plpgsql security definer;
-
--- Trigger to auto-create profile on signup
-create trigger on_auth_user_created
-  after insert on auth.users
-  for each row execute procedure public.handle_new_user();
-
--- Views table (tracks portfolio page views by visitors)
-create table public.portfolio_views (
-  id uuid primary key default gen_random_uuid(),
-  portfolio_id uuid references public.portfolios(id) on delete cascade,
-  visitor_id text not null,
-  referrer text,
-  created_at timestamp with time zone default now()
+-- ----------------------------------------------------------------------------
+-- 2.6 VERIFICATION TOKENS (email verification)
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.verification_tokens (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    email TEXT NOT NULL,
+    token TEXT UNIQUE NOT NULL,
+    expires_at TIMESTAMPTZ NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Enable Row Level Security for views
-alter table public.portfolio_views enable row level security;
+-- ============================================================================
+-- 3. INDEXES
+-- ============================================================================
+CREATE INDEX IF NOT EXISTS idx_profiles_username ON public.profiles(username);
+CREATE INDEX IF NOT EXISTS idx_portfolios_user_id ON public.portfolios(user_id);
+CREATE INDEX IF NOT EXISTS idx_projects_portfolio_id ON public.projects(portfolio_id);
+CREATE INDEX IF NOT EXISTS idx_portfolio_views_portfolio_id ON public.portfolio_views(portfolio_id);
+CREATE INDEX IF NOT EXISTS idx_portfolio_views_created_at ON public.portfolio_views(created_at);
+CREATE INDEX IF NOT EXISTS idx_portfolio_views_visitor_portfolio ON public.portfolio_views(portfolio_id, visitor_id, created_at);
+CREATE INDEX IF NOT EXISTS idx_portfolio_likes_portfolio_id ON public.portfolio_likes(portfolio_id);
+CREATE INDEX IF NOT EXISTS idx_portfolio_likes_visitor_id ON public.portfolio_likes(visitor_id);
+CREATE INDEX IF NOT EXISTS idx_verification_tokens_token ON public.verification_tokens(token);
 
--- Views policies
-create policy "Anyone can view views count"
-  on public.portfolio_views for select using (true);
+-- ============================================================================
+-- 4. ROW LEVEL SECURITY (RLS)
+-- ============================================================================
 
-create policy "Anyone can insert views"
-  on public.portfolio_views for insert with check (true);
+-- Enable RLS on all tables
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.portfolios ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.projects ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.portfolio_views ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.portfolio_likes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.verification_tokens ENABLE ROW LEVEL SECURITY;
 
--- Create indexes for views
-create index idx_portfolio_views_portfolio_id on public.portfolio_views(portfolio_id);
-create index idx_portfolio_views_created_at on public.portfolio_views(created_at);
-create index idx_portfolio_views_visitor_portfolio on public.portfolio_views(portfolio_id, visitor_id, created_at);
+-- ----------------------------------------------------------------------------
+-- 4.1 PROFILES POLICIES
+-- ----------------------------------------------------------------------------
+CREATE POLICY "Public profiles are viewable by everyone"
+    ON public.profiles FOR SELECT
+    USING (TRUE);
+
+CREATE POLICY "Users can insert their own profile"
+    ON public.profiles FOR INSERT
+    WITH CHECK (auth.uid() = id);
+
+CREATE POLICY "Users can update own profile"
+    ON public.profiles FOR UPDATE
+    USING (auth.uid() = id);
+
+CREATE POLICY "Users can delete own profile"
+    ON public.profiles FOR DELETE
+    USING (auth.uid() = id);
+
+-- ----------------------------------------------------------------------------
+-- 4.2 PORTFOLIOS POLICIES
+-- ----------------------------------------------------------------------------
+CREATE POLICY "Published portfolios are viewable by everyone"
+    ON public.portfolios FOR SELECT
+    USING (is_published = TRUE OR auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own portfolio"
+    ON public.portfolios FOR INSERT
+    WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own portfolio"
+    ON public.portfolios FOR UPDATE
+    USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own portfolio"
+    ON public.portfolios FOR DELETE
+    USING (auth.uid() = user_id);
+
+-- ----------------------------------------------------------------------------
+-- 4.3 PROJECTS POLICIES
+-- ----------------------------------------------------------------------------
+CREATE POLICY "Projects are viewable with published portfolio"
+    ON public.projects FOR SELECT
+    USING (
+        EXISTS (
+            SELECT 1 FROM public.portfolios
+            WHERE id = portfolio_id AND (is_published = TRUE OR user_id = auth.uid())
+        )
+    );
+
+CREATE POLICY "Users can insert own projects"
+    ON public.projects FOR INSERT
+    WITH CHECK (
+        EXISTS (
+            SELECT 1 FROM public.portfolios
+            WHERE id = portfolio_id AND user_id = auth.uid()
+        )
+    );
+
+CREATE POLICY "Users can update own projects"
+    ON public.projects FOR UPDATE
+    USING (
+        EXISTS (
+            SELECT 1 FROM public.portfolios
+            WHERE id = portfolio_id AND user_id = auth.uid()
+        )
+    );
+
+CREATE POLICY "Users can delete own projects"
+    ON public.projects FOR DELETE
+    USING (
+        EXISTS (
+            SELECT 1 FROM public.portfolios
+            WHERE id = portfolio_id AND user_id = auth.uid()
+        )
+    );
+
+-- ----------------------------------------------------------------------------
+-- 4.4 PORTFOLIO VIEWS POLICIES
+-- ----------------------------------------------------------------------------
+CREATE POLICY "Anyone can view views count"
+    ON public.portfolio_views FOR SELECT
+    USING (TRUE);
+
+CREATE POLICY "Anyone can insert views"
+    ON public.portfolio_views FOR INSERT
+    WITH CHECK (TRUE);
+
+-- ----------------------------------------------------------------------------
+-- 4.5 PORTFOLIO LIKES POLICIES
+-- ----------------------------------------------------------------------------
+CREATE POLICY "Anyone can view likes count"
+    ON public.portfolio_likes FOR SELECT
+    USING (TRUE);
+
+CREATE POLICY "Anyone can insert likes"
+    ON public.portfolio_likes FOR INSERT
+    WITH CHECK (TRUE);
+
+CREATE POLICY "Anyone can delete likes"
+    ON public.portfolio_likes FOR DELETE
+    USING (TRUE);
+
+-- ----------------------------------------------------------------------------
+-- 4.6 VERIFICATION TOKENS POLICIES
+-- ----------------------------------------------------------------------------
+CREATE POLICY "Service role can manage tokens"
+    ON public.verification_tokens FOR ALL
+    USING (TRUE);
+
+-- ============================================================================
+-- 5. FUNCTIONS & TRIGGERS
+-- ============================================================================
+
+-- ----------------------------------------------------------------------------
+-- 5.1 Auto-create profile on user signup
+-- ----------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO public.profiles (id, username)
+    VALUES (NEW.id, NEW.raw_user_meta_data->>'username');
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Trigger for new user signup
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+    AFTER INSERT ON auth.users
+    FOR EACH ROW
+    EXECUTE FUNCTION public.handle_new_user();
+
+-- ----------------------------------------------------------------------------
+-- 5.2 Auto-update updated_at timestamp
+-- ----------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.update_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS update_profiles_updated_at ON public.profiles;
+CREATE TRIGGER update_profiles_updated_at
+    BEFORE UPDATE ON public.profiles
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_updated_at();
+
+DROP TRIGGER IF EXISTS update_portfolios_updated_at ON public.portfolios;
+CREATE TRIGGER update_portfolios_updated_at
+    BEFORE UPDATE ON public.portfolios
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_updated_at();
+
+-- ============================================================================
+-- 6. UTILITY QUERIES (Reference only - don't run automatically)
+-- ============================================================================
+
+-- Delete all data for fresh start:
+-- TRUNCATE public.portfolio_likes, public.portfolio_views, public.projects,
+--          public.verification_tokens, public.portfolios, public.profiles CASCADE;
+
+-- Then delete auth users from Supabase Dashboard > Authentication > Users
+
+-- ============================================================================
+-- END OF SCHEMA
+-- ============================================================================
