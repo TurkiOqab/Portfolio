@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { getAdminClient } from '@/app/lib/supabase/admin'
+import { logger } from '@/app/lib/logger'
 
 export const dynamic = 'force-dynamic'
 
@@ -11,31 +12,26 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Email is required' }, { status: 400 })
         }
 
-        if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
-            return NextResponse.json({ error: 'Server configuration error' }, { status: 500 })
-        }
+        const supabaseAdmin = getAdminClient()
 
-        const supabaseAdmin = createClient(
-            process.env.NEXT_PUBLIC_SUPABASE_URL,
-            process.env.SUPABASE_SERVICE_ROLE_KEY,
-            { auth: { autoRefreshToken: false, persistSession: false } }
-        )
-
-        // Check if email exists in auth.users
-        const { data, error } = await supabaseAdmin.auth.admin.listUsers()
+        // Check if email exists using profiles table (indexed query)
+        // This is much more efficient than listing all users
+        const { data: profile, error } = await supabaseAdmin
+            .from('profiles')
+            .select('id')
+            .ilike('email', email)
+            .maybeSingle()
 
         if (error) {
-            console.error('Error checking email:', error)
-            return NextResponse.json({ available: true }) // Fail open
+            logger.error('Error checking email:', error)
+            // Return error state instead of fail-open to prevent duplicate registrations
+            return NextResponse.json({ error: 'Unable to verify email availability' }, { status: 503 })
         }
 
-        const emailExists = data.users.some(
-            user => user.email?.toLowerCase() === email.toLowerCase()
-        )
-
-        return NextResponse.json({ available: !emailExists })
+        return NextResponse.json({ available: !profile })
     } catch (error) {
-        console.error('Check email error:', error)
-        return NextResponse.json({ available: true }) // Fail open
+        logger.error('Check email error:', error)
+        // Return error state instead of fail-open to prevent duplicate registrations
+        return NextResponse.json({ error: 'Unable to verify email availability' }, { status: 503 })
     }
 }

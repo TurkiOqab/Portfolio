@@ -39,36 +39,42 @@ export default async function DashboardPage() {
         redirect('/onboarding')
     }
 
-    // Get like count
-    const { count: likeCount } = await supabase
-        .from('portfolio_likes')
-        .select('*', { count: 'exact', head: true })
-        .eq('portfolio_id', portfolio.id)
-
-    // Get view count (total)
-    const { count: viewCount } = await supabase
-        .from('portfolio_views')
-        .select('*', { count: 'exact', head: true })
-        .eq('portfolio_id', portfolio.id)
-
-    // Get views this week
+    // Get analytics data in parallel for better performance
     const oneWeekAgo = new Date()
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
-    const { count: weeklyViewCount } = await supabase
-        .from('portfolio_views')
-        .select('*', { count: 'exact', head: true })
-        .eq('portfolio_id', portfolio.id)
-        .gte('created_at', oneWeekAgo.toISOString())
-
-    // Get views last week (for comparison)
     const twoWeeksAgo = new Date()
     twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14)
-    const { count: lastWeekViewCount } = await supabase
-        .from('portfolio_views')
-        .select('*', { count: 'exact', head: true })
-        .eq('portfolio_id', portfolio.id)
-        .gte('created_at', twoWeeksAgo.toISOString())
-        .lt('created_at', oneWeekAgo.toISOString())
+
+    const [
+        { count: likeCount },
+        { count: viewCount },
+        { count: weeklyViewCount },
+        { count: lastWeekViewCount }
+    ] = await Promise.all([
+        // Get like count
+        supabase
+            .from('portfolio_likes')
+            .select('*', { count: 'exact', head: true })
+            .eq('portfolio_id', portfolio.id),
+        // Get view count (total)
+        supabase
+            .from('portfolio_views')
+            .select('*', { count: 'exact', head: true })
+            .eq('portfolio_id', portfolio.id),
+        // Get views this week
+        supabase
+            .from('portfolio_views')
+            .select('*', { count: 'exact', head: true })
+            .eq('portfolio_id', portfolio.id)
+            .gte('created_at', oneWeekAgo.toISOString()),
+        // Get views last week (for comparison)
+        supabase
+            .from('portfolio_views')
+            .select('*', { count: 'exact', head: true })
+            .eq('portfolio_id', portfolio.id)
+            .gte('created_at', twoWeeksAgo.toISOString())
+            .lt('created_at', oneWeekAgo.toISOString())
+    ])
 
     // Calculate trend percentage
     const currentWeek = weeklyViewCount || 0

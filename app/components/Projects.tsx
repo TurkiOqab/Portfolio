@@ -4,6 +4,7 @@ import { useEffect, useRef, useCallback } from "react";
 import { Project } from "../types";
 import { ThemeConfig } from "../lib/themes";
 import MarkdownRenderer from "./MarkdownRenderer";
+import { formatProjectDate } from "../lib/date-utils";
 import {
     SiAmazonwebservices,
     SiAndroid,
@@ -169,12 +170,6 @@ interface ProjectsProps {
     theme: ThemeConfig;
 }
 
-function formatDate(dateString?: string): string {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", { month: "2-digit", year: "numeric" });
-}
-
 export default function Projects({ projects, theme }: ProjectsProps) {
     // Reverse projects so oldest is at bottom
     const reversedProjects = [...projects].reverse();
@@ -333,9 +328,9 @@ export default function Projects({ projects, theme }: ProjectsProps) {
                                         <div className="hidden md:block text-right pr-8 pt-6">
                                             {(project.startDate || project.endDate) && (
                                                 <p className="project-date text-sm font-mono">
-                                                    {formatDate(project.startDate)}
+                                                    {formatProjectDate(project.startDate)}
                                                     {project.startDate && project.endDate && " — "}
-                                                    {formatDate(project.endDate)}
+                                                    {formatProjectDate(project.endDate)}
                                                 </p>
                                             )}
                                         </div>
@@ -396,9 +391,9 @@ export default function Projects({ projects, theme }: ProjectsProps) {
                                             {/* Date (Mobile) */}
                                             {(project.startDate || project.endDate) && (
                                                 <p className="text-sm text-zinc-500 font-mono mb-4 md:hidden">
-                                                    {formatDate(project.startDate)}
+                                                    {formatProjectDate(project.startDate)}
                                                     {project.startDate && project.endDate && " — "}
-                                                    {formatDate(project.endDate)}
+                                                    {formatProjectDate(project.endDate)}
                                                 </p>
                                             )}
 

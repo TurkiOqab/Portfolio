@@ -17,14 +17,14 @@ export default function SignupPage() {
     const [error, setError] = useState<string | null>(null)
     const [isLoading, setIsLoading] = useState(false)
     const [usernameStatus, setUsernameStatus] = useState<'idle' | 'checking' | 'available' | 'taken'>('idle')
-    const [emailStatus, setEmailStatus] = useState<'idle' | 'checking' | 'available' | 'taken'>('idle')
+    const [emailStatus, setEmailStatus] = useState<'idle' | 'checking' | 'available' | 'taken' | 'error'>('idle')
     const [acceptedTerms, setAcceptedTerms] = useState(false)
     const [signupSuccess, setSignupSuccess] = useState(false)
     const [userId, setUserId] = useState<string | null>(null)
     const [resendCooldown, setResendCooldown] = useState(0)
     const [isResending, setIsResending] = useState(false)
 
-    const checkUsername = async (value: string) => {
+    const checkUsername = useCallback(async (value: string) => {
         if (value.length < 3) {
             setUsernameStatus('idle')
             return
@@ -51,17 +51,9 @@ export default function SignupPage() {
             console.error('Failed to check username:', err)
             setUsernameStatus('available')
         }
-    }
+    }, [])
 
-    const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, '')
-        setUsername(value)
-
-        const timeoutId = setTimeout(() => checkUsername(value), 500)
-        return () => clearTimeout(timeoutId)
-    }
-
-    const checkEmail = async (value: string) => {
+    const checkEmail = useCallback(async (value: string) => {
         // Basic email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
         if (!emailRegex.test(value)) {
@@ -79,19 +71,47 @@ export default function SignupPage() {
             })
 
             const data = await response.json()
+
+            // Handle error response from API
+            if (data.error || !response.ok) {
+                setEmailStatus('error')
+                return
+            }
+
             setEmailStatus(data.available ? 'available' : 'taken')
         } catch (err) {
             console.error('Failed to check email:', err)
-            setEmailStatus('idle')
+            setEmailStatus('error')
         }
+    }, [])
+
+    // Debounce username check with proper cleanup
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            if (username) {
+                checkUsername(username)
+            }
+        }, 500)
+        return () => clearTimeout(timeoutId)
+    }, [username, checkUsername])
+
+    // Debounce email check with proper cleanup
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            if (email) {
+                checkEmail(email)
+            }
+        }, 500)
+        return () => clearTimeout(timeoutId)
+    }, [email, checkEmail])
+
+    const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, '')
+        setUsername(value)
     }
 
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value
-        setEmail(value)
-
-        const timeoutId = setTimeout(() => checkEmail(value), 500)
-        return () => clearTimeout(timeoutId)
+        setEmail(e.target.value)
     }
 
     const handleSignup = async (e: React.FormEvent) => {
@@ -432,12 +452,22 @@ export default function SignupPage() {
                                         </svg>
                                     </div>
                                 )}
+                                {emailStatus === 'error' && (
+                                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                        <svg className="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                        </svg>
+                                    </div>
+                                )}
                             </div>
                             {emailStatus === 'taken' && (
                                 <p className="text-red-400 text-xs mt-1">This email is already registered</p>
                             )}
                             {emailStatus === 'available' && (
                                 <p className="text-emerald-400 text-xs mt-1">Email is available!</p>
+                            )}
+                            {emailStatus === 'error' && (
+                                <p className="text-yellow-400 text-xs mt-1">Unable to verify email. You can still proceed.</p>
                             )}
                         </div>
 

@@ -1,15 +1,15 @@
 import { createClient } from '@/app/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
-import { rateLimit, RATE_LIMITS } from '@/app/lib/rate-limit'
+import { rateLimit, RATE_LIMITS } from '@/app/lib/rate-limit-redis'
 
 export async function POST(request: NextRequest) {
     try {
-        // Rate limit by IP
+        // Rate limit by IP (uses Redis when configured, falls back to in-memory)
         const ip = request.headers.get('x-forwarded-for')?.split(',')[0] ||
                    request.headers.get('x-real-ip') ||
                    'unknown'
 
-        const rateLimitResult = rateLimit(`track-view:${ip}`, RATE_LIMITS.api)
+        const rateLimitResult = await rateLimit(`track-view:${ip}`, RATE_LIMITS.api)
 
         if (!rateLimitResult.success) {
             return NextResponse.json(

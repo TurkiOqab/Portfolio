@@ -94,6 +94,7 @@ export default function MarkdownEditor({
         ],
         content: value,
         editable: !disabled,
+        immediatelyRender: false, // Prevent SSR hydration mismatch
         onUpdate: ({ editor }) => {
             const html = editor.getHTML();
             // Don't update if it would exceed maxLength

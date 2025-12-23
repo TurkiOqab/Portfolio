@@ -32,8 +32,6 @@ async function redisRateLimit(
     }
 
     const key = `ratelimit:${identifier}`
-    const now = Date.now()
-    const windowMs = config.windowSeconds * 1000
 
     try {
         // Use Upstash REST API for atomic operations
@@ -44,8 +42,6 @@ async function redisRateLimit(
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify([
-                // Get current count
-                ['GET', key],
                 // Increment count
                 ['INCR', key],
                 // Set expiry if key is new
@@ -61,9 +57,8 @@ async function redisRateLimit(
         }
 
         const results = await response.json()
-        const currentCount = results[0]?.result ? parseInt(results[0].result) : 0
-        const newCount = results[1]?.result || 1
-        const ttl = results[3]?.result || config.windowSeconds
+        const newCount = results[0]?.result || 1
+        const ttl = results[2]?.result || config.windowSeconds
 
         if (newCount > config.limit) {
             return {

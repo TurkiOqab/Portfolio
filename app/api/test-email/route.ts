@@ -5,6 +5,11 @@ export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
+    // Only allow in development environment
+    if (process.env.NODE_ENV === 'production') {
+        return NextResponse.json({ error: 'This endpoint is disabled in production' }, { status: 403 })
+    }
+
     try {
         const resend = new Resend(process.env.RESEND_API_KEY)
         const { email } = await request.json()

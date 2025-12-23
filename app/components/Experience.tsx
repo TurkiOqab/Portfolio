@@ -1,17 +1,11 @@
 import { WorkExperience } from '@/app/types'
 import { ThemeConfig } from '../lib/themes'
 import MarkdownRenderer from './MarkdownRenderer'
+import { formatMonthYear } from '../lib/date-utils'
 
 interface ExperienceSectionProps {
     experience: WorkExperience[]
     theme: ThemeConfig
-}
-
-function formatDate(dateStr: string): string {
-    if (!dateStr) return ''
-    const [year, month] = dateStr.split('-')
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-    return `${months[parseInt(month) - 1]} ${year}`
 }
 
 export default function ExperienceSection({ experience, theme }: ExperienceSectionProps) {
@@ -63,12 +57,12 @@ export default function ExperienceSection({ experience, theme }: ExperienceSecti
                                             {exp.title}
                                         </h3>
                                         <span className="text-zinc-500 text-sm font-mono whitespace-nowrap px-3 py-1 bg-zinc-800/50 rounded-full">
-                                            {formatDate(exp.startDate)}
+                                            {formatMonthYear(exp.startDate)}
                                             {' — '}
                                             {exp.isPresent ? (
                                                 <span className="text-emerald-400">Present</span>
                                             ) : (
-                                                formatDate(exp.endDate || '')
+                                                formatMonthYear(exp.endDate || '')
                                             )}
                                         </span>
                                     </div>
