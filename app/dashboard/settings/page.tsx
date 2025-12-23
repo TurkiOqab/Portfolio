@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/app/lib/supabase/client'
 import { getTheme, ThemeConfig } from '@/app/lib/themes'
+import { getFont, FontConfig } from '@/app/lib/fonts'
 
 export default function SettingsPage() {
     const router = useRouter()
@@ -25,6 +26,7 @@ export default function SettingsPage() {
     const [newEmail, setNewEmail] = useState('')
     const [isPublished, setIsPublished] = useState(true)
     const [theme, setTheme] = useState<ThemeConfig>(getTheme('slate'))
+    const [font, setFont] = useState<FontConfig>(getFont('outfit'))
     const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
 
     useEffect(() => {
@@ -49,7 +51,7 @@ export default function SettingsPage() {
 
             const { data: portfolio } = await supabase
                 .from('portfolios')
-                .select('is_published, theme')
+                .select('is_published, theme, font')
                 .eq('user_id', user.id)
                 .single()
 
@@ -57,6 +59,7 @@ export default function SettingsPage() {
             if (portfolio) {
                 setIsPublished(portfolio.is_published)
                 setTheme(getTheme(portfolio.theme || 'slate'))
+                setFont(getFont(portfolio.font || 'outfit'))
             }
 
             setIsLoading(false)
@@ -247,45 +250,49 @@ export default function SettingsPage() {
         setIsExporting(false)
     }
 
+    const isLightMode = theme.mode === 'light'
+
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+            <div className={`min-h-screen ${theme.bgPrimary} flex items-center justify-center ${font.className}`}>
                 <div className={`w-8 h-8 border-2 border-t-transparent rounded-full animate-spin ${theme.accentColor.replace('bg-', 'border-')}`} />
             </div>
         )
     }
 
     return (
-        <div className="min-h-screen bg-zinc-950 relative overflow-hidden">
+        <div className={`min-h-screen ${theme.bgPrimary} relative overflow-hidden ${font.className}`}>
             {/* Grain texture overlay */}
             <div className="grain-overlay" />
 
             {/* Global Background Effects */}
-            <div className="fixed inset-0 bg-zinc-950 z-0" />
+            <div className={`fixed inset-0 ${isLightMode ? 'bg-gradient-to-br from-white via-zinc-50 to-white' : 'bg-zinc-950'} z-0`} />
 
             {/* Enhanced gradient mesh background - themed */}
             <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-                <div className={`absolute top-0 left-1/4 w-[600px] h-[600px] ${theme.orb1} rounded-full blur-3xl animate-float`} />
-                <div className={`absolute bottom-0 right-1/4 w-[500px] h-[500px] ${theme.orb2} rounded-full blur-3xl animate-float-delayed`} />
+                <div className={`absolute top-0 left-1/4 w-[600px] h-[600px] ${theme.orb1} rounded-full blur-3xl animate-float ${isLightMode ? 'opacity-50' : ''}`} />
+                <div className={`absolute bottom-0 right-1/4 w-[500px] h-[500px] ${theme.orb2} rounded-full blur-3xl animate-float-delayed ${isLightMode ? 'opacity-40' : ''}`} />
             </div>
 
             {/* Grid Pattern */}
             <div
-                className="fixed inset-0 opacity-[0.04] z-0 pointer-events-none"
+                className={`fixed inset-0 ${isLightMode ? 'opacity-30' : 'opacity-[0.04]'} z-0 pointer-events-none`}
                 style={{
-                    backgroundImage: `linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)`,
+                    backgroundImage: isLightMode
+                        ? `linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px)`
+                        : `linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)`,
                     backgroundSize: '64px 64px',
                 }}
             />
 
             {/* Radial gradient overlay for depth */}
-            <div className="fixed inset-0 z-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(9,9,11,0.8)_70%)]" />
+            <div className={`fixed inset-0 z-0 pointer-events-none ${isLightMode ? '' : 'bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(9,9,11,0.8)_70%)]'}`} />
 
             {/* Header */}
-            <header className="relative z-10 bg-zinc-950/70 border-b border-zinc-800/30 backdrop-blur-xl">
+            <header className={`relative z-10 ${isLightMode ? 'bg-white/70 border-zinc-200/30' : 'bg-zinc-950/70 border-zinc-800/30'} border-b backdrop-blur-xl`}>
                 <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-                    <h1 className="text-xl font-semibold text-white">Settings</h1>
-                    <Link href="/dashboard" className={`text-sm ${theme.textAccent} hover:text-white transition-colors flex items-center gap-2`}>
+                    <h1 className={`text-xl font-semibold ${isLightMode ? 'text-zinc-900' : 'text-white'}`}>Settings</h1>
+                    <Link href="/dashboard" className={`text-sm ${theme.textAccent} ${isLightMode ? 'hover:text-zinc-900' : 'hover:text-white'} transition-colors flex items-center gap-2`}>
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                         </svg>
@@ -305,23 +312,23 @@ export default function SettingsPage() {
                 )}
 
                 {/* Profile Section */}
-                <div className="mb-8 p-6 bg-zinc-900/50 border border-zinc-800/50 rounded-2xl backdrop-blur-sm">
-                    <h2 className="text-xl font-bold text-white mb-6">Profile</h2>
+                <div className={`mb-8 p-6 ${isLightMode ? 'bg-white/60 border-zinc-200/50' : 'bg-zinc-900/50 border-zinc-800/50'} border rounded-2xl backdrop-blur-sm`}>
+                    <h2 className={`text-xl font-bold ${isLightMode ? 'text-zinc-900' : 'text-white'} mb-6`}>Profile</h2>
 
                     <div className="mb-6">
-                        <label className="block text-sm text-zinc-400 mb-2 font-medium">Username</label>
-                        <div className={`px-4 py-3 bg-zinc-800/50 border border-zinc-700/50 rounded-xl ${theme.textAccent}`}>
+                        <label className={`block text-sm ${isLightMode ? 'text-zinc-600' : 'text-zinc-400'} mb-2 font-medium`}>Username</label>
+                        <div className={`px-4 py-3 ${isLightMode ? 'bg-zinc-100/50 border-zinc-200/50' : 'bg-zinc-800/50 border-zinc-700/50'} border rounded-xl ${theme.textAccent}`}>
                             {username}
                         </div>
-                        <p className="text-xs text-zinc-500 mt-2">Username cannot be changed</p>
+                        <p className={`text-xs ${isLightMode ? 'text-zinc-500' : 'text-zinc-500'} mt-2`}>Username cannot be changed</p>
                     </div>
 
                     <div className="mb-4">
-                        <label className="block text-sm text-zinc-400 mb-2 font-medium">Email</label>
+                        <label className={`block text-sm ${isLightMode ? 'text-zinc-600' : 'text-zinc-400'} mb-2 font-medium`}>Email</label>
                         {!showEmailEdit ? (
                             <>
                                 <div className="flex items-center gap-3">
-                                    <div className="flex-1 px-4 py-3 bg-zinc-800/50 border border-zinc-700/50 rounded-xl text-zinc-300">
+                                    <div className={`flex-1 px-4 py-3 ${isLightMode ? 'bg-zinc-100/50 border-zinc-200/50 text-zinc-700' : 'bg-zinc-800/50 border-zinc-700/50 text-zinc-300'} border rounded-xl`}>
                                         {email}
                                     </div>
                                     <button
@@ -329,7 +336,7 @@ export default function SettingsPage() {
                                             setShowEmailEdit(true)
                                             setNewEmail('')
                                         }}
-                                        className={`px-4 py-3 text-sm ${theme.textAccent} border border-zinc-700/50 rounded-xl hover:border-zinc-600 hover:bg-zinc-800/50 transition-all`}
+                                        className={`px-4 py-3 text-sm ${theme.textAccent} border ${isLightMode ? 'border-zinc-300/50 hover:border-zinc-400 hover:bg-zinc-100/50' : 'border-zinc-700/50 hover:border-zinc-600 hover:bg-zinc-800/50'} rounded-xl transition-all`}
                                     >
                                         Change
                                     </button>
@@ -342,7 +349,7 @@ export default function SettingsPage() {
                                     value={newEmail}
                                     onChange={(e) => setNewEmail(e.target.value)}
                                     placeholder="Enter new email address"
-                                    className={`w-full px-4 py-3 bg-zinc-800/50 border border-zinc-700/50 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition-all`}
+                                    className={`w-full px-4 py-3 ${isLightMode ? 'bg-zinc-100/50 border-zinc-200/50 text-zinc-900 placeholder-zinc-400' : 'bg-zinc-800/50 border-zinc-700/50 text-white placeholder-zinc-500'} border rounded-xl focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition-all`}
                                 />
                                 <div className="flex gap-3">
                                     <button
@@ -357,12 +364,12 @@ export default function SettingsPage() {
                                             setShowEmailEdit(false)
                                             setNewEmail('')
                                         }}
-                                        className="px-4 py-2 text-zinc-400 hover:text-white text-sm transition-colors"
+                                        className={`px-4 py-2 ${isLightMode ? 'text-zinc-600 hover:text-zinc-900' : 'text-zinc-400 hover:text-white'} text-sm transition-colors`}
                                     >
                                         Cancel
                                     </button>
                                 </div>
-                                <p className="text-xs text-zinc-500">
+                                <p className={`text-xs ${isLightMode ? 'text-zinc-500' : 'text-zinc-500'}`}>
                                     A confirmation email will be sent to both addresses
                                 </p>
                             </div>
@@ -371,17 +378,17 @@ export default function SettingsPage() {
                 </div>
 
                 {/* Visibility Section */}
-                <div className="mb-8 p-6 bg-zinc-900/50 border border-zinc-800/50 rounded-2xl backdrop-blur-sm">
-                    <h2 className="text-xl font-bold text-white mb-6">Visibility</h2>
+                <div className={`mb-8 p-6 ${isLightMode ? 'bg-white/60 border-zinc-200/50' : 'bg-zinc-900/50 border-zinc-800/50'} border rounded-2xl backdrop-blur-sm`}>
+                    <h2 className={`text-xl font-bold ${isLightMode ? 'text-zinc-900' : 'text-white'} mb-6`}>Visibility</h2>
 
-                    <label className="flex items-center justify-between cursor-pointer p-4 bg-zinc-800/30 rounded-xl border border-zinc-700/30 hover:border-zinc-600/50 transition-all">
+                    <label className={`flex items-center justify-between cursor-pointer p-4 ${isLightMode ? 'bg-zinc-100/30 border-zinc-200/30 hover:border-zinc-300/50' : 'bg-zinc-800/30 border-zinc-700/30 hover:border-zinc-600/50'} rounded-xl border transition-all`}>
                         <div>
-                            <p className="text-white font-medium">Public Portfolio</p>
-                            <p className="text-sm text-zinc-400 mt-1">When disabled, your portfolio won&apos;t be visible to others</p>
+                            <p className={`${isLightMode ? 'text-zinc-900' : 'text-white'} font-medium`}>Public Portfolio</p>
+                            <p className={`text-sm ${isLightMode ? 'text-zinc-600' : 'text-zinc-400'} mt-1`}>When disabled, your portfolio won&apos;t be visible to others</p>
                         </div>
                         <button
                             onClick={() => setIsPublished(!isPublished)}
-                            className={`relative w-14 h-8 rounded-full transition-all duration-300 ${isPublished ? theme.accentColor : 'bg-zinc-700'}`}
+                            className={`relative w-14 h-8 rounded-full transition-all duration-300 ${isPublished ? theme.accentColor : isLightMode ? 'bg-zinc-300' : 'bg-zinc-700'}`}
                         >
                             <div className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full transition-transform duration-300 shadow-md ${isPublished ? 'translate-x-6' : 'translate-x-0'}`} />
                         </button>
@@ -398,12 +405,12 @@ export default function SettingsPage() {
                 </button>
 
                 {/* Sign Out Section */}
-                <div className="mb-8 p-6 bg-zinc-900/50 border border-zinc-800/50 rounded-2xl backdrop-blur-sm">
-                    <h2 className="text-xl font-bold text-white mb-4">Session</h2>
+                <div className={`mb-8 p-6 ${isLightMode ? 'bg-white/60 border-zinc-200/50' : 'bg-zinc-900/50 border-zinc-800/50'} border rounded-2xl backdrop-blur-sm`}>
+                    <h2 className={`text-xl font-bold ${isLightMode ? 'text-zinc-900' : 'text-white'} mb-4`}>Session</h2>
                     <button
                         onClick={handleSignOut}
                         disabled={isSigningOut}
-                        className="px-6 py-3 bg-zinc-800 border border-zinc-700 text-zinc-300 rounded-xl hover:bg-zinc-700 hover:border-zinc-600 hover:text-white transition-all flex items-center gap-2 disabled:opacity-50"
+                        className={`px-6 py-3 ${isLightMode ? 'bg-zinc-200 border-zinc-300 text-zinc-700 hover:bg-zinc-300 hover:border-zinc-400 hover:text-zinc-900' : 'bg-zinc-800 border-zinc-700 text-zinc-300 hover:bg-zinc-700 hover:border-zinc-600 hover:text-white'} border rounded-xl transition-all flex items-center gap-2 disabled:opacity-50`}
                     >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -413,13 +420,13 @@ export default function SettingsPage() {
                 </div>
 
                 {/* Data Export Section */}
-                <div className="mb-8 p-6 bg-zinc-900/50 border border-zinc-800/50 rounded-2xl backdrop-blur-sm">
-                    <h2 className="text-xl font-bold text-white mb-2">Your Data</h2>
-                    <p className="text-zinc-400 text-sm mb-4">Download a copy of all your portfolio data as JSON.</p>
+                <div className={`mb-8 p-6 ${isLightMode ? 'bg-white/60 border-zinc-200/50' : 'bg-zinc-900/50 border-zinc-800/50'} border rounded-2xl backdrop-blur-sm`}>
+                    <h2 className={`text-xl font-bold ${isLightMode ? 'text-zinc-900' : 'text-white'} mb-2`}>Your Data</h2>
+                    <p className={`${isLightMode ? 'text-zinc-600' : 'text-zinc-400'} text-sm mb-4`}>Download a copy of all your portfolio data as JSON.</p>
                     <button
                         onClick={handleExportData}
                         disabled={isExporting}
-                        className="px-6 py-3 bg-zinc-800 border border-zinc-700 text-zinc-300 rounded-xl hover:bg-zinc-700 hover:border-zinc-600 hover:text-white transition-all flex items-center gap-2 disabled:opacity-50"
+                        className={`px-6 py-3 ${isLightMode ? 'bg-zinc-200 border-zinc-300 text-zinc-700 hover:bg-zinc-300 hover:border-zinc-400 hover:text-zinc-900' : 'bg-zinc-800 border-zinc-700 text-zinc-300 hover:bg-zinc-700 hover:border-zinc-600 hover:text-white'} border rounded-xl transition-all flex items-center gap-2 disabled:opacity-50`}
                     >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -429,31 +436,31 @@ export default function SettingsPage() {
                 </div>
 
                 {/* Danger Zone */}
-                <div className="p-6 bg-red-500/5 border border-red-500/20 rounded-2xl backdrop-blur-sm">
-                    <h2 className="text-xl font-bold text-red-400 mb-4">Danger Zone</h2>
+                <div className={`p-6 ${isLightMode ? 'bg-red-50 border-red-200/50' : 'bg-red-500/5 border-red-500/20'} border rounded-2xl backdrop-blur-sm`}>
+                    <h2 className={`text-xl font-bold ${isLightMode ? 'text-red-600' : 'text-red-400'} mb-4`}>Danger Zone</h2>
 
                     {!showDeleteConfirm ? (
                         <button
                             onClick={() => setShowDeleteConfirm(true)}
-                            className="px-6 py-3 bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl hover:bg-red-500/20 hover:border-red-500/50 transition-all"
+                            className={`px-6 py-3 ${isLightMode ? 'bg-red-100 border-red-200 text-red-600 hover:bg-red-200 hover:border-red-300' : 'bg-red-500/10 border-red-500/30 text-red-400 hover:bg-red-500/20 hover:border-red-500/50'} border rounded-xl transition-all`}
                         >
                             Delete Account
                         </button>
                     ) : (
                         <div className="space-y-4">
-                            <p className="text-red-300">
+                            <p className={`${isLightMode ? 'text-red-600' : 'text-red-300'}`}>
                                 Are you sure? This will permanently delete your account and portfolio.
                             </p>
                             <div>
-                                <label className="block text-sm text-zinc-400 mb-2">
-                                    Type <span className="text-red-400 font-mono font-semibold">confirm</span> to delete your account
+                                <label className={`block text-sm ${isLightMode ? 'text-zinc-600' : 'text-zinc-400'} mb-2`}>
+                                    Type <span className={`${isLightMode ? 'text-red-600' : 'text-red-400'} font-mono font-semibold`}>confirm</span> to delete your account
                                 </label>
                                 <input
                                     type="text"
                                     value={deleteConfirmText}
                                     onChange={(e) => setDeleteConfirmText(e.target.value)}
                                     placeholder="confirm"
-                                    className="w-full px-4 py-3 bg-zinc-800/50 border border-red-500/30 rounded-xl text-white placeholder-zinc-600 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all"
+                                    className={`w-full px-4 py-3 ${isLightMode ? 'bg-white border-red-200 text-zinc-900 placeholder-zinc-400' : 'bg-zinc-800/50 border-red-500/30 text-white placeholder-zinc-600'} border rounded-xl focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all`}
                                 />
                             </div>
                             <div className="flex flex-wrap gap-4">
@@ -469,7 +476,7 @@ export default function SettingsPage() {
                                         setShowDeleteConfirm(false)
                                         setDeleteConfirmText('')
                                     }}
-                                    className="px-6 py-3 border border-zinc-700 text-zinc-300 rounded-xl hover:bg-zinc-800/50 hover:border-zinc-600 transition-all"
+                                    className={`px-6 py-3 border ${isLightMode ? 'border-zinc-300 text-zinc-700 hover:bg-zinc-100 hover:border-zinc-400' : 'border-zinc-700 text-zinc-300 hover:bg-zinc-800/50 hover:border-zinc-600'} rounded-xl transition-all`}
                                 >
                                     Cancel
                                 </button>
