@@ -244,8 +244,8 @@ export default function SignupPage() {
     useEffect(() => {
         if (!signupSuccess || !userId) return
 
-        // Poll every 3 seconds
-        const interval = setInterval(checkVerification, 3000)
+        // Poll every 1.5 seconds for faster detection
+        const interval = setInterval(checkVerification, 1500)
 
         // Also check immediately
         checkVerification()
