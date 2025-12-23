@@ -1,14 +1,17 @@
 'use client'
 
 import { useEffect, useState, Suspense } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { createClient } from '@/app/lib/supabase/client'
 
 function VerifyEmailContent() {
     const searchParams = useSearchParams()
+    const router = useRouter()
     const token = searchParams.get('token')
     const [status, setStatus] = useState<'verifying' | 'success' | 'error'>('verifying')
     const [errorMessage, setErrorMessage] = useState('')
+    const [redirecting, setRedirecting] = useState(false)
 
     useEffect(() => {
         if (!token) {
@@ -34,6 +37,18 @@ function VerifyEmailContent() {
                 }
 
                 setStatus('success')
+
+                // Check if user is already logged in and redirect
+                const supabase = createClient()
+                const { data: { user } } = await supabase.auth.getUser()
+
+                if (user) {
+                    setRedirecting(true)
+                    // Small delay to show success message
+                    setTimeout(() => {
+                        router.push('/onboarding')
+                    }, 1500)
+                }
             } catch {
                 setStatus('error')
                 setErrorMessage('Something went wrong. Please try again.')
@@ -41,7 +56,7 @@ function VerifyEmailContent() {
         }
 
         verifyEmail()
-    }, [token])
+    }, [token, router])
 
     return (
         <>
@@ -66,15 +81,23 @@ function VerifyEmailContent() {
                         </svg>
                     </div>
                     <h2 className="text-2xl font-bold text-white mb-2">Email verified!</h2>
-                    <p className="text-zinc-400 mb-6">
-                        Your account is now verified. You can sign in and start building your portfolio.
-                    </p>
-                    <Link
-                        href="/login"
-                        className="inline-block w-full py-3 bg-white text-zinc-900 font-medium rounded-xl hover:bg-zinc-100 transition-all duration-300"
-                    >
-                        Sign in
-                    </Link>
+                    {redirecting ? (
+                        <p className="text-zinc-400">
+                            Redirecting to your dashboard...
+                        </p>
+                    ) : (
+                        <>
+                            <p className="text-zinc-400 mb-6">
+                                Your account is now verified. Sign in to start building your portfolio.
+                            </p>
+                            <Link
+                                href="/login"
+                                className="inline-block w-full py-3 bg-white text-zinc-900 font-medium rounded-xl hover:bg-zinc-100 transition-all duration-300"
+                            >
+                                Sign in
+                            </Link>
+                        </>
+                    )}
                 </>
             )}
 
