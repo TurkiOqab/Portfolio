@@ -231,9 +231,9 @@ export default function Hero({ name, title, bio, skills, theme }: HeroProps) {
             <div className={`absolute bottom-1/4 right-1/4 w-96 h-96 ${theme.orb2} rounded-full blur-3xl animate-float-delayed pointer-events-none`} />
             <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] ${theme.orb1} rounded-full blur-3xl animate-glow pointer-events-none opacity-50`} />
 
-            <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
+            <div className="relative z-10 max-w-7xl mx-auto px-8 text-center">
                 {/* Main Heading with Typewriter */}
-                <h1 className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold ${theme.textPrimary} mb-6 tracking-tight min-h-[1.2em] break-words`}>
+                <h1 className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold ${theme.textPrimary} mb-6 tracking-tight min-h-[1.2em] break-words`}>
                     <TypeWriter texts={typingTexts} theme={theme} />
                 </h1>
 
