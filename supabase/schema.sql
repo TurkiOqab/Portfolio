@@ -17,6 +17,7 @@ create table public.profiles (
 create table public.verification_tokens (
   id uuid primary key default gen_random_uuid(),
   user_id uuid references auth.users on delete cascade,
+  email text not null,
   token text unique not null,
   expires_at timestamp with time zone not null,
   created_at timestamp with time zone default now()

@@ -52,6 +52,7 @@ export async function POST(request: NextRequest) {
         }
 
         console.log('Token found, user_id:', tokenData.user_id)
+        console.log('Token email:', tokenData.email)
         console.log('Token expires_at:', tokenData.expires_at)
 
         // Check if token is expired
@@ -66,16 +67,12 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Verification link has expired. Please sign up again.' }, { status: 400 })
         }
 
-        // Get user email for magic link generation
-        const { data: userData, error: userError } = await supabaseAdmin.auth.admin.getUserById(tokenData.user_id)
-
-        if (userError || !userData.user) {
-            console.error('User lookup error:', userError)
-            return NextResponse.json({ error: 'User not found' }, { status: 400 })
+        // Get email from token data (no need to look up user)
+        const userEmail = tokenData.email
+        if (!userEmail) {
+            console.error('No email stored in token')
+            return NextResponse.json({ error: 'Invalid verification token' }, { status: 400 })
         }
-
-        const userEmail = userData.user.email
-        console.log('User email found:', userEmail)
 
         // Update user's email_verified in profiles table
         console.log('Updating email_verified in profiles...')
@@ -95,7 +92,7 @@ export async function POST(request: NextRequest) {
         console.log('Generating magic link for auto-login...')
         const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
             type: 'magiclink',
-            email: userEmail!,
+            email: userEmail,
         })
 
         if (linkError) {

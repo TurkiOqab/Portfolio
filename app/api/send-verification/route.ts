@@ -59,11 +59,12 @@ export async function POST(request: NextRequest) {
             // Continue anyway - this is not critical
         }
 
-        // Store the token
+        // Store the token with email
         const { error: tokenError } = await supabaseAdmin
             .from('verification_tokens')
             .insert({
                 user_id: userId,
+                email,
                 token,
                 expires_at: expiresAt.toISOString(),
             })
