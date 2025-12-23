@@ -233,7 +233,7 @@ export default function Hero({ name, title, bio, skills, theme }: HeroProps) {
 
             <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
                 {/* Main Heading with Typewriter */}
-                <h1 className={`text-5xl md:text-7xl lg:text-8xl font-bold ${theme.textPrimary} mb-6 tracking-tight min-h-[1.2em]`}>
+                <h1 className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold ${theme.textPrimary} mb-6 tracking-tight min-h-[1.2em] break-words`}>
                     <TypeWriter texts={typingTexts} theme={theme} />
                 </h1>
 
