@@ -6,31 +6,58 @@ import crypto from 'crypto'
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-// Use service role for admin operations (bypasses RLS)
-const supabaseAdmin = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } }
-)
-
 export async function POST(request: NextRequest) {
+    console.log('=== send-verification API called ===')
+
     try {
+        // Check environment variables
+        if (!process.env.RESEND_API_KEY) {
+            console.error('RESEND_API_KEY is not set')
+            return NextResponse.json({ error: 'Email service not configured' }, { status: 500 })
+        }
+
+        if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+            console.error('SUPABASE_SERVICE_ROLE_KEY is not set')
+            return NextResponse.json({ error: 'Database service not configured' }, { status: 500 })
+        }
+
+        if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+            console.error('NEXT_PUBLIC_SUPABASE_URL is not set')
+            return NextResponse.json({ error: 'Database URL not configured' }, { status: 500 })
+        }
+
         const resend = new Resend(process.env.RESEND_API_KEY)
+
+        // Create Supabase admin client at runtime
+        const supabaseAdmin = createClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL,
+            process.env.SUPABASE_SERVICE_ROLE_KEY,
+            { auth: { autoRefreshToken: false, persistSession: false } }
+        )
+
         const { email, userId } = await request.json()
+        console.log('Request body:', { email, userId: userId ? 'present' : 'missing' })
 
         if (!email || !userId) {
+            console.error('Missing email or userId')
             return NextResponse.json({ error: 'Email and userId are required' }, { status: 400 })
         }
 
         // Generate a secure token
         const token = crypto.randomBytes(32).toString('hex')
         const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
+        console.log('Generated token, expires at:', expiresAt.toISOString())
 
         // Delete any existing tokens for this user
-        await supabaseAdmin
+        const { error: deleteError } = await supabaseAdmin
             .from('verification_tokens')
             .delete()
             .eq('user_id', userId)
+
+        if (deleteError) {
+            console.error('Error deleting old tokens:', deleteError)
+            // Continue anyway - this is not critical
+        }
 
         // Store the token
         const { error: tokenError } = await supabaseAdmin
@@ -43,14 +70,17 @@ export async function POST(request: NextRequest) {
 
         if (tokenError) {
             console.error('Token storage error:', tokenError)
-            return NextResponse.json({ error: 'Failed to create verification token' }, { status: 500 })
+            return NextResponse.json({ error: 'Failed to create verification token: ' + tokenError.message }, { status: 500 })
         }
+        console.log('Token stored successfully')
 
         // Build verification URL
         const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
         const verificationUrl = `${baseUrl}/verify-email?token=${token}`
+        console.log('Verification URL base:', baseUrl)
 
         // Send email via Resend
+        console.log('Sending email via Resend to:', email)
         const { data, error } = await resend.emails.send({
             from: 'Dfolio <noreply@dfolio.dev>',
             to: email,
@@ -102,12 +132,15 @@ export async function POST(request: NextRequest) {
 
         if (error) {
             console.error('Resend error:', error)
-            return NextResponse.json({ error: error.message }, { status: 500 })
+            return NextResponse.json({ error: 'Failed to send email: ' + error.message }, { status: 500 })
         }
 
+        console.log('Email sent successfully:', data)
         return NextResponse.json({ success: true, data })
     } catch (error) {
-        console.error('Error:', error)
-        return NextResponse.json({ error: 'Failed to send verification email' }, { status: 500 })
+        console.error('Unexpected error:', error)
+        return NextResponse.json({
+            error: 'Failed to send verification email: ' + (error instanceof Error ? error.message : 'Unknown error')
+        }, { status: 500 })
     }
 }
