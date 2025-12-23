@@ -39,6 +39,7 @@ export default function LikeButton({ portfolioId, theme, isOwner: isOwnerProp }:
     const [showSignupPrompt, setShowSignupPrompt] = useState(false);
     const [isOwner, setIsOwner] = useState(isOwnerProp ?? false);
     const supabase = createClient();
+    const isLightMode = theme.mode === 'light';
 
     useEffect(() => {
         const fetchLikeData = async () => {
@@ -90,7 +91,7 @@ export default function LikeButton({ portfolioId, theme, isOwner: isOwnerProp }:
     // Show read-only view for portfolio owner
     if (isOwner) {
         return (
-            <div className="flex items-center gap-3 px-6 py-3 rounded-full border bg-zinc-900/50 border-zinc-700 text-zinc-400">
+            <div className={`flex items-center gap-3 px-6 py-3 rounded-full border ${isLightMode ? 'bg-white/80 border-zinc-200 text-zinc-500' : 'bg-zinc-900/50 border-zinc-700 text-zinc-400'}`}>
                 <svg
                     className="w-5 h-5"
                     fill="none"
@@ -164,7 +165,9 @@ export default function LikeButton({ portfolioId, theme, isOwner: isOwnerProp }:
                 className={`group flex items-center gap-3 px-6 py-3 rounded-full border transition-all duration-300 ${
                     liked
                         ? `bg-gradient-to-r ${theme.primaryGradient} border-transparent ${theme.buttonText} shadow-lg ${theme.shadowColor}`
-                        : "bg-zinc-900/50 border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-white"
+                        : isLightMode
+                            ? "bg-white/80 border-zinc-200 text-zinc-500 hover:border-zinc-300 hover:text-zinc-900"
+                            : "bg-zinc-900/50 border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-white"
                 } ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
                 aria-label={liked ? "Unlike this portfolio" : "Like this portfolio"}
             >

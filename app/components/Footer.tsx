@@ -16,12 +16,13 @@ interface FooterProps {
 
 export default function Footer({ contact, name, theme, cvUrl, portfolioId, username, isOwner }: FooterProps) {
     const currentYear = new Date().getFullYear();
+    const isLightMode = theme.mode === 'light';
 
     const socialLinks = [
         contact.github && {
             name: "GitHub",
             href: contact.github,
-            hoverColor: "hover:text-white hover:bg-zinc-800",
+            hoverColor: isLightMode ? "hover:text-zinc-900 hover:bg-zinc-200" : "hover:text-white hover:bg-zinc-800",
             icon: (
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
@@ -41,7 +42,7 @@ export default function Footer({ contact, name, theme, cvUrl, portfolioId, usern
         contact.twitter && {
             name: "Twitter",
             href: contact.twitter,
-            hoverColor: "hover:text-white hover:bg-zinc-800",
+            hoverColor: isLightMode ? "hover:text-zinc-900 hover:bg-zinc-200" : "hover:text-white hover:bg-zinc-800",
             icon: (
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
@@ -51,7 +52,7 @@ export default function Footer({ contact, name, theme, cvUrl, portfolioId, usern
         contact.email && {
             name: "Email",
             href: `mailto:${contact.email}`,
-            hoverColor: "hover:text-emerald-400 hover:bg-emerald-400/10",
+            hoverColor: "hover:text-emerald-500 hover:bg-emerald-500/10",
             icon: (
                 <svg
                     className="w-5 h-5"
@@ -82,17 +83,17 @@ export default function Footer({ contact, name, theme, cvUrl, portfolioId, usern
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                     {/* Left Side - CTA */}
                     <div>
-                        <span className={`inline-flex items-center gap-2 px-4 py-1.5 ${theme.textAccent} text-sm font-medium tracking-widest uppercase mb-6 bg-zinc-900/50 rounded-full border border-zinc-800/50`}>
+                        <span className={`inline-flex items-center gap-2 px-4 py-1.5 ${theme.textAccent} text-sm font-medium tracking-widest uppercase mb-6 ${isLightMode ? 'bg-zinc-100/80 border-zinc-200/50' : 'bg-zinc-900/50 border-zinc-800/50'} rounded-full border`}>
                             <span className={`w-1.5 h-1.5 rounded-full bg-gradient-to-r ${theme.primaryGradient}`} />
                             Contact
                         </span>
-                        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
+                        <h2 className={`text-3xl md:text-4xl lg:text-5xl font-bold ${isLightMode ? 'text-zinc-900' : 'text-white'} mb-4`}>
                             Let&apos;s work{" "}
                             <span className={`bg-gradient-to-r ${theme.primaryGradient} bg-clip-text text-transparent`}>
                                 together
                             </span>
                         </h2>
-                        <p className="text-zinc-400 text-lg mb-8 leading-relaxed">
+                        <p className={`${isLightMode ? 'text-zinc-600' : 'text-zinc-400'} text-lg mb-8 leading-relaxed`}>
                             Have a project in mind? I&apos;d love to hear about it. Let&apos;s
                             create something amazing together.
                         </p>
@@ -132,7 +133,7 @@ export default function Footer({ contact, name, theme, cvUrl, portfolioId, usern
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     download
-                                    className="group inline-flex items-center gap-2 px-6 py-3.5 border border-zinc-700 text-zinc-300 font-medium rounded-full hover:bg-zinc-800/50 hover:text-white hover:border-zinc-500 transition-all duration-300 hover:scale-[1.02]"
+                                    className={`group inline-flex items-center gap-2 px-6 py-3.5 border ${isLightMode ? 'border-zinc-300 text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900 hover:border-zinc-400' : 'border-zinc-700 text-zinc-300 hover:bg-zinc-800/50 hover:text-white hover:border-zinc-500'} font-medium rounded-full transition-all duration-300 hover:scale-[1.02]`}
                                 >
                                     <svg
                                         className="w-5 h-5 group-hover:translate-y-0.5 transition-transform duration-300"
@@ -157,7 +158,7 @@ export default function Footer({ contact, name, theme, cvUrl, portfolioId, usern
                     <div className="flex flex-col items-start md:items-end">
                         {socialLinks.length > 0 && (
                             <>
-                                <p className="text-zinc-400 text-sm mb-4">Find me on</p>
+                                <p className={`${isLightMode ? 'text-zinc-600' : 'text-zinc-400'} text-sm mb-4`}>Find me on</p>
                                 <div className="flex items-center gap-3">
                                     {socialLinks.map((link) => (
                                         <a
@@ -165,7 +166,7 @@ export default function Footer({ contact, name, theme, cvUrl, portfolioId, usern
                                             href={link.href}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className={`p-3 bg-zinc-900/50 border border-zinc-800/50 rounded-xl text-zinc-400 ${link.hoverColor} hover:border-zinc-700 transition-all duration-300 hover:scale-110`}
+                                            className={`p-3 ${isLightMode ? 'bg-white/80 border-zinc-200/50 text-zinc-500 hover:border-zinc-300' : 'bg-zinc-900/50 border-zinc-800/50 text-zinc-400 hover:border-zinc-700'} border rounded-xl ${link.hoverColor} transition-all duration-300 hover:scale-110`}
                                             aria-label={link.name}
                                         >
                                             {link.icon}
@@ -178,34 +179,34 @@ export default function Footer({ contact, name, theme, cvUrl, portfolioId, usern
                 </div>
 
                 {/* Like & Share Section */}
-                <div className="mt-12 pt-8 border-t border-zinc-800">
+                <div className={`mt-12 pt-8 border-t ${isLightMode ? 'border-zinc-200' : 'border-zinc-800'}`}>
                     <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12">
                         <div className="flex flex-col items-center gap-3">
-                            <p className="text-zinc-500 text-sm">Enjoyed this portfolio?</p>
+                            <p className={`${isLightMode ? 'text-zinc-600' : 'text-zinc-500'} text-sm`}>Enjoyed this portfolio?</p>
                             <LikeButton portfolioId={portfolioId} theme={theme} isOwner={isOwner} />
                         </div>
-                        <div className="hidden md:block w-px h-12 bg-zinc-800" />
+                        <div className={`hidden md:block w-px h-12 ${isLightMode ? 'bg-zinc-300' : 'bg-zinc-800'}`} />
                         <div className="flex flex-col items-center gap-3">
-                            <p className="text-zinc-500 text-sm">Share with others</p>
+                            <p className={`${isLightMode ? 'text-zinc-600' : 'text-zinc-500'} text-sm`}>Share with others</p>
                             <ShareButtons url={`/${username}`} title={`${name}'s Portfolio`} theme={theme} />
                         </div>
                     </div>
                 </div>
 
                 {/* Bottom Bar */}
-                <div className="mt-12 pt-8 border-t border-zinc-800">
+                <div className={`mt-12 pt-8 border-t ${isLightMode ? 'border-zinc-200' : 'border-zinc-800'}`}>
                     <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                        <p className="text-zinc-500 text-sm">
+                        <p className={`${isLightMode ? 'text-zinc-600' : 'text-zinc-500'} text-sm`}>
                             © {currentYear} {name || "Portfolio"}. All rights reserved.
                         </p>
                         <div className="flex items-center gap-4">
                             <Link
                                 href="/onboarding"
-                                className={`text-zinc-500 hover:${theme.textAccent} text-sm transition-colors`}
+                                className={`${isLightMode ? 'text-zinc-600' : 'text-zinc-500'} hover:${theme.textAccent} text-sm transition-colors`}
                             >
                                 Edit Portfolio
                             </Link>
-                            <p className="text-zinc-500 text-sm">
+                            <p className={`${isLightMode ? 'text-zinc-600' : 'text-zinc-500'} text-sm`}>
                                 Built with{" "}
                                 <span className={theme.textAccent}>Next.js</span> &{" "}
                                 <span className={theme.textAccent}>Tailwind CSS</span>

@@ -173,6 +173,7 @@ interface ProjectsProps {
 export default function Projects({ projects, theme }: ProjectsProps) {
     // Reverse projects so oldest is at bottom
     const reversedProjects = [...projects].reverse();
+    const isLightMode = theme.mode === 'light';
     const containerRef = useRef<HTMLDivElement>(null);
     const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
     const dotRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -273,17 +274,17 @@ export default function Projects({ projects, theme }: ProjectsProps) {
             <div className="max-w-6xl mx-auto px-6 relative z-10">
                 {/* Section Header with enhanced styling */}
                 <div className="text-center mb-20">
-                    <span className={`inline-flex items-center gap-2 px-4 py-1.5 ${theme.textAccent} text-sm font-medium tracking-widest uppercase mb-6 bg-zinc-900/50 rounded-full border border-zinc-800/50`}>
+                    <span className={`inline-flex items-center gap-2 px-4 py-1.5 ${theme.textAccent} text-sm font-medium tracking-widest uppercase mb-6 ${isLightMode ? 'bg-zinc-100/80 border-zinc-200/50' : 'bg-zinc-900/50 border-zinc-800/50'} rounded-full border`}>
                         <span className={`w-1.5 h-1.5 rounded-full bg-gradient-to-r ${theme.primaryGradient}`} />
                         Featured Work
                     </span>
-                    <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
+                    <h2 className={`text-4xl md:text-5xl lg:text-6xl font-bold ${isLightMode ? 'text-zinc-900' : 'text-white'} mb-6`}>
                         My{" "}
                         <span className={`bg-gradient-to-r ${theme.primaryGradient} bg-clip-text text-transparent`}>
                             Projects
                         </span>
                     </h2>
-                    <p className="text-zinc-400 max-w-2xl mx-auto text-lg leading-relaxed">
+                    <p className={`${isLightMode ? 'text-zinc-600' : 'text-zinc-400'} max-w-2xl mx-auto text-lg leading-relaxed`}>
                         A selection of my recent work. Each project represents a unique
                         challenge and showcases my expertise in different technologies.
                     </p>
@@ -308,7 +309,7 @@ export default function Projects({ projects, theme }: ProjectsProps) {
                 {projects.length > 0 ? (
                     <div className="relative" ref={containerRef}>
                         {/* Timeline Line */}
-                        <div className={`absolute left-4 md:left-[140px] top-0 bottom-0 w-px bg-gradient-to-b ${theme.primaryGradient} opacity-30`} />
+                        <div className={`absolute left-4 md:left-[140px] top-0 bottom-0 w-px bg-gradient-to-b ${theme.primaryGradient} ${isLightMode ? 'opacity-40' : 'opacity-30'}`} />
 
                         <div className="space-y-8 md:space-y-12">
                             {reversedProjects.map((project, index) => (
@@ -322,7 +323,7 @@ export default function Projects({ projects, theme }: ProjectsProps) {
                                     <div className="flex-shrink-0 w-8 md:w-[140px] relative">
                                         {/* Timeline Dot */}
                                         <div
-                                            className={`project-timeline-dot absolute left-4 md:left-[140px] top-8 w-3 h-3 rounded-full bg-gradient-to-r ${theme.primaryGradient} ring-4 ring-zinc-950 z-10`}
+                                            className={`project-timeline-dot absolute left-4 md:left-[140px] top-8 w-3 h-3 rounded-full bg-gradient-to-r ${theme.primaryGradient} ring-4 ${isLightMode ? 'ring-white' : 'ring-zinc-950'} z-10`}
                                         />
 
                                         <div className="hidden md:block text-right pr-8 pt-6">
@@ -338,7 +339,7 @@ export default function Projects({ projects, theme }: ProjectsProps) {
 
                                     {/* Right Side - Card */}
                                     <div className="flex-1 pb-4">
-                                        <div className="project-card-inner group relative bg-zinc-900/80 backdrop-blur-sm border rounded-2xl p-6 md:p-8 hover-shimmer overflow-hidden">
+                                        <div className={`project-card-inner group relative ${isLightMode ? 'bg-white/80 border-zinc-200' : 'bg-zinc-900/80 border-zinc-800'} backdrop-blur-sm border rounded-2xl p-6 md:p-8 hover-shimmer overflow-hidden`}>
                                             {/* Badge */}
                                             {project.liveUrl && (
                                                 <div className="absolute top-4 right-4 md:top-6 md:right-6 z-10">
@@ -372,7 +373,7 @@ export default function Projects({ projects, theme }: ProjectsProps) {
                                                             return (
                                                                 <span
                                                                     key={tag}
-                                                                    className="inline-flex items-center gap-2 px-3 py-1.5 bg-zinc-800/60 text-zinc-300 text-sm rounded-full border border-zinc-700/40 hover:border-zinc-600 hover:bg-zinc-800/80 transition-all duration-200 cursor-default"
+                                                                    className={`inline-flex items-center gap-2 px-3 py-1.5 ${isLightMode ? 'bg-zinc-100/80 text-zinc-700 border-zinc-200/50 hover:border-zinc-300 hover:bg-zinc-200/80' : 'bg-zinc-800/60 text-zinc-300 border-zinc-700/40 hover:border-zinc-600 hover:bg-zinc-800/80'} text-sm rounded-full border transition-all duration-200 cursor-default`}
                                                                 >
                                                                     {Icon && <Icon className="w-4 h-4" style={{ color: tagData.color }} />}
                                                                     <span className="font-medium">{tag}</span>
@@ -384,7 +385,7 @@ export default function Projects({ projects, theme }: ProjectsProps) {
                                             )}
 
                                             {/* Title */}
-                                            <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">
+                                            <h3 className={`text-2xl md:text-3xl font-bold ${isLightMode ? 'text-zinc-900' : 'text-white'} mb-2`}>
                                                 {project.title}
                                             </h3>
 
@@ -398,7 +399,7 @@ export default function Projects({ projects, theme }: ProjectsProps) {
                                             )}
 
                                             {/* Description */}
-                                            <div className="text-zinc-400 text-base leading-relaxed mb-6">
+                                            <div className={`${isLightMode ? 'text-zinc-600' : 'text-zinc-400'} text-base leading-relaxed mb-6`}>
                                                 <MarkdownRenderer content={project.description} />
                                             </div>
 
@@ -409,7 +410,7 @@ export default function Projects({ projects, theme }: ProjectsProps) {
                                                         href={project.liveUrl}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
-                                                        className={`flex items-center gap-2 text-sm font-medium ${theme.textAccent} hover:text-white transition-colors duration-300`}
+                                                        className={`flex items-center gap-2 text-sm font-medium ${theme.textAccent} ${isLightMode ? 'hover:text-zinc-900' : 'hover:text-white'} transition-colors duration-300`}
                                                     >
                                                         View project
                                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -422,7 +423,7 @@ export default function Projects({ projects, theme }: ProjectsProps) {
                                                         href={project.githubUrl}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
-                                                        className="flex items-center gap-2 text-sm font-medium text-zinc-400 hover:text-white transition-colors duration-300"
+                                                        className={`flex items-center gap-2 text-sm font-medium ${isLightMode ? 'text-zinc-500 hover:text-zinc-900' : 'text-zinc-400 hover:text-white'} transition-colors duration-300`}
                                                     >
                                                         View code
                                                         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">

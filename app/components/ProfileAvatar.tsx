@@ -23,11 +23,13 @@ export default function ProfileAvatar({ avatarUrl, name, theme, size = "sm" }: P
 
     // Default to slate for dashboard/consistent styling
     const gradientClass = theme?.primaryGradient || "from-slate-600 to-slate-600";
+    const isLightMode = theme?.mode === 'light';
+    const borderClass = isLightMode ? 'border-zinc-300' : 'border-zinc-700';
 
     if (!avatarUrl || imageError) {
         return (
             <div
-                className={`${sizeClasses[size]} rounded-full bg-gradient-to-br ${gradientClass} flex items-center justify-center text-white font-medium border-2 border-zinc-700`}
+                className={`${sizeClasses[size]} rounded-full bg-gradient-to-br ${gradientClass} flex items-center justify-center text-white font-medium border-2 ${borderClass}`}
             >
                 {initial}
             </div>
@@ -38,7 +40,7 @@ export default function ProfileAvatar({ avatarUrl, name, theme, size = "sm" }: P
         <img
             src={avatarUrl}
             alt={name}
-            className={`${sizeClasses[size]} rounded-full object-cover border-2 border-zinc-700`}
+            className={`${sizeClasses[size]} rounded-full object-cover border-2 ${borderClass}`}
             onError={() => setImageError(true)}
         />
     );

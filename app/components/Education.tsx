@@ -16,6 +16,8 @@ function formatDate(dateStr?: string): string {
 export default function EducationSection({ education, theme }: EducationSectionProps) {
     if (!education || education.length === 0) return null
 
+    const isLightMode = theme.mode === 'light'
+
     // Sort by end date (most recent first, oldest at bottom)
     const sortedEducation = [...education].sort((a, b) => {
         const dateA = a.endDate || '0000-00'
@@ -26,12 +28,12 @@ export default function EducationSection({ education, theme }: EducationSectionP
     return (
         <section className="py-20 px-6" id="education">
             <div className="max-w-4xl mx-auto">
-                <h2 className="text-3xl md:text-4xl font-bold text-white mb-12 text-center">
+                <h2 className={`text-3xl md:text-4xl font-bold ${isLightMode ? 'text-zinc-900' : 'text-white'} mb-12 text-center`}>
                     Education
                 </h2>
                 <div className="relative">
                     {/* Timeline line */}
-                    <div className="absolute left-2 top-2 bottom-2 w-px bg-zinc-700" />
+                    <div className={`absolute left-2 top-2 bottom-2 w-px ${isLightMode ? 'bg-zinc-300' : 'bg-zinc-700'}`} />
 
                     <div className="space-y-8">
                         {sortedEducation.map((edu) => (
@@ -40,11 +42,11 @@ export default function EducationSection({ education, theme }: EducationSectionP
                                 className="relative pl-8"
                             >
                                 {/* Timeline dot */}
-                                <div className={`absolute left-0 top-1.5 w-4 h-4 rounded-full ${theme.timelineDot} border-2 border-zinc-950`} />
+                                <div className={`absolute left-0 top-1.5 w-4 h-4 rounded-full ${theme.timelineDot} border-2 ${isLightMode ? 'border-white' : 'border-zinc-950'}`} />
 
                                 <div>
                                     <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-1">
-                                        <h3 className="text-xl font-semibold text-white">
+                                        <h3 className={`text-xl font-semibold ${isLightMode ? 'text-zinc-900' : 'text-white'}`}>
                                             {edu.institution}
                                         </h3>
                                         {(edu.startDate || edu.endDate) && (

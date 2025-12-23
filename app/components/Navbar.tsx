@@ -51,7 +51,7 @@ export default function Navbar({ theme, isOwner = false }: NavbarProps) {
             href="https://dfolio.dev"
             target="_blank"
             rel="noopener noreferrer"
-            className={`text-xs sm:text-sm font-medium ${isLightMode ? 'text-zinc-500 hover:text-zinc-700' : 'text-zinc-500 hover:text-zinc-300'} transition-colors`}
+            className={`text-xs sm:text-sm font-medium ${isLightMode ? 'text-zinc-600 hover:text-zinc-900' : 'text-zinc-500 hover:text-zinc-300'} transition-colors`}
           >
             Portfolios for Developers
           </a>

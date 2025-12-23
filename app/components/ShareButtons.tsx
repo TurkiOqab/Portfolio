@@ -15,6 +15,7 @@ export default function ShareButtons({ url, title, theme }: ShareButtonsProps) {
     const fullUrl = getFullUrl(url);
     const encodedUrl = encodeURIComponent(fullUrl);
     const encodedTitle = encodeURIComponent(title);
+    const isLightMode = theme.mode === 'light';
 
     const handleCopy = async () => {
         const success = await copyToClipboard(fullUrl);
@@ -47,14 +48,14 @@ export default function ShareButtons({ url, title, theme }: ShareButtonsProps) {
 
     return (
         <div className="flex items-center gap-3">
-            <span className="text-zinc-500 text-sm">Share:</span>
+            <span className={`${isLightMode ? 'text-zinc-600' : 'text-zinc-500'} text-sm`}>Share:</span>
             {shareLinks.map((link) => (
                 <a
                     key={link.name}
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-2.5 bg-zinc-800/50 border border-zinc-700/50 rounded-full text-zinc-400 hover:text-white hover:border-zinc-600 hover:bg-zinc-800 transition-all duration-300"
+                    className={`p-2.5 ${isLightMode ? 'bg-white/80 border-zinc-200/50 text-zinc-500 hover:text-zinc-900 hover:border-zinc-300 hover:bg-zinc-100' : 'bg-zinc-800/50 border-zinc-700/50 text-zinc-400 hover:text-white hover:border-zinc-600 hover:bg-zinc-800'} border rounded-full transition-all duration-300`}
                     aria-label={`Share on ${link.name}`}
                 >
                     {link.icon}
@@ -65,7 +66,9 @@ export default function ShareButtons({ url, title, theme }: ShareButtonsProps) {
                 className={`p-2.5 rounded-full border transition-all duration-300 ${
                     copied
                         ? `bg-gradient-to-r ${theme.primaryGradient} border-transparent ${theme.buttonText}`
-                        : "bg-zinc-800/50 border-zinc-700/50 text-zinc-400 hover:text-white hover:border-zinc-600 hover:bg-zinc-800"
+                        : isLightMode
+                            ? "bg-white/80 border-zinc-200/50 text-zinc-500 hover:text-zinc-900 hover:border-zinc-300 hover:bg-zinc-100"
+                            : "bg-zinc-800/50 border-zinc-700/50 text-zinc-400 hover:text-white hover:border-zinc-600 hover:bg-zinc-800"
                 }`}
                 aria-label="Copy link"
             >
