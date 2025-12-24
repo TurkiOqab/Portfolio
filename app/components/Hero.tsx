@@ -438,6 +438,7 @@ function SkillIcon({ skill }: { skill: string }) {
 
 function TypeWriter({ texts, theme }: { texts: string[]; theme: ThemeConfig }) {
     const [currentText, setCurrentText] = useState("");
+    const [currentTextIndex, setCurrentTextIndex] = useState(0); // For render-time access
     const [fontSize, setFontSize] = useState(72); // Start with max font size in px
     const [shouldWrap, setShouldWrap] = useState(false); // Allow wrapping for very long text
     const containerRef = useRef<HTMLSpanElement>(null);
@@ -530,7 +531,9 @@ function TypeWriter({ texts, theme }: { texts: string[]; theme: ThemeConfig }) {
         if (isDeletingRef.current && currentText === "") {
             // Move to next text
             isDeletingRef.current = false;
-            currentTextIndexRef.current = (currentTextIndexRef.current + 1) % texts.length;
+            const nextIndex = (currentTextIndexRef.current + 1) % texts.length;
+            currentTextIndexRef.current = nextIndex;
+            setCurrentTextIndex(nextIndex); // Update state for render
             tick();
             return;
         }
@@ -541,7 +544,7 @@ function TypeWriter({ texts, theme }: { texts: string[]; theme: ThemeConfig }) {
 
     // Split the text to color only the name/title part
     const hiPart = "Hi, I'm ";
-    const hasHiPrefix = texts[currentTextIndexRef.current].startsWith(hiPart);
+    const hasHiPrefix = texts[currentTextIndex].startsWith(hiPart);
     const isLightMode = theme.mode === 'light';
 
     const content = hasHiPrefix ? (

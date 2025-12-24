@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { createClient } from "@/app/lib/supabase/client";
 import { ThemeConfig } from "../lib/themes";
-import { hasConsent, getVisitorId } from "../lib/consent";
+import { getVisitorId } from "../lib/consent";
 
 interface LikeButtonProps {
     portfolioId: string;
@@ -69,31 +69,7 @@ export default function LikeButton({ portfolioId, theme, isOwner: isOwnerProp }:
         fetchLikeData();
     }, [portfolioId, supabase, isOwnerProp]);
 
-    // Show read-only view for portfolio owner
-    if (isOwner) {
-        return (
-            <div className={`flex items-center gap-3 px-6 py-3 rounded-full border ${isLightMode ? 'bg-white/80 border-zinc-200 text-zinc-500' : 'bg-zinc-900/50 border-zinc-700 text-zinc-400'}`}>
-                <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                >
-                    <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                    />
-                </svg>
-                <span className="font-medium">{isLoading ? "..." : likeCount}</span>
-                <span className="text-sm opacity-75">
-                    {likeCount === 1 ? "Like" : "Likes"}
-                </span>
-            </div>
-        );
-    }
-
+    // Define handleLike before any conditional returns to follow React hooks rules
     const handleLike = useCallback(async () => {
         // Prevent owner from liking their own portfolio
         if (isOwner) return;
@@ -137,6 +113,31 @@ export default function LikeButton({ portfolioId, theme, isOwner: isOwnerProp }:
             setTimeout(() => setShowSignupPrompt(true), 500);
         }
     }, [isOwner, isLoading, liked, supabase, portfolioId]);
+
+    // Show read-only view for portfolio owner
+    if (isOwner) {
+        return (
+            <div className={`flex items-center gap-3 px-6 py-3 rounded-full border ${isLightMode ? 'bg-white/80 border-zinc-200 text-zinc-500' : 'bg-zinc-900/50 border-zinc-700 text-zinc-400'}`}>
+                <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                    />
+                </svg>
+                <span className="font-medium">{isLoading ? "..." : likeCount}</span>
+                <span className="text-sm opacity-75">
+                    {likeCount === 1 ? "Like" : "Likes"}
+                </span>
+            </div>
+        );
+    }
 
     return (
         <>
