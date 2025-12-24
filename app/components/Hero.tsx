@@ -57,8 +57,136 @@ import {
     SiNotion,
     SiSlack,
     SiDiscord,
+    // AI/ML
+    SiTensorflow,
+    SiPytorch,
+    SiOpenai,
+    SiScikitlearn,
+    SiPandas,
+    SiNumpy,
+    SiJupyter,
+    SiKeras,
+    SiOpencv,
+    // Languages
+    SiDotnet,
+    SiScala,
+    SiElixir,
+    SiHaskell,
+    SiClojure,
+    SiPerl,
+    SiLua,
+    SiDart,
+    SiR,
+    SiJulia,
+    SiSolidity,
+    // Frontend
+    SiRedux,
+    SiMobx,
+    SiSass,
+    SiLess,
+    SiBootstrap,
+    SiChakraui,
+    SiStyledcomponents,
+    SiElectron,
+    SiGatsby,
+    SiRemix,
+    SiAstro,
+    SiNuxtdotjs,
+    // Backend
+    SiLaravel,
+    SiSymfony,
+    SiFastapi,
+    SiSpring,
+    SiRubyonrails,
+    SiApachekafka,
+    SiRabbitmq,
+    SiCelery,
+    // Cloud
+    SiGooglecloud,
+    SiHeroku,
+    SiDigitalocean,
+    SiCloudflare,
+    SiNetlify,
+    SiRender,
+    SiAwslambda,
+    // Databases
+    SiSqlite,
+    SiOracle,
+    SiMariadb,
+    SiElasticsearch,
+    SiCouchbase,
+    SiInfluxdb,
+    // DevOps/CI
+    SiTerraform,
+    SiAnsible,
+    SiJenkins,
+    SiCircleci,
+    SiGithubactions,
+    SiPrometheus,
+    SiGrafana,
+    SiDatadog,
+    SiSentry,
+    // Testing
+    SiSelenium,
+    SiMocha,
+    SiVitest,
+    SiStorybook,
+    SiPostman,
+    // CMS
+    SiWordpress,
+    SiContentful,
+    SiStrapi,
+    SiShopify,
+    // Mobile
+    SiAndroid,
+    SiIos,
+    SiExpo,
+    SiIonic,
+    // Payments/Auth
+    SiStripe,
+    SiAuth0,
+    SiTwilio,
+    // Game Dev/3D
+    SiUnity,
+    SiUnrealengine,
+    SiBlender,
+    SiThreedotjs,
+    // Tools/IDEs
+    SiIntellijidea,
+    SiAndroidstudio,
+    SiXcode,
+    SiVim,
+    SiNeovim,
+    // Productivity
+    SiConfluence,
+    SiAsana,
+    SiTrello,
+    SiMiro,
+    SiCanva,
+    SiLinear,
+    // Data
+    SiTableau,
+    SiApachespark,
+    SiApachehadoop,
+    SiSnowflake,
+    SiDatabricks,
+    // Web3
+    SiEthereum,
+    SiWeb3Dotjs,
+    // Servers
+    SiApache,
+    SiCaddy,
+    // Hardware
+    SiArduino,
+    SiRaspberrypi,
+    // Shells
+    SiGnubash,
+    // Additional icons that exist
+    SiApachecassandra,
+    SiAmazondynamodb,
 } from "react-icons/si";
-import { FaCode } from "react-icons/fa";
+import { FaCode, FaJava, FaAws, FaBrain, FaRobot, FaDatabase, FaCloud, FaServer, FaMobile, FaDesktop, FaGamepad, FaLock, FaChartBar, FaCogs, FaTerminal, FaMicrosoft } from "react-icons/fa";
+import { VscCode, VscTerminalPowershell } from "react-icons/vsc";
 
 interface HeroProps {
     name: string;
@@ -75,7 +203,12 @@ function SkillIcon({ skill }: { skill: string }) {
 
     // React ecosystem
     if (s.includes("react") && !s.includes("native")) return <SiReact className={iconClass} />;
+    if (s.includes("react native")) return <SiReact className={iconClass} />;
     if (s.includes("next")) return <SiNextdotjs className={iconClass} />;
+    if (s.includes("redux")) return <SiRedux className={iconClass} />;
+    if (s.includes("mobx")) return <SiMobx className={iconClass} />;
+    if (s.includes("gatsby")) return <SiGatsby className={iconClass} />;
+    if (s.includes("remix")) return <SiRemix className={iconClass} />;
 
     // Languages
     if (s.includes("typescript") || s === "ts") return <SiTypescript className={iconClass} />;
@@ -84,22 +217,60 @@ function SkillIcon({ skill }: { skill: string }) {
     if (s.includes("rust")) return <SiRust className={iconClass} />;
     if (s.includes("go") || s === "golang") return <SiGo className={iconClass} />;
     if (s.includes("c++") || s === "cpp") return <SiCplusplus className={iconClass} />;
-    if (s === "c" || s === "c lang") return <SiC className={iconClass} />;
+    if (s === "c" || s === "c lang" || s === "c programming") return <SiC className={iconClass} />;
+    if (s.includes("c#") || s.includes("csharp")) return <SiDotnet className={iconClass} />;
+    if (s.includes(".net") || s.includes("dotnet")) return <SiDotnet className={iconClass} />;
+    if (s.includes("java") && !s.includes("javascript")) return <FaJava className={iconClass} />;
     if (s.includes("php")) return <SiPhp className={iconClass} />;
-    if (s.includes("ruby")) return <SiRuby className={iconClass} />;
+    if (s.includes("ruby") && !s.includes("rails")) return <SiRuby className={iconClass} />;
     if (s.includes("swift")) return <SiSwift className={iconClass} />;
     if (s.includes("kotlin")) return <SiKotlin className={iconClass} />;
+    if (s.includes("scala")) return <SiScala className={iconClass} />;
+    if (s.includes("elixir")) return <SiElixir className={iconClass} />;
+    if (s.includes("haskell")) return <SiHaskell className={iconClass} />;
+    if (s.includes("clojure")) return <SiClojure className={iconClass} />;
+    if (s.includes("perl")) return <SiPerl className={iconClass} />;
+    if (s.includes("lua")) return <SiLua className={iconClass} />;
+    if (s.includes("dart")) return <SiDart className={iconClass} />;
+    if (s === "r" || s === "r programming" || s === "rlang") return <SiR className={iconClass} />;
+    if (s.includes("julia")) return <SiJulia className={iconClass} />;
+    if (s.includes("solidity")) return <SiSolidity className={iconClass} />;
+
+    // AI/ML
+    if (s.includes("tensorflow") || s.includes("tf")) return <SiTensorflow className={iconClass} />;
+    if (s.includes("pytorch") || s.includes("torch")) return <SiPytorch className={iconClass} />;
+    if (s.includes("openai") || s.includes("gpt") || s.includes("chatgpt")) return <SiOpenai className={iconClass} />;
+    if (s.includes("scikit") || s.includes("sklearn")) return <SiScikitlearn className={iconClass} />;
+    if (s.includes("pandas")) return <SiPandas className={iconClass} />;
+    if (s.includes("numpy")) return <SiNumpy className={iconClass} />;
+    if (s.includes("jupyter")) return <SiJupyter className={iconClass} />;
+    if (s.includes("keras")) return <SiKeras className={iconClass} />;
+    if (s.includes("opencv") || s.includes("computer vision")) return <SiOpencv className={iconClass} />;
+    if (s.includes("machine learning") || s.includes("ml")) return <FaBrain className={iconClass} />;
+    if (s.includes("deep learning") || s.includes("neural")) return <FaBrain className={iconClass} />;
+    if (s.includes("artificial intelligence") || s === "ai") return <FaRobot className={iconClass} />;
+    if (s.includes("nlp") || s.includes("natural language")) return <FaBrain className={iconClass} />;
+    if (s.includes("rag") || s.includes("retrieval")) return <FaBrain className={iconClass} />;
+    if (s.includes("langchain") || s.includes("llm")) return <FaBrain className={iconClass} />;
 
     // Frontend frameworks
     if (s.includes("vue")) return <SiVuedotjs className={iconClass} />;
+    if (s.includes("nuxt")) return <SiNuxtdotjs className={iconClass} />;
     if (s.includes("angular")) return <SiAngular className={iconClass} />;
     if (s.includes("svelte")) return <SiSvelte className={iconClass} />;
     if (s.includes("flutter")) return <SiFlutter className={iconClass} />;
+    if (s.includes("electron")) return <SiElectron className={iconClass} />;
+    if (s.includes("astro")) return <SiAstro className={iconClass} />;
 
     // Styling
     if (s.includes("tailwind")) return <SiTailwindcss className={iconClass} />;
     if (s.includes("html")) return <SiHtml5 className={iconClass} />;
     if (s.includes("css") && !s.includes("tailwind")) return <SiCss3 className={iconClass} />;
+    if (s.includes("sass") || s.includes("scss")) return <SiSass className={iconClass} />;
+    if (s.includes("less")) return <SiLess className={iconClass} />;
+    if (s.includes("bootstrap")) return <SiBootstrap className={iconClass} />;
+    if (s.includes("chakra")) return <SiChakraui className={iconClass} />;
+    if (s.includes("styled-components") || s.includes("styled components")) return <SiStyledcomponents className={iconClass} />;
 
     // Backend
     if (s.includes("node")) return <SiNodedotjs className={iconClass} />;
@@ -107,27 +278,69 @@ function SkillIcon({ skill }: { skill: string }) {
     if (s.includes("nest")) return <SiNestjs className={iconClass} />;
     if (s.includes("django")) return <SiDjango className={iconClass} />;
     if (s.includes("flask")) return <SiFlask className={iconClass} />;
+    if (s.includes("fastapi")) return <SiFastapi className={iconClass} />;
+    if (s.includes("laravel")) return <SiLaravel className={iconClass} />;
+    if (s.includes("symfony")) return <SiSymfony className={iconClass} />;
+    if (s.includes("spring")) return <SiSpring className={iconClass} />;
+    if (s.includes("rails") || s.includes("ruby on rails")) return <SiRubyonrails className={iconClass} />;
+    if (s.includes("celery")) return <SiCelery className={iconClass} />;
 
     // Databases
     if (s.includes("mongo")) return <SiMongodb className={iconClass} />;
     if (s.includes("postgres")) return <SiPostgresql className={iconClass} />;
     if (s.includes("mysql")) return <SiMysql className={iconClass} />;
+    if (s.includes("sqlite")) return <SiSqlite className={iconClass} />;
+    if (s.includes("oracle")) return <SiOracle className={iconClass} />;
+    if (s.includes("mariadb")) return <SiMariadb className={iconClass} />;
     if (s.includes("redis")) return <SiRedis className={iconClass} />;
     if (s.includes("supabase")) return <SiSupabase className={iconClass} />;
     if (s.includes("prisma")) return <SiPrisma className={iconClass} />;
+    if (s.includes("elasticsearch") || s.includes("elastic")) return <SiElasticsearch className={iconClass} />;
+    if (s.includes("neo4j")) return <FaDatabase className={iconClass} />;
+    if (s.includes("cassandra")) return <SiApachecassandra className={iconClass} />;
+    if (s.includes("couchbase") || s.includes("couch")) return <SiCouchbase className={iconClass} />;
+    if (s.includes("influxdb") || s.includes("influx")) return <SiInfluxdb className={iconClass} />;
+    if (s.includes("dynamodb") || s.includes("dynamo")) return <SiAmazondynamodb className={iconClass} />;
+    if (s.includes("sql") || s.includes("database")) return <FaDatabase className={iconClass} />;
 
-    // APIs
+    // APIs & Messaging
     if (s.includes("graphql")) return <SiGraphql className={iconClass} />;
     if (s.includes("trpc")) return <SiTrpc className={iconClass} />;
+    if (s.includes("kafka")) return <SiApachekafka className={iconClass} />;
+    if (s.includes("rabbitmq") || s.includes("rabbit")) return <SiRabbitmq className={iconClass} />;
+    if (s.includes("rest") || s.includes("api")) return <FaServer className={iconClass} />;
 
     // DevOps & Cloud
     if (s.includes("docker")) return <SiDocker className={iconClass} />;
     if (s.includes("kubernetes") || s === "k8s") return <SiKubernetes className={iconClass} />;
     if (s.includes("aws") || s.includes("amazon")) return <SiAmazonwebservices className={iconClass} />;
+    if (s.includes("lambda")) return <SiAwslambda className={iconClass} />;
+    if (s.includes("azure")) return <FaMicrosoft className={iconClass} />;
+    if (s.includes("gcp") || s.includes("google cloud")) return <SiGooglecloud className={iconClass} />;
     if (s.includes("firebase")) return <SiFirebase className={iconClass} />;
     if (s.includes("vercel")) return <SiVercel className={iconClass} />;
+    if (s.includes("heroku")) return <SiHeroku className={iconClass} />;
+    if (s.includes("digitalocean")) return <SiDigitalocean className={iconClass} />;
+    if (s.includes("cloudflare")) return <SiCloudflare className={iconClass} />;
+    if (s.includes("netlify")) return <SiNetlify className={iconClass} />;
+    if (s.includes("render")) return <SiRender className={iconClass} />;
     if (s.includes("linux")) return <SiLinux className={iconClass} />;
     if (s.includes("nginx")) return <SiNginx className={iconClass} />;
+    if (s.includes("apache") && !s.includes("kafka") && !s.includes("spark")) return <SiApache className={iconClass} />;
+    if (s.includes("caddy")) return <SiCaddy className={iconClass} />;
+    if (s.includes("traefik")) return <FaServer className={iconClass} />;
+    if (s.includes("terraform")) return <SiTerraform className={iconClass} />;
+    if (s.includes("ansible")) return <SiAnsible className={iconClass} />;
+    if (s.includes("cloud")) return <FaCloud className={iconClass} />;
+
+    // CI/CD & Monitoring
+    if (s.includes("jenkins")) return <SiJenkins className={iconClass} />;
+    if (s.includes("circleci")) return <SiCircleci className={iconClass} />;
+    if (s.includes("github actions")) return <SiGithubactions className={iconClass} />;
+    if (s.includes("prometheus")) return <SiPrometheus className={iconClass} />;
+    if (s.includes("grafana")) return <SiGrafana className={iconClass} />;
+    if (s.includes("datadog")) return <SiDatadog className={iconClass} />;
+    if (s.includes("sentry")) return <SiSentry className={iconClass} />;
 
     // Version control
     if (s.includes("github")) return <SiGithub className={iconClass} />;
@@ -142,13 +355,82 @@ function SkillIcon({ skill }: { skill: string }) {
     // Testing
     if (s.includes("jest")) return <SiJest className={iconClass} />;
     if (s.includes("cypress")) return <SiCypress className={iconClass} />;
+    if (s.includes("selenium")) return <SiSelenium className={iconClass} />;
+    if (s.includes("playwright")) return <FaCode className={iconClass} />;
+    if (s.includes("mocha")) return <SiMocha className={iconClass} />;
+    if (s.includes("vitest")) return <SiVitest className={iconClass} />;
+    if (s.includes("storybook")) return <SiStorybook className={iconClass} />;
+    if (s.includes("postman")) return <SiPostman className={iconClass} />;
+
+    // CMS
+    if (s.includes("wordpress")) return <SiWordpress className={iconClass} />;
+    if (s.includes("contentful")) return <SiContentful className={iconClass} />;
+    if (s.includes("strapi")) return <SiStrapi className={iconClass} />;
+    if (s.includes("shopify")) return <SiShopify className={iconClass} />;
+
+    // Mobile
+    if (s.includes("android")) return <SiAndroid className={iconClass} />;
+    if (s.includes("ios")) return <SiIos className={iconClass} />;
+    if (s.includes("expo")) return <SiExpo className={iconClass} />;
+    if (s.includes("ionic")) return <SiIonic className={iconClass} />;
+    if (s.includes("mobile")) return <FaMobile className={iconClass} />;
+
+    // Payments & Auth
+    if (s.includes("stripe")) return <SiStripe className={iconClass} />;
+    if (s.includes("auth0")) return <SiAuth0 className={iconClass} />;
+    if (s.includes("twilio")) return <SiTwilio className={iconClass} />;
+    if (s.includes("oauth") || s.includes("authentication") || s.includes("security")) return <FaLock className={iconClass} />;
+
+    // Game Dev & 3D
+    if (s.includes("unity")) return <SiUnity className={iconClass} />;
+    if (s.includes("unreal")) return <SiUnrealengine className={iconClass} />;
+    if (s.includes("blender")) return <SiBlender className={iconClass} />;
+    if (s.includes("three.js") || s.includes("threejs") || s.includes("3d")) return <SiThreedotjs className={iconClass} />;
+    if (s.includes("game")) return <FaGamepad className={iconClass} />;
+
+    // IDEs & Tools
+    if (s.includes("vscode") || s.includes("visual studio code")) return <VscCode className={iconClass} />;
+    if (s.includes("intellij") || s.includes("idea")) return <SiIntellijidea className={iconClass} />;
+    if (s.includes("android studio")) return <SiAndroidstudio className={iconClass} />;
+    if (s.includes("xcode")) return <SiXcode className={iconClass} />;
+    if (s.includes("vim")) return <SiVim className={iconClass} />;
+    if (s.includes("neovim")) return <SiNeovim className={iconClass} />;
 
     // Design & Productivity
     if (s.includes("figma")) return <SiFigma className={iconClass} />;
     if (s.includes("jira")) return <SiJira className={iconClass} />;
     if (s.includes("notion")) return <SiNotion className={iconClass} />;
+    if (s.includes("confluence")) return <SiConfluence className={iconClass} />;
+    if (s.includes("asana")) return <SiAsana className={iconClass} />;
+    if (s.includes("trello")) return <SiTrello className={iconClass} />;
+    if (s.includes("miro")) return <SiMiro className={iconClass} />;
+    if (s.includes("canva")) return <SiCanva className={iconClass} />;
+    if (s.includes("linear")) return <SiLinear className={iconClass} />;
     if (s.includes("slack")) return <SiSlack className={iconClass} />;
     if (s.includes("discord")) return <SiDiscord className={iconClass} />;
+
+    // Data & Analytics
+    if (s.includes("tableau")) return <SiTableau className={iconClass} />;
+    if (s.includes("power bi") || s.includes("powerbi")) return <FaChartBar className={iconClass} />;
+    if (s.includes("spark")) return <SiApachespark className={iconClass} />;
+    if (s.includes("hadoop")) return <SiApachehadoop className={iconClass} />;
+    if (s.includes("snowflake")) return <SiSnowflake className={iconClass} />;
+    if (s.includes("databricks")) return <SiDatabricks className={iconClass} />;
+    if (s.includes("data") || s.includes("analytics")) return <FaChartBar className={iconClass} />;
+
+    // Web3/Blockchain
+    if (s.includes("ethereum") || s.includes("eth")) return <SiEthereum className={iconClass} />;
+    if (s.includes("web3")) return <SiWeb3Dotjs className={iconClass} />;
+    if (s.includes("blockchain")) return <SiEthereum className={iconClass} />;
+
+    // Hardware
+    if (s.includes("arduino")) return <SiArduino className={iconClass} />;
+    if (s.includes("raspberry") || s.includes("rpi")) return <SiRaspberrypi className={iconClass} />;
+    if (s.includes("embedded") || s.includes("iot")) return <FaCogs className={iconClass} />;
+
+    // Shells
+    if (s.includes("bash") || s.includes("shell")) return <SiGnubash className={iconClass} />;
+    if (s.includes("powershell")) return <VscTerminalPowershell className={iconClass} />;
 
     // Default code icon
     return <FaCode className={iconClass} />;
