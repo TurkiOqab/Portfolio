@@ -294,15 +294,31 @@ export default function Hero({ name, title, bio, skills, theme }: HeroProps) {
                     <TypeWriter texts={typingTexts} theme={theme} />
                 </h1>
 
-                {/* Bio */}
-                <div
-                    className={`text-lg sm:text-xl md:text-2xl ${theme.textMuted} mb-10 max-w-2xl mx-auto leading-relaxed px-2 sm:px-0 break-words w-full box-border`}
-                    style={{ overflowWrap: 'anywhere' }}
-                >
-                    <MarkdownRenderer
-                        content={bio || "A passionate developer crafting beautiful digital experiences."}
-                        isLightMode={isLightMode}
-                    />
+                {/* Bio - Minimal with gradient accents */}
+                <div className="relative mb-12 max-w-2xl mx-auto px-4 sm:px-0 w-full box-border">
+                    {/* Subtle top accent - decorative line with gradient dot */}
+                    <div className="flex items-center justify-center gap-3 mb-6">
+                        <div className={`h-px w-12 ${isLightMode ? 'bg-zinc-300' : 'bg-zinc-700'}`} />
+                        <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${theme.primaryGradient} shadow-sm`} />
+                        <div className={`h-px w-12 ${isLightMode ? 'bg-zinc-300' : 'bg-zinc-700'}`} />
+                    </div>
+
+                    {/* Bio text - use **bold** for gradient highlights */}
+                    <div
+                        className={`text-base sm:text-lg md:text-xl leading-relaxed tracking-wide text-center break-words ${isLightMode ? 'text-zinc-600' : 'text-zinc-300'}`}
+                        style={{ overflowWrap: 'anywhere' }}
+                    >
+                        <MarkdownRenderer
+                            content={bio || "A passionate developer crafting beautiful digital experiences."}
+                            isLightMode={isLightMode}
+                            gradientClass={theme.primaryGradient}
+                        />
+                    </div>
+
+                    {/* Subtle bottom accent */}
+                    <div className="flex items-center justify-center mt-6">
+                        <div className={`h-px w-16 bg-gradient-to-r from-transparent ${isLightMode ? 'via-zinc-300' : 'via-zinc-700'} to-transparent`} />
+                    </div>
                 </div>
 
                 {/* Scrolling Tech Stack with enhanced styling */}

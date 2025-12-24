@@ -9,12 +9,14 @@ interface MarkdownRendererProps {
     content: string;
     className?: string;
     isLightMode?: boolean;
+    gradientClass?: string; // Optional gradient class for bold text highlighting
 }
 
 export default function MarkdownRenderer({
     content,
     className = "",
     isLightMode = false,
+    gradientClass,
 }: MarkdownRendererProps) {
     // Theme-aware styling
     const components = useMemo(
@@ -32,7 +34,13 @@ export default function MarkdownRenderer({
                 <p className="mb-3 last:mb-0 leading-relaxed break-words" style={{ overflowWrap: 'anywhere' }}>{children}</p>
             ),
             strong: ({ children }: { children?: React.ReactNode }) => (
-                <strong className="font-semibold">{children}</strong>
+                gradientClass ? (
+                    <strong className={`font-semibold bg-gradient-to-r ${gradientClass} bg-clip-text text-transparent`}>
+                        {children}
+                    </strong>
+                ) : (
+                    <strong className="font-semibold">{children}</strong>
+                )
             ),
             em: ({ children }: { children?: React.ReactNode }) => (
                 <em className="italic">{children}</em>
@@ -73,7 +81,7 @@ export default function MarkdownRenderer({
                 </blockquote>
             ),
         }),
-        [isLightMode]
+        [isLightMode, gradientClass]
     );
 
     if (!content) {
