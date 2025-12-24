@@ -7,15 +7,17 @@ import Link from 'next/link'
 function VerifyEmailContent() {
     const searchParams = useSearchParams()
     const token = searchParams.get('token')
-    const [status, setStatus] = useState<'verifying' | 'success' | 'error'>('verifying')
-    const [errorMessage, setErrorMessage] = useState('')
+
+    // Initialize state based on token presence to avoid setState in effect
+    const [status, setStatus] = useState<'verifying' | 'success' | 'error'>(
+        token ? 'verifying' : 'error'
+    )
+    const [errorMessage, setErrorMessage] = useState(
+        token ? '' : 'No verification token provided'
+    )
 
     useEffect(() => {
-        if (!token) {
-            setStatus('error')
-            setErrorMessage('No verification token provided')
-            return
-        }
+        if (!token) return // Already handled in initial state
 
         const verifyEmail = async () => {
             try {
