@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { ThemeConfig } from "../lib/themes";
 
 interface ProfileAvatarProps {
@@ -9,6 +10,12 @@ interface ProfileAvatarProps {
     theme?: ThemeConfig;
     size?: "sm" | "md" | "lg";
 }
+
+const sizeDimensions = {
+    sm: 36,
+    md: 48,
+    lg: 80,
+};
 
 export default function ProfileAvatar({ avatarUrl, name, theme, size = "sm" }: ProfileAvatarProps) {
     const [imageError, setImageError] = useState(false);
@@ -37,9 +44,11 @@ export default function ProfileAvatar({ avatarUrl, name, theme, size = "sm" }: P
     }
 
     return (
-        <img
+        <Image
             src={avatarUrl}
             alt={name}
+            width={sizeDimensions[size]}
+            height={sizeDimensions[size]}
             className={`${sizeClasses[size]} rounded-full object-cover border-2 ${borderClass}`}
             onError={() => setImageError(true)}
         />

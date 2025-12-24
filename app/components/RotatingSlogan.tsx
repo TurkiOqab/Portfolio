@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 
 const slogans = [
   'Portfolios for Developers',
@@ -11,37 +11,55 @@ const slogans = [
 ]
 
 export default function RotatingSlogan() {
-  const [currentIndex, setCurrentIndex] = useState(0)
   const [displayText, setDisplayText] = useState('')
-  const [isTyping, setIsTyping] = useState(true)
+  const currentIndexRef = useRef(0)
+  const isTypingRef = useRef(true)
+
+  const tick = useCallback(() => {
+    const currentSlogan = slogans[currentIndexRef.current]
+
+    if (isTypingRef.current) {
+      setDisplayText(prev => {
+        if (prev.length < currentSlogan.length) {
+          return currentSlogan.slice(0, prev.length + 1)
+        }
+        return prev
+      })
+    } else {
+      setDisplayText(prev => {
+        if (prev.length > 0) {
+          return prev.slice(0, -1)
+        }
+        return prev
+      })
+    }
+  }, [])
 
   useEffect(() => {
-    const currentSlogan = slogans[currentIndex]
+    const currentSlogan = slogans[currentIndexRef.current]
 
-    if (isTyping) {
+    if (isTypingRef.current) {
       if (displayText.length < currentSlogan.length) {
-        const timeout = setTimeout(() => {
-          setDisplayText(currentSlogan.slice(0, displayText.length + 1))
-        }, 50)
+        const timeout = setTimeout(tick, 50)
         return () => clearTimeout(timeout)
       } else {
         const timeout = setTimeout(() => {
-          setIsTyping(false)
+          isTypingRef.current = false
+          tick()
         }, 2500)
         return () => clearTimeout(timeout)
       }
     } else {
       if (displayText.length > 0) {
-        const timeout = setTimeout(() => {
-          setDisplayText(displayText.slice(0, -1))
-        }, 30)
+        const timeout = setTimeout(tick, 30)
         return () => clearTimeout(timeout)
       } else {
-        setCurrentIndex((prev) => (prev + 1) % slogans.length)
-        setIsTyping(true)
+        currentIndexRef.current = (currentIndexRef.current + 1) % slogans.length
+        isTypingRef.current = true
+        tick()
       }
     }
-  }, [displayText, isTyping, currentIndex])
+  }, [displayText, tick])
 
   return (
     <span className="inline-flex items-center">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useCallback } from "react";
+import Image from "next/image";
 import { Project } from "../types";
 import { ThemeConfig } from "../lib/themes";
 import MarkdownRenderer from "./MarkdownRenderer";
@@ -352,12 +353,13 @@ export default function Projects({ projects, theme }: ProjectsProps) {
 
                                             {/* Project Image */}
                                             {project.imageUrl && (
-                                                <div className="mb-5 -mx-6 md:-mx-8 -mt-6 md:-mt-8 overflow-hidden rounded-t-2xl">
-                                                    <img
+                                                <div className="mb-5 -mx-6 md:-mx-8 -mt-6 md:-mt-8 overflow-hidden rounded-t-2xl relative h-48 md:h-56">
+                                                    <Image
                                                         src={project.imageUrl}
                                                         alt={project.title}
-                                                        loading="lazy"
-                                                        className="w-full h-48 md:h-56 object-cover"
+                                                        fill
+                                                        sizes="(max-width: 768px) 100vw, 800px"
+                                                        className="object-cover"
                                                     />
                                                 </div>
                                             )}

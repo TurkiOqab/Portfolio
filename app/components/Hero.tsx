@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { ThemeConfig } from "../lib/themes";
 import MarkdownRenderer from "./MarkdownRenderer";
 import {
@@ -185,7 +185,7 @@ import {
     SiApachecassandra,
     SiAmazondynamodb,
 } from "react-icons/si";
-import { FaCode, FaJava, FaAws, FaBrain, FaRobot, FaDatabase, FaCloud, FaServer, FaMobile, FaDesktop, FaGamepad, FaLock, FaChartBar, FaCogs, FaTerminal, FaMicrosoft } from "react-icons/fa";
+import { FaCode, FaJava, FaBrain, FaRobot, FaDatabase, FaCloud, FaServer, FaMobile, FaGamepad, FaLock, FaChartBar, FaCogs, FaMicrosoft } from "react-icons/fa";
 import { VscCode, VscTerminalPowershell } from "react-icons/vsc";
 
 interface HeroProps {
@@ -437,13 +437,33 @@ function SkillIcon({ skill }: { skill: string }) {
 }
 
 function TypeWriter({ texts, theme }: { texts: string[]; theme: ThemeConfig }) {
-    const [currentTextIndex, setCurrentTextIndex] = useState(0);
     const [currentText, setCurrentText] = useState("");
-    const [isDeleting, setIsDeleting] = useState(false);
     const [fontSize, setFontSize] = useState(72); // Start with max font size in px
     const [shouldWrap, setShouldWrap] = useState(false); // Allow wrapping for very long text
     const containerRef = useRef<HTMLSpanElement>(null);
     const textRef = useRef<HTMLSpanElement>(null);
+    const currentTextIndexRef = useRef(0);
+    const isDeletingRef = useRef(false);
+
+    const tick = useCallback(() => {
+        const fullText = texts[currentTextIndexRef.current];
+
+        if (isDeletingRef.current) {
+            setCurrentText(prev => {
+                if (prev.length > 0) {
+                    return fullText.substring(0, prev.length - 1);
+                }
+                return prev;
+            });
+        } else {
+            setCurrentText(prev => {
+                if (prev.length < fullText.length) {
+                    return fullText.substring(0, prev.length + 1);
+                }
+                return prev;
+            });
+        }
+    }, [texts]);
 
     // Calculate font size based on text length and container width
     useEffect(() => {
@@ -456,7 +476,7 @@ function TypeWriter({ texts, theme }: { texts: string[]; theme: ThemeConfig }) {
 
             // Safety margin to prevent edge clipping (account for any padding/margins)
             const safeWidth = containerWidth * 0.95;
-            const fullText = texts[currentTextIndex];
+            const fullText = texts[currentTextIndexRef.current];
 
             // Base font sizes - adjusted for mobile
             const maxFontSize = 72; // px - for short text on desktop
@@ -491,40 +511,37 @@ function TypeWriter({ texts, theme }: { texts: string[]; theme: ThemeConfig }) {
             clearTimeout(timeoutId);
             window.removeEventListener('resize', calculateFontSize);
         };
-    }, [texts, currentTextIndex]);
+    }, [texts]);
 
     useEffect(() => {
-        const fullText = texts[currentTextIndex];
-        const typingSpeed = isDeleting ? 30 : 50; // Fast typing
+        const fullText = texts[currentTextIndexRef.current];
+        const typingSpeed = isDeletingRef.current ? 30 : 50; // Fast typing
         const pauseTime = 2000; // 2 second pause
 
-        if (!isDeleting && currentText === fullText) {
+        if (!isDeletingRef.current && currentText === fullText) {
             // Pause before deleting
-            const timeout = setTimeout(() => setIsDeleting(true), pauseTime);
+            const timeout = setTimeout(() => {
+                isDeletingRef.current = true;
+                tick();
+            }, pauseTime);
             return () => clearTimeout(timeout);
         }
 
-        if (isDeleting && currentText === "") {
+        if (isDeletingRef.current && currentText === "") {
             // Move to next text
-            setIsDeleting(false);
-            setCurrentTextIndex((prev) => (prev + 1) % texts.length);
+            isDeletingRef.current = false;
+            currentTextIndexRef.current = (currentTextIndexRef.current + 1) % texts.length;
+            tick();
             return;
         }
 
-        const timeout = setTimeout(() => {
-            if (isDeleting) {
-                setCurrentText(fullText.substring(0, currentText.length - 1));
-            } else {
-                setCurrentText(fullText.substring(0, currentText.length + 1));
-            }
-        }, typingSpeed);
-
+        const timeout = setTimeout(tick, typingSpeed);
         return () => clearTimeout(timeout);
-    }, [currentText, isDeleting, currentTextIndex, texts]);
+    }, [currentText, texts, tick]);
 
     // Split the text to color only the name/title part
     const hiPart = "Hi, I'm ";
-    const hasHiPrefix = texts[currentTextIndex].startsWith(hiPart);
+    const hasHiPrefix = texts[currentTextIndexRef.current].startsWith(hiPart);
     const isLightMode = theme.mode === 'light';
 
     const content = hasHiPrefix ? (

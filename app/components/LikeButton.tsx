@@ -1,34 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { createClient } from "@/app/lib/supabase/client";
 import { ThemeConfig } from "../lib/themes";
+import { hasConsent, getVisitorId } from "../lib/consent";
 
 interface LikeButtonProps {
     portfolioId: string;
     theme: ThemeConfig;
     isOwner?: boolean;
-}
-
-function hasConsent(): boolean {
-    if (typeof window === "undefined") return false;
-    const consent = localStorage.getItem("cookie_consent");
-    return consent === "accepted";
-}
-
-function getVisitorId(): string {
-    if (typeof window === "undefined") return "";
-
-    // Only create/store visitor ID if user has consented
-    if (!hasConsent()) return "";
-
-    let visitorId = localStorage.getItem("dfolio_visitor_id");
-    if (!visitorId) {
-        visitorId = `visitor_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
-        localStorage.setItem("dfolio_visitor_id", visitorId);
-    }
-    return visitorId;
 }
 
 export default function LikeButton({ portfolioId, theme, isOwner: isOwnerProp }: LikeButtonProps) {
@@ -38,7 +19,7 @@ export default function LikeButton({ portfolioId, theme, isOwner: isOwnerProp }:
     const [isAnimating, setIsAnimating] = useState(false);
     const [showSignupPrompt, setShowSignupPrompt] = useState(false);
     const [isOwner, setIsOwner] = useState(isOwnerProp ?? false);
-    const supabase = createClient();
+    const supabase = useMemo(() => createClient(), []);
     const isLightMode = theme.mode === 'light';
 
     useEffect(() => {
@@ -113,7 +94,7 @@ export default function LikeButton({ portfolioId, theme, isOwner: isOwnerProp }:
         );
     }
 
-    const handleLike = async () => {
+    const handleLike = useCallback(async () => {
         // Prevent owner from liking their own portfolio
         if (isOwner) return;
 
@@ -155,7 +136,7 @@ export default function LikeButton({ portfolioId, theme, isOwner: isOwnerProp }:
             // Show signup prompt after liking
             setTimeout(() => setShowSignupPrompt(true), 500);
         }
-    };
+    }, [isOwner, isLoading, liked, supabase, portfolioId]);
 
     return (
         <>

@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
+import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 
 interface MarkdownRendererProps {
     content: string;
@@ -11,6 +12,19 @@ interface MarkdownRendererProps {
     isLightMode?: boolean;
     gradientClass?: string; // Optional gradient class for bold text highlighting
 }
+
+// Custom sanitize schema that allows safe HTML elements
+const sanitizeSchema = {
+    ...defaultSchema,
+    tagNames: [
+        ...(defaultSchema.tagNames || []),
+        'u', // Allow underline
+    ],
+    attributes: {
+        ...defaultSchema.attributes,
+        '*': ['className', 'style'],
+    },
+};
 
 export default function MarkdownRenderer({
     content,
@@ -92,7 +106,7 @@ export default function MarkdownRenderer({
         <div className={`break-words w-full max-w-full ${className}`} style={{ overflowWrap: 'anywhere', wordBreak: 'break-word' }}>
             <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
-                rehypePlugins={[rehypeRaw]}
+                rehypePlugins={[rehypeRaw, [rehypeSanitize, sanitizeSchema]]}
                 components={components}
             >
                 {content}

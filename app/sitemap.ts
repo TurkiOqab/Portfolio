@@ -1,4 +1,4 @@
-import { createClient } from '@/app/lib/supabase/server'
+import { getAdminClient } from '@/app/lib/supabase/admin'
 import { MetadataRoute } from 'next'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -50,9 +50,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         },
     ]
 
-    // Dynamic portfolio pages
+    // Dynamic portfolio pages - use admin client to avoid cookies
     try {
-        const supabase = await createClient()
+        const supabase = getAdminClient()
 
         const { data: portfolios } = await supabase
             .from('portfolios')

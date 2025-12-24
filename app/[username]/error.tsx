@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useEffect } from 'react'
 
 export default function PortfolioError({
     error,
@@ -9,6 +10,13 @@ export default function PortfolioError({
     error: Error & { digest?: string }
     reset: () => void
 }) {
+    useEffect(() => {
+        // Log error for debugging
+        console.error('Portfolio error:', error)
+    }, [error])
+
+    const isDev = process.env.NODE_ENV === 'development'
+
     return (
         <div className="min-h-screen bg-zinc-950 flex items-center justify-center px-6">
             <div className="absolute inset-0 bg-zinc-950" />
@@ -25,6 +33,14 @@ export default function PortfolioError({
                 <p className="text-zinc-400 mb-6">
                     Something went wrong while loading this portfolio. Please try again.
                 </p>
+                {isDev && error.message && (
+                    <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-left">
+                        <p className="text-red-400 text-sm font-mono break-all">{error.message}</p>
+                        {error.digest && (
+                            <p className="text-red-400/60 text-xs mt-2">Digest: {error.digest}</p>
+                        )}
+                    </div>
+                )}
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
                     <button
                         onClick={reset}
