@@ -55,7 +55,7 @@ export default function ExperienceSection({ experience, theme }: ExperienceSecti
 
                                 <div className={`p-5 rounded-xl ${isLightMode ? 'bg-white/60 border-zinc-200/50 hover:border-zinc-300/50 hover:bg-white/80' : 'bg-zinc-900/40 border-zinc-800/50 hover:border-zinc-700/50 hover:bg-zinc-900/60'} border transition-all duration-300`}>
                                     <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-2">
-                                        <h3 className={`text-xl font-bold ${isLightMode ? 'text-zinc-900' : 'text-white'}`}>
+                                        <h3 className={`text-xl font-bold ${isLightMode ? 'text-zinc-900' : 'text-white'} break-words min-w-0`}>
                                             {exp.title}
                                         </h3>
                                         <span className={`${isLightMode ? 'text-zinc-500 bg-zinc-100/80' : 'text-zinc-500 bg-zinc-800/50'} text-sm font-mono whitespace-nowrap px-3 py-1 rounded-full`}>
@@ -68,7 +68,7 @@ export default function ExperienceSection({ experience, theme }: ExperienceSecti
                                             )}
                                         </span>
                                     </div>
-                                    <p className={`${theme.textAccent} mt-2 font-medium`}>{exp.company}</p>
+                                    <p className={`${theme.textAccent} mt-2 font-medium break-words`}>{exp.company}</p>
                                     {exp.duties && (
                                         <div className={`${isLightMode ? 'text-zinc-600' : 'text-zinc-400'} text-sm mt-3 leading-relaxed`}>
                                             <MarkdownRenderer content={exp.duties} />

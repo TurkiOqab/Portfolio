@@ -196,7 +196,7 @@ export default function Footer({ contact, name, theme, cvUrl, portfolioId, usern
                 {/* Bottom Bar */}
                 <div className={`mt-12 pt-8 border-t ${isLightMode ? 'border-zinc-200' : 'border-zinc-800'}`}>
                     <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                        <p className={`${isLightMode ? 'text-zinc-600' : 'text-zinc-500'} text-sm`}>
+                        <p className={`${isLightMode ? 'text-zinc-600' : 'text-zinc-500'} text-sm break-words min-w-0`}>
                             © {currentYear} {name || "Portfolio"}. All rights reserved.
                         </p>
                         <div className="flex items-center gap-4">

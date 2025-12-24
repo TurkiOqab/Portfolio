@@ -29,7 +29,7 @@ export default function MarkdownRenderer({
                 <h3 className="text-lg font-medium mb-2 mt-2 first:mt-0">{children}</h3>
             ),
             p: ({ children }: { children?: React.ReactNode }) => (
-                <p className="mb-3 last:mb-0 leading-relaxed">{children}</p>
+                <p className="mb-3 last:mb-0 leading-relaxed break-words" style={{ overflowWrap: 'anywhere' }}>{children}</p>
             ),
             strong: ({ children }: { children?: React.ReactNode }) => (
                 <strong className="font-semibold">{children}</strong>
@@ -43,7 +43,7 @@ export default function MarkdownRenderer({
             a: ({ href, children }: { href?: string; children?: React.ReactNode }) => (
                 <a
                     href={href}
-                    className={`underline underline-offset-2 transition-opacity hover:opacity-80 ${
+                    className={`underline underline-offset-2 transition-opacity hover:opacity-80 break-all ${
                         isLightMode ? "text-zinc-700" : "text-current"
                     }`}
                     target="_blank"
@@ -59,7 +59,7 @@ export default function MarkdownRenderer({
                 <ol className="list-decimal list-inside mb-3 space-y-1">{children}</ol>
             ),
             li: ({ children }: { children?: React.ReactNode }) => (
-                <li className="leading-relaxed">{children}</li>
+                <li className="leading-relaxed break-words" style={{ overflowWrap: 'anywhere' }}>{children}</li>
             ),
             blockquote: ({ children }: { children?: React.ReactNode }) => (
                 <blockquote
@@ -81,7 +81,7 @@ export default function MarkdownRenderer({
     }
 
     return (
-        <div className={className}>
+        <div className={`break-words ${className}`} style={{ overflowWrap: 'anywhere' }}>
             <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 rehypePlugins={[rehypeRaw]}

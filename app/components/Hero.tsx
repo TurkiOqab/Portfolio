@@ -159,6 +159,7 @@ function TypeWriter({ texts, theme }: { texts: string[]; theme: ThemeConfig }) {
     const [currentText, setCurrentText] = useState("");
     const [isDeleting, setIsDeleting] = useState(false);
     const [fontSize, setFontSize] = useState(72); // Start with max font size in px
+    const [shouldWrap, setShouldWrap] = useState(false); // Allow wrapping for very long text
     const containerRef = useRef<HTMLSpanElement>(null);
     const textRef = useRef<HTMLSpanElement>(null);
 
@@ -170,20 +171,30 @@ function TypeWriter({ texts, theme }: { texts: string[]; theme: ThemeConfig }) {
             const containerWidth = containerRef.current.parentElement?.clientWidth || window.innerWidth - 64;
             const fullText = texts[currentTextIndex];
 
-            // Base font sizes
+            // Base font sizes - lower minimum for mobile
             const maxFontSize = 72; // px - for short text
-            const minFontSize = 24; // px - minimum readable size
+            const minFontSize = 18; // px - lower minimum for long text on mobile
+            const wrapThreshold = 16; // px - if we go below this, allow wrapping
 
-            // Estimate: average character width is roughly 0.6 of font size for bold text
+            // Estimate: average character width is roughly 0.55 of font size for bold text
             const charWidthRatio = 0.55;
             const textLength = fullText.length;
 
-            // Calculate what font size would make the text fit
+            // Calculate what font size would make the text fit on one line
             const idealFontSize = containerWidth / (textLength * charWidthRatio);
 
-            // Clamp between min and max
-            const newFontSize = Math.max(minFontSize, Math.min(maxFontSize, idealFontSize));
-            setFontSize(newFontSize);
+            // If ideal font size is too small, enable wrapping and use a readable size
+            if (idealFontSize < wrapThreshold) {
+                setShouldWrap(true);
+                // Use a comfortable reading size when wrapping
+                const wrappedFontSize = Math.max(minFontSize, Math.min(36, containerWidth / 10));
+                setFontSize(wrappedFontSize);
+            } else {
+                setShouldWrap(false);
+                // Clamp between min and max
+                const newFontSize = Math.max(minFontSize, Math.min(maxFontSize, idealFontSize));
+                setFontSize(newFontSize);
+            }
         };
 
         calculateFontSize();
@@ -243,8 +254,8 @@ function TypeWriter({ texts, theme }: { texts: string[]; theme: ThemeConfig }) {
     return (
         <span
             ref={containerRef}
-            className="whitespace-nowrap inline-block w-full"
-            style={{ fontSize: `${fontSize}px` }}
+            className={`inline-block w-full ${shouldWrap ? 'whitespace-normal break-words' : 'whitespace-nowrap'}`}
+            style={{ fontSize: `${fontSize}px`, lineHeight: shouldWrap ? 1.2 : 1 }}
         >
             <span ref={textRef}>{content}</span>
         </span>
@@ -275,7 +286,10 @@ export default function Hero({ name, title, bio, skills, theme }: HeroProps) {
                 </h1>
 
                 {/* Bio */}
-                <div className={`text-lg sm:text-xl md:text-2xl ${theme.textMuted} mb-10 max-w-2xl mx-auto leading-relaxed px-2 sm:px-0`}>
+                <div
+                    className={`text-lg sm:text-xl md:text-2xl ${theme.textMuted} mb-10 max-w-2xl mx-auto leading-relaxed px-2 sm:px-0 break-words`}
+                    style={{ overflowWrap: 'anywhere' }}
+                >
                     <MarkdownRenderer
                         content={bio || "A passionate developer crafting beautiful digital experiences."}
                         isLightMode={isLightMode}

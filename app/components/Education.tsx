@@ -46,7 +46,7 @@ export default function EducationSection({ education, theme }: EducationSectionP
 
                                 <div>
                                     <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-1">
-                                        <h3 className={`text-xl font-semibold ${isLightMode ? 'text-zinc-900' : 'text-white'}`}>
+                                        <h3 className={`text-xl font-semibold ${isLightMode ? 'text-zinc-900' : 'text-white'} break-words min-w-0`}>
                                             {edu.institution}
                                         </h3>
                                         {(edu.startDate || edu.endDate) && (
@@ -57,7 +57,7 @@ export default function EducationSection({ education, theme }: EducationSectionP
                                             </span>
                                         )}
                                     </div>
-                                    <p className={`${theme.textAccent} mt-1`}>
+                                    <p className={`${theme.textAccent} mt-1 break-words`}>
                                         {edu.degreeLevel}
                                         {edu.degreeName && ` in ${edu.degreeName}`}
                                     </p>

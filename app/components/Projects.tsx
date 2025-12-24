@@ -385,7 +385,7 @@ export default function Projects({ projects, theme }: ProjectsProps) {
                                             )}
 
                                             {/* Title */}
-                                            <h3 className={`text-2xl md:text-3xl font-bold ${isLightMode ? 'text-zinc-900' : 'text-white'} mb-2`}>
+                                            <h3 className={`text-2xl md:text-3xl font-bold ${isLightMode ? 'text-zinc-900' : 'text-white'} mb-2 break-words`}>
                                                 {project.title}
                                             </h3>
 
