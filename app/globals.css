@@ -17,16 +17,21 @@ body {
   color: var(--foreground);
 }
 
-/* Prevent text overflow globally */
-* {
-  max-width: 100%;
+/* Ensure proper box-sizing globally */
+*, *::before, *::after {
   box-sizing: border-box;
 }
 
-/* Ensure text wraps properly on mobile */
-h1, h2, h3, h4, h5, h6, p, span, div {
+/* Prevent text overflow in main content areas */
+main h1, main h2, main h3, main h4, main h5, main h6, main p {
+  max-width: 100%;
   overflow-wrap: break-word;
   word-wrap: break-word;
+}
+
+/* Ensure dropdowns and fixed/absolute elements are not constrained */
+[class*="absolute"], [class*="fixed"], nav, nav * {
+  max-width: none !important;
 }
 
 /* Smooth scrolling */
