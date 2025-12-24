@@ -168,26 +168,31 @@ function TypeWriter({ texts, theme }: { texts: string[]; theme: ThemeConfig }) {
         const calculateFontSize = () => {
             if (!containerRef.current) return;
 
-            const containerWidth = containerRef.current.parentElement?.clientWidth || window.innerWidth - 64;
+            // Get actual container width - use the h1 parent's width which respects padding
+            const parent = containerRef.current.closest('h1');
+            const containerWidth = parent?.clientWidth || containerRef.current.parentElement?.clientWidth || window.innerWidth - 32;
+
+            // Safety margin to prevent edge clipping (account for any padding/margins)
+            const safeWidth = containerWidth * 0.95;
             const fullText = texts[currentTextIndex];
 
-            // Base font sizes - lower minimum for mobile
-            const maxFontSize = 72; // px - for short text
-            const minFontSize = 18; // px - lower minimum for long text on mobile
-            const wrapThreshold = 16; // px - if we go below this, allow wrapping
+            // Base font sizes - adjusted for mobile
+            const maxFontSize = 72; // px - for short text on desktop
+            const minFontSize = 20; // px - minimum readable size
+            const wrapThreshold = 22; // px - if we go below this, allow wrapping
 
-            // Estimate: average character width is roughly 0.55 of font size for bold text
-            const charWidthRatio = 0.55;
+            // Estimate: average character width is roughly 0.5 of font size for bold text
+            const charWidthRatio = 0.5;
             const textLength = fullText.length;
 
             // Calculate what font size would make the text fit on one line
-            const idealFontSize = containerWidth / (textLength * charWidthRatio);
+            const idealFontSize = safeWidth / (textLength * charWidthRatio);
 
             // If ideal font size is too small, enable wrapping and use a readable size
             if (idealFontSize < wrapThreshold) {
                 setShouldWrap(true);
                 // Use a comfortable reading size when wrapping
-                const wrappedFontSize = Math.max(minFontSize, Math.min(36, containerWidth / 10));
+                const wrappedFontSize = Math.max(minFontSize, Math.min(32, safeWidth / 12));
                 setFontSize(wrappedFontSize);
             } else {
                 setShouldWrap(false);
@@ -197,9 +202,13 @@ function TypeWriter({ texts, theme }: { texts: string[]; theme: ThemeConfig }) {
             }
         };
 
-        calculateFontSize();
+        // Small delay to ensure DOM is ready
+        const timeoutId = setTimeout(calculateFontSize, 10);
         window.addEventListener('resize', calculateFontSize);
-        return () => window.removeEventListener('resize', calculateFontSize);
+        return () => {
+            clearTimeout(timeoutId);
+            window.removeEventListener('resize', calculateFontSize);
+        };
     }, [texts, currentTextIndex]);
 
     useEffect(() => {
@@ -254,10 +263,10 @@ function TypeWriter({ texts, theme }: { texts: string[]; theme: ThemeConfig }) {
     return (
         <span
             ref={containerRef}
-            className={`inline-block w-full ${shouldWrap ? 'whitespace-normal break-words' : 'whitespace-nowrap'}`}
-            style={{ fontSize: `${fontSize}px`, lineHeight: shouldWrap ? 1.2 : 1 }}
+            className={`inline-block w-full max-w-full ${shouldWrap ? 'whitespace-normal break-words' : 'whitespace-nowrap'}`}
+            style={{ fontSize: `${fontSize}px`, lineHeight: shouldWrap ? 1.3 : 1.1 }}
         >
-            <span ref={textRef}>{content}</span>
+            <span ref={textRef} className="inline">{content}</span>
         </span>
     );
 }
@@ -279,15 +288,15 @@ export default function Hero({ name, title, bio, skills, theme }: HeroProps) {
             <div className={`absolute bottom-1/4 right-1/4 w-96 h-96 ${theme.orb2} rounded-full blur-3xl animate-float-delayed pointer-events-none`} />
             <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] ${theme.orb1} rounded-full blur-3xl animate-glow pointer-events-none opacity-50`} />
 
-            <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 md:px-8 text-center overflow-visible">
+            <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 text-center box-border">
                 {/* Main Heading with Typewriter */}
-                <h1 className={`font-bold ${theme.textPrimary} mb-8 tracking-tight`}>
+                <h1 className={`font-bold ${theme.textPrimary} mb-8 tracking-tight w-full max-w-full overflow-hidden`}>
                     <TypeWriter texts={typingTexts} theme={theme} />
                 </h1>
 
                 {/* Bio */}
                 <div
-                    className={`text-lg sm:text-xl md:text-2xl ${theme.textMuted} mb-10 max-w-2xl mx-auto leading-relaxed px-2 sm:px-0 break-words`}
+                    className={`text-lg sm:text-xl md:text-2xl ${theme.textMuted} mb-10 max-w-2xl mx-auto leading-relaxed px-2 sm:px-0 break-words w-full box-border`}
                     style={{ overflowWrap: 'anywhere' }}
                 >
                     <MarkdownRenderer

@@ -81,7 +81,7 @@ export default function MarkdownRenderer({
     }
 
     return (
-        <div className={`break-words ${className}`} style={{ overflowWrap: 'anywhere' }}>
+        <div className={`break-words w-full max-w-full ${className}`} style={{ overflowWrap: 'anywhere', wordBreak: 'break-word' }}>
             <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 rehypePlugins={[rehypeRaw]}
