@@ -381,7 +381,7 @@ export default function OnboardingPage() {
                             )}
                             <button
                                 onClick={nextStep}
-                                disabled={!canProceed() || isSaving || isAnalyzingCV || currentStep === 7}
+                                disabled={!canProceed() || isSaving || isAnalyzingCV}
                                 className="px-8 py-3 bg-white text-zinc-900 font-medium rounded-full hover:bg-zinc-100 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                             >
                                 {isSaving ? (
