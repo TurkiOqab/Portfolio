@@ -1,10 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
+import { createClient } from '@/app/lib/supabase/server'
 
 export const maxDuration = 60 // Allow up to 60 seconds for CV parsing
 
 export async function POST(request: NextRequest) {
     try {
+        // Verify user is authenticated
+        const supabase = await createClient()
+        const { data: { user } } = await supabase.auth.getUser()
+
+        if (!user) {
+            return NextResponse.json(
+                { error: 'Unauthorized' },
+                { status: 401 }
+            )
+        }
+
         const formData = await request.formData()
         const file = formData.get('cv') as File | null
 

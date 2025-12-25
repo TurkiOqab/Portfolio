@@ -30,6 +30,19 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Email and userId are required' }, { status: 400 })
         }
 
+        // Verify that the userId is a real user and the email matches
+        const { data: userData, error: userError } = await supabaseAdmin.auth.admin.getUserById(userId)
+
+        if (userError || !userData?.user) {
+            logger.error('Invalid userId:', userError)
+            return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
+        }
+
+        if (userData.user.email !== email) {
+            logger.error('Email mismatch for userId')
+            return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
+        }
+
         // Generate a secure token
         const token = crypto.randomBytes(32).toString('hex')
         const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours

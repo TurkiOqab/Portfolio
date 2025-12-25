@@ -29,7 +29,7 @@ export default function VerifyPendingPage() {
         if (!userId) return
 
         try {
-            const response = await fetch(`/api/check-verification?userId=${userId}`, {
+            const response = await fetch('/api/check-verification', {
                 credentials: 'include',
             })
             const data = await response.json()
