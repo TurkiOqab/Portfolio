@@ -119,14 +119,14 @@ export default async function PortfolioPage({ params }: PageProps) {
             {/* Track views for non-owners */}
             {!isOwner && <ViewTracker portfolioId={portfolio.id} />}
 
-            {/* Global Background Effects */}
-            <div className={`fixed inset-0 ${isLightMode ? 'bg-gradient-to-br from-white via-zinc-50 to-white' : 'bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950'} z-0`} />
-            <div className={`fixed top-1/4 left-1/4 w-96 h-96 ${theme.orb1} rounded-full blur-3xl animate-pulse z-0 pointer-events-none`} />
-            <div className={`fixed bottom-1/4 right-1/4 w-96 h-96 ${theme.orb2} rounded-full blur-3xl animate-pulse z-0 pointer-events-none`} />
+            {/* Global Background Effects - using transform for GPU acceleration to prevent mobile scroll artifacts */}
+            <div className={`fixed inset-0 ${isLightMode ? 'bg-gradient-to-br from-white via-zinc-50 to-white' : 'bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950'} z-0 transform-gpu`} />
+            <div className={`fixed top-1/4 left-1/4 w-96 h-96 ${theme.orb1} rounded-full blur-3xl animate-pulse z-0 pointer-events-none hidden sm:block`} />
+            <div className={`fixed bottom-1/4 right-1/4 w-96 h-96 ${theme.orb2} rounded-full blur-3xl animate-pulse z-0 pointer-events-none hidden sm:block`} />
 
-            {/* Grid Pattern */}
+            {/* Grid Pattern - hidden on mobile to prevent scroll artifacts */}
             <div
-                className={`fixed inset-0 ${isLightMode ? 'opacity-30' : 'opacity-10'} z-0 pointer-events-none`}
+                className={`fixed inset-0 ${isLightMode ? 'opacity-30' : 'opacity-10'} z-0 pointer-events-none hidden sm:block`}
                 style={{
                     backgroundImage: isLightMode
                         ? `linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px)`

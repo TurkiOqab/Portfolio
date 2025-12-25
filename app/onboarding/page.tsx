@@ -275,14 +275,14 @@ export default function OnboardingPage() {
 
     return (
         <div className="min-h-screen bg-zinc-950 flex flex-col relative overflow-hidden">
-            {/* Global Background Effects */}
-            <div className="fixed inset-0 bg-zinc-950 z-0" />
-            <div className="fixed top-1/4 left-1/4 w-96 h-96 bg-slate-600/10 rounded-full blur-3xl z-0 pointer-events-none" />
-            <div className="fixed bottom-1/4 right-1/4 w-96 h-96 bg-zinc-700/10 rounded-full blur-3xl z-0 pointer-events-none" />
+            {/* Global Background Effects - using transform for GPU acceleration to prevent mobile scroll artifacts */}
+            <div className="fixed inset-0 bg-zinc-950 z-0 transform-gpu" />
+            <div className="fixed top-1/4 left-1/4 w-96 h-96 bg-slate-600/10 rounded-full blur-3xl z-0 pointer-events-none hidden sm:block" />
+            <div className="fixed bottom-1/4 right-1/4 w-96 h-96 bg-zinc-700/10 rounded-full blur-3xl z-0 pointer-events-none hidden sm:block" />
 
-            {/* Grid Pattern */}
+            {/* Grid Pattern - hidden on mobile to prevent scroll artifacts */}
             <div
-                className="fixed inset-0 opacity-20 z-0 pointer-events-none"
+                className="fixed inset-0 opacity-20 z-0 pointer-events-none hidden sm:block"
                 style={{
                     backgroundImage: `linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)`,
                     backgroundSize: '60px 60px',
