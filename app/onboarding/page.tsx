@@ -31,6 +31,7 @@ export default function OnboardingPage() {
     const [saveError, setSaveError] = useState<string | null>(null);
     const [isReturningUser, setIsReturningUser] = useState(false);
     const [isAnalyzingCV, setIsAnalyzingCV] = useState(false);
+    const [isUploadingMedia, setIsUploadingMedia] = useState(false);
 
     useEffect(() => {
         const loadUserData = async () => {
@@ -334,7 +335,7 @@ export default function OnboardingPage() {
                         <PortfolioContentStep data={data} updateData={updateData} userId={userId || undefined} />
                     )}
                     {currentStep === 7 && userId && (
-                        <MediaUploadStep data={data} updateData={updateData} userId={userId} />
+                        <MediaUploadStep data={data} updateData={updateData} userId={userId} onUploadingChange={setIsUploadingMedia} />
                     )}
                     {currentStep === 8 && (
                         <ThemeStep data={data} updateData={updateData} />
@@ -364,7 +365,7 @@ export default function OnboardingPage() {
                     <div className="flex items-center justify-between">
                         <button
                             onClick={prevStep}
-                            disabled={currentStep === 1}
+                            disabled={currentStep === 1 || isAnalyzingCV || isUploadingMedia}
                             className="px-6 py-3 text-zinc-400 hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                         >
                             ← Back
@@ -374,14 +375,15 @@ export default function OnboardingPage() {
                             {(currentStep === 1 || currentStep === 6 || currentStep === 7) && (
                                 <button
                                     onClick={skipStep}
-                                    className="px-6 py-3 text-zinc-400 hover:text-white border border-zinc-700 rounded-full transition-colors hover:border-zinc-500"
+                                    disabled={isAnalyzingCV || isUploadingMedia}
+                                    className="px-6 py-3 text-zinc-400 hover:text-white border border-zinc-700 rounded-full transition-colors hover:border-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     Skip for now
                                 </button>
                             )}
                             <button
                                 onClick={nextStep}
-                                disabled={!canProceed() || isSaving || isAnalyzingCV}
+                                disabled={!canProceed() || isSaving || isAnalyzingCV || isUploadingMedia}
                                 className="px-8 py-3 bg-white text-zinc-900 font-medium rounded-full hover:bg-zinc-100 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                             >
                                 {isSaving ? (

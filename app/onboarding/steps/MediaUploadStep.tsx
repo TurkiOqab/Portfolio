@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { PortfolioData } from "../../types";
 import { createClient } from "@/app/lib/supabase/client";
 import { compressAvatar } from "@/app/lib/image-utils";
@@ -9,9 +9,10 @@ interface StepProps {
     data: PortfolioData;
     updateData: (updates: Partial<PortfolioData>) => void;
     userId: string;
+    onUploadingChange?: (isUploading: boolean) => void;
 }
 
-export default function MediaUploadStep({ data, updateData, userId }: StepProps) {
+export default function MediaUploadStep({ data, updateData, userId, onUploadingChange }: StepProps) {
     // Avatar state
     const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
     const [avatarError, setAvatarError] = useState<string | null>(null);
@@ -27,6 +28,11 @@ export default function MediaUploadStep({ data, updateData, userId }: StepProps)
     const cvInputRef = useRef<HTMLInputElement>(null);
 
     const supabase = createClient();
+
+    // Notify parent of upload status changes
+    useEffect(() => {
+        onUploadingChange?.(isUploadingAvatar || isUploadingCV);
+    }, [isUploadingAvatar, isUploadingCV, onUploadingChange]);
 
     // Avatar handlers
     const handleAvatarSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
