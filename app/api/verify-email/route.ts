@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
 
         if (updateError) {
             logger.error('Update error:', updateError)
-            return NextResponse.json({ error: 'Failed to verify email: ' + updateError.message }, { status: 500 })
+            return NextResponse.json({ error: 'Failed to verify email. Please try again.' }, { status: 500 })
         }
 
         logger.debug('User email verified successfully')
@@ -94,8 +94,9 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ success: true })
     } catch (error) {
         logger.error('Unexpected error:', error)
-        return NextResponse.json({
-            error: 'Failed to verify email: ' + (error instanceof Error ? error.message : 'Unknown error')
-        }, { status: 500 })
+        return NextResponse.json(
+            { error: 'Failed to verify email. Please try again.' },
+            { status: 500 }
+        )
     }
 }

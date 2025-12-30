@@ -34,6 +34,30 @@ export default function MediaUploadStep({ data, updateData, userId, onUploadingC
         onUploadingChange?.(isUploadingAvatar || isUploadingCV);
     }, [isUploadingAvatar, isUploadingCV, onUploadingChange]);
 
+    // Server-side file validation
+    const validateFile = async (file: File, type: 'avatar' | 'cv'): Promise<{ valid: boolean; error?: string }> => {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('type', type);
+
+        try {
+            const response = await fetch('/api/validate-file', {
+                method: 'POST',
+                body: formData,
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                return { valid: false, error: data.error || 'File validation failed' };
+            }
+
+            return { valid: true };
+        } catch {
+            return { valid: false, error: 'Failed to validate file' };
+        }
+    };
+
     // Avatar handlers
     const handleAvatarSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -53,6 +77,14 @@ export default function MediaUploadStep({ data, updateData, userId, onUploadingC
         setIsUploadingAvatar(true);
 
         try {
+            // Server-side validation first
+            const validation = await validateFile(file, 'avatar');
+            if (!validation.valid) {
+                setAvatarError(validation.error || 'Invalid file');
+                setIsUploadingAvatar(false);
+                return;
+            }
+
             // Compress image before upload
             const compressedFile = await compressAvatar(file);
 
@@ -126,6 +158,15 @@ export default function MediaUploadStep({ data, updateData, userId, onUploadingC
         setCvFileName(file.name);
 
         try {
+            // Server-side validation first
+            const validation = await validateFile(file, 'cv');
+            if (!validation.valid) {
+                setCvError(validation.error || 'Invalid file');
+                setIsUploadingCV(false);
+                setCvFileName(null);
+                return;
+            }
+
             const fileName = `${userId}-${Date.now()}.pdf`;
 
             const { error: uploadError } = await supabase.storage

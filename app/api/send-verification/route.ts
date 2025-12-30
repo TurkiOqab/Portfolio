@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
 
         if (tokenError) {
             logger.error('Token storage error:', tokenError)
-            return NextResponse.json({ error: 'Failed to create verification token: ' + tokenError.message }, { status: 500 })
+            return NextResponse.json({ error: 'Failed to send verification email. Please try again.' }, { status: 500 })
         }
         logger.debug('Token stored successfully')
 
@@ -150,15 +150,16 @@ export async function POST(request: NextRequest) {
 
         if (error) {
             logger.error('Resend error:', error)
-            return NextResponse.json({ error: 'Failed to send email: ' + error.message }, { status: 500 })
+            return NextResponse.json({ error: 'Failed to send verification email. Please try again.' }, { status: 500 })
         }
 
         logger.debug('Email sent successfully:', data)
         return NextResponse.json({ success: true, data })
     } catch (error) {
         logger.error('Unexpected error:', error)
-        return NextResponse.json({
-            error: 'Failed to send verification email: ' + (error instanceof Error ? error.message : 'Unknown error')
-        }, { status: 500 })
+        return NextResponse.json(
+            { error: 'Failed to send verification email. Please try again.' },
+            { status: 500 }
+        )
     }
 }
