@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getAdminClient } from '@/app/lib/supabase/admin'
 import { logger } from '@/app/lib/logger'
+import { rateLimit, RATE_LIMITS } from '@/app/lib/rate-limit-redis'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -9,6 +10,25 @@ export async function POST(request: NextRequest) {
     logger.debug('verify-email API called')
 
     try {
+        // Rate limit by IP to prevent token brute-force attacks
+        const ip = request.headers.get('x-forwarded-for')?.split(',')[0] ||
+                   request.headers.get('x-real-ip') ||
+                   'unknown'
+
+        const rateLimitResult = await rateLimit(`verify-email:${ip}`, RATE_LIMITS.tokenVerification)
+        if (!rateLimitResult.success) {
+            logger.warn('Rate limit exceeded for token verification:', { ip })
+            return NextResponse.json(
+                { error: 'Too many verification attempts. Please try again later.' },
+                {
+                    status: 429,
+                    headers: {
+                        'Retry-After': rateLimitResult.resetIn.toString(),
+                    }
+                }
+            )
+        }
+
         // Get Supabase admin client (throws if env vars not set)
         const supabaseAdmin = getAdminClient()
 

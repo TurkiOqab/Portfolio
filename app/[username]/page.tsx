@@ -13,6 +13,29 @@ import ViewTracker from '@/app/components/ViewTracker'
 // Force dynamic rendering to check authentication on each request
 export const dynamic = 'force-dynamic'
 
+// Sanitize string for JSON-LD to prevent script injection
+function sanitizeForJsonLd(value: string | undefined | null): string | undefined {
+    if (!value) return undefined
+
+    let sanitized = value
+        // Remove script tags (case-insensitive, handles variations)
+        .replace(/<\s*script[^>]*>[\s\S]*?<\s*\/\s*script\s*>/gi, '')
+        // Remove standalone script tags
+        .replace(/<\s*\/?\s*script[^>]*>/gi, '')
+        // Remove event handlers (onclick, onload, onerror, etc.)
+        .replace(/\s+on\w+\s*=\s*["'][^"']*["']/gi, '')
+        .replace(/\s+on\w+\s*=\s*[^\s>]+/gi, '')
+        // Remove dangerous URL schemes
+        .replace(/javascript\s*:/gi, '')
+        .replace(/vbscript\s*:/gi, '')
+        .replace(/data\s*:/gi, '')
+        // Escape sequences that could break out of script context
+        // This is critical for JSON-LD in <script> tags
+        .replace(/<\//g, '<\\/')
+
+    return sanitized.trim()
+}
+
 interface PageProps {
     params: Promise<{ username: string }>
 }
@@ -90,19 +113,19 @@ export default async function PortfolioPage({ params }: PageProps) {
         contact: portfolio.contact || { email: '' },
     }
 
-    // JSON-LD structured data for person/portfolio
+    // JSON-LD structured data for person/portfolio (sanitized to prevent XSS)
     const personJsonLd = {
         "@context": "https://schema.org",
         "@type": "Person",
-        name: portfolio.name,
-        description: portfolio.bio,
+        name: sanitizeForJsonLd(portfolio.name),
+        description: sanitizeForJsonLd(portfolio.bio),
         url: `https://dfolio.dev/${username}`,
-        image: portfolio.avatar_url || undefined,
-        jobTitle: portfolio.title,
+        image: sanitizeForJsonLd(portfolio.avatar_url),
+        jobTitle: sanitizeForJsonLd(portfolio.title),
         sameAs: [
-            portfolioData.contact.github,
-            portfolioData.contact.linkedin,
-            portfolioData.contact.twitter,
+            sanitizeForJsonLd(portfolioData.contact.github),
+            sanitizeForJsonLd(portfolioData.contact.linkedin),
+            sanitizeForJsonLd(portfolioData.contact.twitter),
         ].filter(Boolean),
     }
 

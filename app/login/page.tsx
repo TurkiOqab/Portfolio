@@ -12,7 +12,6 @@ export default function LoginPage() {
     const [showPassword, setShowPassword] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [isLoading, setIsLoading] = useState(false)
-    const [isRateLimited, setIsRateLimited] = useState(false)
     const attemptCount = useRef(0)
     const lockoutUntil = useRef<number | null>(null)
 
@@ -25,7 +24,6 @@ export default function LoginPage() {
         if (lockoutUntil.current && now < lockoutUntil.current) {
             const remainingSeconds = Math.ceil((lockoutUntil.current - now) / 1000)
             setError(`Too many attempts. Please try again in ${remainingSeconds} seconds.`)
-            setIsRateLimited(true)
             return
         }
 
@@ -33,7 +31,6 @@ export default function LoginPage() {
         if (lockoutUntil.current && now >= lockoutUntil.current) {
             lockoutUntil.current = null
             attemptCount.current = 0
-            setIsRateLimited(false)
         }
 
         setIsLoading(true)
@@ -52,7 +49,6 @@ export default function LoginPage() {
             if (attemptCount.current >= 5) {
                 lockoutUntil.current = Date.now() + 60000
                 setError('Too many failed attempts. Please try again in 60 seconds.')
-                setIsRateLimited(true)
             } else if (error.message.toLowerCase().includes('email not confirmed')) {
                 setError('Please verify your email before signing in. Check your inbox for the verification link.')
             } else {

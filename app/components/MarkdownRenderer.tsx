@@ -22,7 +22,7 @@ const sanitizeSchema = {
     ],
     attributes: {
         ...defaultSchema.attributes,
-        '*': ['className', 'style'],
+        '*': ['className'], // Only allow className, not style (prevents CSS injection)
     },
 };
 

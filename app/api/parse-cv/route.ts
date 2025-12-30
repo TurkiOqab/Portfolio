@@ -1,6 +1,52 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { createClient } from '@/app/lib/supabase/server'
+import { rateLimit, RATE_LIMITS } from '@/app/lib/rate-limit-redis'
+
+// TypeScript interfaces for parsed CV data
+interface ParsedEducation {
+    institution: string
+    degreeLevel: string
+    degreeName: string
+    startDate: string
+    endDate: string
+    gpa: string
+}
+
+interface ParsedExperience {
+    company: string
+    title: string
+    startDate: string
+    endDate: string
+    isPresent: boolean
+    duties: string
+}
+
+interface ParsedProject {
+    title: string
+    description: string
+    tags: string[]
+    liveUrl: string
+    githubUrl: string
+}
+
+interface ParsedContact {
+    email: string
+    github: string
+    linkedin: string
+    twitter: string
+}
+
+interface ParsedCVData {
+    name: string
+    title: string
+    bio: string
+    skills: string[]
+    education: ParsedEducation[]
+    experience: ParsedExperience[]
+    projects: ParsedProject[]
+    contact: ParsedContact
+}
 
 export const maxDuration = 60 // Allow up to 60 seconds for CV parsing
 
@@ -14,6 +60,20 @@ export async function POST(request: NextRequest) {
             return NextResponse.json(
                 { error: 'Unauthorized' },
                 { status: 401 }
+            )
+        }
+
+        // Rate limit by user ID to prevent API cost abuse
+        const rateLimitResult = await rateLimit(`parse-cv:${user.id}`, RATE_LIMITS.cvParsing)
+        if (!rateLimitResult.success) {
+            return NextResponse.json(
+                { error: 'Too many CV parsing requests. Please try again later.' },
+                {
+                    status: 429,
+                    headers: {
+                        'Retry-After': rateLimitResult.resetIn.toString(),
+                    }
+                }
             )
         }
 
@@ -126,7 +186,7 @@ Important:
         }
 
         // Parse the JSON response
-        let parsedData
+        let parsedData: ParsedCVData
         try {
             // Remove any markdown code blocks if present
             let jsonText = textContent.text.trim()
@@ -139,7 +199,7 @@ Important:
             if (jsonText.endsWith('```')) {
                 jsonText = jsonText.slice(0, -3)
             }
-            parsedData = JSON.parse(jsonText.trim())
+            parsedData = JSON.parse(jsonText.trim()) as ParsedCVData
         } catch {
             console.error('Failed to parse AI response:', textContent.text)
             throw new Error('Failed to parse CV data')
@@ -148,15 +208,15 @@ Important:
         // Add IDs to education, experience, and projects
         const processedData = {
             ...parsedData,
-            education: (parsedData.education || []).map((edu: Record<string, unknown>, index: number) => ({
+            education: (parsedData.education || []).map((edu: ParsedEducation, index: number) => ({
                 ...edu,
                 id: `edu-${Date.now()}-${index}`,
             })),
-            experience: (parsedData.experience || []).map((exp: Record<string, unknown>, index: number) => ({
+            experience: (parsedData.experience || []).map((exp: ParsedExperience, index: number) => ({
                 ...exp,
                 id: `exp-${Date.now()}-${index}`,
             })),
-            projects: (parsedData.projects || []).map((proj: Record<string, unknown>, index: number) => ({
+            projects: (parsedData.projects || []).map((proj: ParsedProject, index: number) => ({
                 ...proj,
                 id: `proj-${Date.now()}-${index}`,
             })),

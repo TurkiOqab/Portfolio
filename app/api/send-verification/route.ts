@@ -2,6 +2,7 @@ import { Resend } from 'resend'
 import { NextRequest, NextResponse } from 'next/server'
 import { getAdminClient } from '@/app/lib/supabase/admin'
 import { logger } from '@/app/lib/logger'
+import { rateLimit, RATE_LIMITS } from '@/app/lib/rate-limit-redis'
 import crypto from 'crypto'
 
 export const runtime = 'nodejs'
@@ -25,9 +26,25 @@ export async function POST(request: NextRequest) {
         const { email, userId } = await request.json()
         logger.debug('Request body:', { email, userId: userId ? 'present' : 'missing' })
 
+        // Validate required fields first
         if (!email || !userId) {
             logger.error('Missing email or userId')
             return NextResponse.json({ error: 'Email and userId are required' }, { status: 400 })
+        }
+
+        // Rate limit by email to prevent email bombing (after validation)
+        const rateLimitResult = await rateLimit(`send-verification:${email}`, RATE_LIMITS.emailVerification)
+        if (!rateLimitResult.success) {
+            logger.warn('Rate limit exceeded for email verification:', { email })
+            return NextResponse.json(
+                { error: 'Too many verification requests. Please try again later.' },
+                {
+                    status: 429,
+                    headers: {
+                        'Retry-After': rateLimitResult.resetIn.toString(),
+                    }
+                }
+            )
         }
 
         // Verify that the userId is a real user and the email matches

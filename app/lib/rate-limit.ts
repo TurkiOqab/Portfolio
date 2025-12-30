@@ -90,4 +90,12 @@ export const RATE_LIMITS = {
     signup: { limit: 3, windowSeconds: 3600 },
     // Password reset: 3 attempts per hour
     passwordReset: { limit: 3, windowSeconds: 3600 },
+    // Email verification: 3 attempts per hour per email
+    emailVerification: { limit: 3, windowSeconds: 3600 },
+    // CV parsing: 10 attempts per hour per user (expensive API call)
+    cvParsing: { limit: 10, windowSeconds: 3600 },
+    // Email check: 20 requests per minute per IP (prevent enumeration)
+    emailCheck: { limit: 20, windowSeconds: 60 },
+    // Token verification: 10 attempts per minute per IP (prevent brute-force)
+    tokenVerification: { limit: 10, windowSeconds: 60 },
 } as const
