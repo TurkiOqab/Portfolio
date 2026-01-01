@@ -3,44 +3,18 @@ import { Metadata } from 'next'
 
 export const metadata: Metadata = {
     title: 'Pricing | Dfolio',
-    description: 'Simple, transparent pricing for Dfolio. Start free, upgrade when you need more.',
+    description: 'Dfolio is currently free for all users. Create your developer portfolio today.',
 }
 
-const plans = [
-    {
-        name: 'Free',
-        price: '$0',
-        period: 'forever',
-        description: 'Perfect for getting started',
-        features: [
-            'Custom portfolio page',
-            'Up to 3 projects',
-            'Basic analytics',
-            'dfolio.dev/username URL',
-            'All themes included',
-        ],
-        cta: 'Get Started',
-        ctaLink: '/signup',
-        highlighted: false,
-    },
-    {
-        name: 'Pro',
-        price: '$5',
-        period: '/month',
-        description: 'For developers who want more',
-        features: [
-            'Everything in Free',
-            'Unlimited projects',
-            'Advanced analytics',
-            'Custom domain support',
-            'Priority support',
-            'Remove Dfolio branding',
-            'CV/Resume upload',
-        ],
-        cta: 'Upgrade to Pro',
-        ctaLink: '/signup',
-        highlighted: true,
-    },
+const features = [
+    'Custom portfolio page',
+    'Unlimited projects',
+    'AI-powered CV import',
+    'All themes & fonts included',
+    'dfolio.dev/username URL',
+    'Mobile responsive design',
+    'Education & experience sections',
+    'Project showcases',
 ]
 
 export default function PricingPage() {
@@ -79,106 +53,77 @@ export default function PricingPage() {
                 {/* Header */}
                 <div className="text-center mb-16">
                     <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                        Simple, transparent pricing
+                        Free for now
                     </h1>
                     <p className="text-xl text-zinc-400 max-w-2xl mx-auto">
-                        Start free and upgrade when you need more. No hidden fees, cancel anytime.
+                        We&apos;re in early access. Enjoy full access to all features while we grow.
                     </p>
                 </div>
 
-                {/* Pricing Cards */}
-                <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                    {plans.map((plan) => (
-                        <div
-                            key={plan.name}
-                            className={`relative rounded-2xl p-8 ${
-                                plan.highlighted
-                                    ? 'bg-white text-zinc-900 shadow-2xl shadow-white/10'
-                                    : 'bg-zinc-900/50 border border-zinc-800 text-white'
-                            }`}
-                        >
-                            {plan.highlighted && (
-                                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                                    <span className="px-4 py-1 bg-zinc-900 text-white text-sm font-medium rounded-full">
-                                        Most Popular
-                                    </span>
-                                </div>
-                            )}
-
-                            <div className="mb-6">
-                                <h2 className={`text-2xl font-bold mb-2 ${plan.highlighted ? 'text-zinc-900' : 'text-white'}`}>
-                                    {plan.name}
-                                </h2>
-                                <p className={plan.highlighted ? 'text-zinc-600' : 'text-zinc-400'}>
-                                    {plan.description}
-                                </p>
-                            </div>
-
-                            <div className="mb-6">
-                                <span className={`text-5xl font-bold ${plan.highlighted ? 'text-zinc-900' : 'text-white'}`}>
-                                    {plan.price}
-                                </span>
-                                <span className={plan.highlighted ? 'text-zinc-600' : 'text-zinc-400'}>
-                                    {plan.period}
-                                </span>
-                            </div>
-
-                            <ul className="space-y-3 mb-8">
-                                {plan.features.map((feature) => (
-                                    <li key={feature} className="flex items-center gap-3">
-                                        <svg
-                                            className={`w-5 h-5 flex-shrink-0 ${plan.highlighted ? 'text-zinc-900' : 'text-white'}`}
-                                            fill="none"
-                                            stroke="currentColor"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth={2}
-                                                d="M5 13l4 4L19 7"
-                                            />
-                                        </svg>
-                                        <span className={plan.highlighted ? 'text-zinc-700' : 'text-zinc-300'}>
-                                            {feature}
-                                        </span>
-                                    </li>
-                                ))}
-                            </ul>
-
-                            <Link
-                                href={plan.ctaLink}
-                                className={`block w-full py-3 rounded-xl font-medium text-center transition-all ${
-                                    plan.highlighted
-                                        ? 'bg-zinc-900 text-white hover:bg-zinc-800'
-                                        : 'bg-white text-zinc-900 hover:bg-zinc-200'
-                                }`}
-                            >
-                                {plan.cta}
-                            </Link>
+                {/* Single Pricing Card */}
+                <div className="max-w-md mx-auto">
+                    <div className="relative rounded-2xl p-8 bg-white text-zinc-900 shadow-2xl shadow-white/10">
+                        <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                            <span className="px-4 py-1 bg-zinc-900 text-white text-sm font-medium rounded-full">
+                                Early Access
+                            </span>
                         </div>
-                    ))}
+
+                        <div className="mb-6 text-center">
+                            <h2 className="text-2xl font-bold mb-2 text-zinc-900">
+                                All Features
+                            </h2>
+                            <p className="text-zinc-600">
+                                Everything you need to showcase your work
+                            </p>
+                        </div>
+
+                        <div className="mb-6 text-center">
+                            <span className="text-5xl font-bold text-zinc-900">
+                                $0
+                            </span>
+                            <span className="text-zinc-600 ml-2">
+                                for now
+                            </span>
+                        </div>
+
+                        <ul className="space-y-3 mb-8">
+                            {features.map((feature) => (
+                                <li key={feature} className="flex items-center gap-3">
+                                    <svg
+                                        className="w-5 h-5 flex-shrink-0 text-zinc-900"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M5 13l4 4L19 7"
+                                        />
+                                    </svg>
+                                    <span className="text-zinc-700">
+                                        {feature}
+                                    </span>
+                                </li>
+                            ))}
+                        </ul>
+
+                        <Link
+                            href="/signup"
+                            className="block w-full py-3 rounded-xl font-medium text-center transition-all bg-zinc-900 text-white hover:bg-zinc-800"
+                        >
+                            Get Started
+                        </Link>
+                    </div>
                 </div>
 
-                {/* FAQ or Trust Elements */}
-                <div className="mt-20 text-center">
-                    <p className="text-zinc-500 mb-4">
-                        14-day money-back guarantee. No questions asked.
+                {/* Note */}
+                <div className="mt-12 text-center">
+                    <p className="text-zinc-500 text-sm max-w-md mx-auto">
+                        We may introduce paid plans in the future, but early users will always be taken care of.
                     </p>
-                    <div className="flex items-center justify-center gap-8 text-sm text-zinc-500">
-                        <span className="flex items-center gap-2">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                            </svg>
-                            Secure payments
-                        </span>
-                        <span className="flex items-center gap-2">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                            Cancel anytime
-                        </span>
-                    </div>
                 </div>
             </main>
 
@@ -191,7 +136,6 @@ export default function PricingPage() {
                     <div className="flex items-center gap-6 text-sm text-zinc-500">
                         <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
                         <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
-                        <Link href="/refund" className="hover:text-white transition-colors">Refund</Link>
                     </div>
                 </div>
             </footer>
