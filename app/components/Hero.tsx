@@ -471,21 +471,22 @@ function TypeWriter({ texts, theme }: { texts: string[]; theme: ThemeConfig }) {
         const calculateFontSize = () => {
             if (!containerRef.current) return;
 
-            // Get actual container width - use the h1 parent's width which respects padding
+            // Get actual container width - account for padding
             const parent = containerRef.current.closest('h1');
             const containerWidth = parent?.clientWidth || containerRef.current.parentElement?.clientWidth || window.innerWidth - 32;
 
-            // Safety margin to prevent edge clipping (account for any padding/margins)
-            const safeWidth = containerWidth * 0.95;
+            // Safety margin to prevent edge clipping
+            const safeWidth = containerWidth * 0.92;
             const fullText = texts[currentTextIndexRef.current];
+            const isMobile = window.innerWidth < 640;
 
             // Base font sizes - adjusted for mobile
-            const maxFontSize = 72; // px - for short text on desktop
-            const minFontSize = 20; // px - minimum readable size
-            const wrapThreshold = 22; // px - if we go below this, allow wrapping
+            const maxFontSize = isMobile ? 36 : 72; // smaller max on mobile
+            const minFontSize = isMobile ? 18 : 24; // smaller min on mobile
+            const wrapThreshold = isMobile ? 20 : 28; // wrap earlier on mobile
 
-            // Estimate: average character width is roughly 0.5 of font size for bold text
-            const charWidthRatio = 0.5;
+            // Estimate: average character width is roughly 0.55 of font size for bold text
+            const charWidthRatio = 0.55;
             const textLength = fullText.length;
 
             // Calculate what font size would make the text fit on one line
@@ -495,7 +496,7 @@ function TypeWriter({ texts, theme }: { texts: string[]; theme: ThemeConfig }) {
             if (idealFontSize < wrapThreshold) {
                 setShouldWrap(true);
                 // Use a comfortable reading size when wrapping
-                const wrappedFontSize = Math.max(minFontSize, Math.min(32, safeWidth / 12));
+                const wrappedFontSize = Math.max(minFontSize, Math.min(isMobile ? 24 : 32, safeWidth / 10));
                 setFontSize(wrappedFontSize);
             } else {
                 setShouldWrap(false);

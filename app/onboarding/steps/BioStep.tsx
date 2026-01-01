@@ -9,7 +9,7 @@ interface StepProps {
 }
 
 const MIN_BIO_LENGTH = 20;
-const MAX_BIO_LENGTH = 300;
+const MAX_BIO_LENGTH = 350;
 
 export default function BioStep({ data, updateData }: StepProps) {
     const bioLength = data.bio.trim().length;

@@ -4,6 +4,8 @@ import { useState, useRef } from "react";
 import { PortfolioData } from "../../types";
 import { createClient } from "@/app/lib/supabase/client";
 
+const MAX_BIO_LENGTH = 350;
+
 interface StepProps {
     data: PortfolioData;
     updateData: (updates: Partial<PortfolioData>) => void;
@@ -81,11 +83,14 @@ export default function CVImportStep({ data, updateData, onSkip, isReturningUser
                 }
             }
 
+            // Truncate bio if it exceeds the limit
+            const truncatedBio = (parsedData.bio || data.bio || '').slice(0, MAX_BIO_LENGTH);
+
             // Update portfolio data with parsed info
             updateData({
                 name: parsedData.name || data.name,
                 title: parsedData.title || data.title,
-                bio: parsedData.bio || data.bio,
+                bio: truncatedBio,
                 skills: parsedData.skills?.length > 0 ? parsedData.skills : data.skills,
                 education: parsedData.education?.length > 0 ? parsedData.education : data.education,
                 experience: parsedData.experience?.length > 0 ? parsedData.experience : data.experience,
