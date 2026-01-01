@@ -533,7 +533,7 @@ export default function Hero({ name, title, bio, skills, theme, avatarUrl }: Her
     return (
         <section
             id="home"
-            className="min-h-screen flex items-center justify-center relative pt-16"
+            className="min-h-screen flex items-center justify-center relative pt-24"
         >
             {/* Floating gradient orbs - themed */}
             <div className={`absolute top-1/4 left-1/4 w-72 h-72 ${theme.orb1} rounded-full blur-3xl animate-float pointer-events-none`} />
@@ -549,7 +549,7 @@ export default function Hero({ name, title, bio, skills, theme, avatarUrl }: Her
                                 src={avatarUrl}
                                 alt={name || "Profile"}
                                 fill
-                                className="object-cover object-top"
+                                className="object-cover"
                                 priority
                             />
                         </div>
