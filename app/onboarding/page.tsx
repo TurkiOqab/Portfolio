@@ -32,6 +32,7 @@ export default function OnboardingPage() {
     const [isReturningUser, setIsReturningUser] = useState(false);
     const [isAnalyzingCV, setIsAnalyzingCV] = useState(false);
     const [isUploadingMedia, setIsUploadingMedia] = useState(false);
+    const [cvParseSuccess, setCvParseSuccess] = useState(false);
 
     useEffect(() => {
         const loadUserData = async () => {
@@ -121,8 +122,8 @@ export default function OnboardingPage() {
     const canProceed = (): boolean => {
         switch (currentStep) {
             case 1:
-                // CV import - always can proceed (optional step)
-                return true;
+                // CV import - can only proceed after successful parse (use Skip to bypass)
+                return cvParseSuccess;
             case 2:
                 return data.name.trim().length > 0 && data.title.trim().length > 0;
             case 3:
@@ -317,7 +318,7 @@ export default function OnboardingPage() {
             <div className="flex-1 flex items-center justify-center pt-28 pb-32 px-6 relative z-10 overflow-y-auto">
                 <div className={`w-full ${currentStep === 6 ? 'max-w-4xl' : 'max-w-2xl'}`}>
                     {currentStep === 1 && (
-                        <CVImportStep data={data} updateData={updateData} onSkip={skipStep} isReturningUser={isReturningUser} onAnalyzingChange={setIsAnalyzingCV} />
+                        <CVImportStep data={data} updateData={updateData} onSkip={skipStep} isReturningUser={isReturningUser} onAnalyzingChange={setIsAnalyzingCV} onParseSuccess={setCvParseSuccess} userId={userId || undefined} />
                     )}
                     {currentStep === 2 && (
                         <NameStep data={data} updateData={updateData} />

@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import { PortfolioData } from "../../types";
+import { createClient } from "@/app/lib/supabase/client";
 
 interface StepProps {
     data: PortfolioData;
@@ -9,9 +10,12 @@ interface StepProps {
     onSkip: () => void;
     isReturningUser?: boolean;
     onAnalyzingChange?: (isAnalyzing: boolean) => void;
+    onParseSuccess?: (success: boolean) => void;
+    userId?: string;
 }
 
-export default function CVImportStep({ data, updateData, onSkip, isReturningUser = false, onAnalyzingChange }: StepProps) {
+export default function CVImportStep({ data, updateData, onSkip, isReturningUser = false, onAnalyzingChange, onParseSuccess, userId }: StepProps) {
+    const supabase = createClient();
     const [isUploading, setIsUploading] = useState(false);
     const [isParsing, setIsParsing] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -58,6 +62,25 @@ export default function CVImportStep({ data, updateData, onSkip, isReturningUser
             const result = await response.json();
             const parsedData = result.data;
 
+            // Upload CV file to storage if userId is available
+            let cvUrl: string | undefined = undefined;
+            if (userId) {
+                const cvFileName = `${userId}-${Date.now()}.pdf`;
+                const { error: uploadError } = await supabase.storage
+                    .from("cvs")
+                    .upload(cvFileName, file, {
+                        cacheControl: "3600",
+                        upsert: true,
+                    });
+
+                if (!uploadError) {
+                    const { data: urlData } = supabase.storage
+                        .from("cvs")
+                        .getPublicUrl(cvFileName);
+                    cvUrl = urlData.publicUrl;
+                }
+            }
+
             // Update portfolio data with parsed info
             updateData({
                 name: parsedData.name || data.name,
@@ -74,9 +97,11 @@ export default function CVImportStep({ data, updateData, onSkip, isReturningUser
                     twitter: parsedData.contact?.twitter || data.contact.twitter,
                 },
                 cvImported: true,
+                cvUrl: cvUrl || data.cvUrl,
             });
 
             setParseSuccess(true);
+            onParseSuccess?.(true);
         } catch (err) {
             console.error("CV parsing error:", err);
             const error = err as { message?: string };
