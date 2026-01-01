@@ -439,10 +439,7 @@ function SkillIcon({ skill }: { skill: string }) {
 function TypeWriter({ texts, theme }: { texts: string[]; theme: ThemeConfig }) {
     const [currentText, setCurrentText] = useState("");
     const [currentTextIndex, setCurrentTextIndex] = useState(0); // For render-time access
-    const [fontSize, setFontSize] = useState(72); // Start with max font size in px
-    const [shouldWrap, setShouldWrap] = useState(false); // Allow wrapping for very long text
     const containerRef = useRef<HTMLSpanElement>(null);
-    const textRef = useRef<HTMLSpanElement>(null);
     const currentTextIndexRef = useRef(0);
     const isDeletingRef = useRef(false);
 
@@ -464,55 +461,6 @@ function TypeWriter({ texts, theme }: { texts: string[]; theme: ThemeConfig }) {
                 return prev;
             });
         }
-    }, [texts]);
-
-    // Calculate font size based on text length and container width
-    useEffect(() => {
-        const calculateFontSize = () => {
-            if (!containerRef.current) return;
-
-            // Get actual container width - account for padding
-            const parent = containerRef.current.closest('h1');
-            const containerWidth = parent?.clientWidth || containerRef.current.parentElement?.clientWidth || window.innerWidth - 32;
-
-            // Safety margin to prevent edge clipping
-            const safeWidth = containerWidth * 0.92;
-            const fullText = texts[currentTextIndexRef.current];
-            const isMobile = window.innerWidth < 640;
-
-            // Base font sizes - adjusted for mobile
-            const maxFontSize = isMobile ? 36 : 72; // smaller max on mobile
-            const minFontSize = isMobile ? 18 : 24; // smaller min on mobile
-            const wrapThreshold = isMobile ? 20 : 28; // wrap earlier on mobile
-
-            // Estimate: average character width is roughly 0.55 of font size for bold text
-            const charWidthRatio = 0.55;
-            const textLength = fullText.length;
-
-            // Calculate what font size would make the text fit on one line
-            const idealFontSize = safeWidth / (textLength * charWidthRatio);
-
-            // If ideal font size is too small, enable wrapping and use a readable size
-            if (idealFontSize < wrapThreshold) {
-                setShouldWrap(true);
-                // Use a comfortable reading size when wrapping
-                const wrappedFontSize = Math.max(minFontSize, Math.min(isMobile ? 24 : 32, safeWidth / 10));
-                setFontSize(wrappedFontSize);
-            } else {
-                setShouldWrap(false);
-                // Clamp between min and max
-                const newFontSize = Math.max(minFontSize, Math.min(maxFontSize, idealFontSize));
-                setFontSize(newFontSize);
-            }
-        };
-
-        // Small delay to ensure DOM is ready
-        const timeoutId = setTimeout(calculateFontSize, 10);
-        window.addEventListener('resize', calculateFontSize);
-        return () => {
-            clearTimeout(timeoutId);
-            window.removeEventListener('resize', calculateFontSize);
-        };
     }, [texts]);
 
     useEffect(() => {
@@ -566,10 +514,9 @@ function TypeWriter({ texts, theme }: { texts: string[]; theme: ThemeConfig }) {
     return (
         <span
             ref={containerRef}
-            className={`inline-block w-full max-w-full ${shouldWrap ? 'whitespace-normal break-words' : 'whitespace-nowrap'}`}
-            style={{ fontSize: `${fontSize}px`, lineHeight: shouldWrap ? 1.3 : 1.1 }}
+            className="inline-block w-full text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl leading-tight"
         >
-            <span ref={textRef} className="inline">{content}</span>
+            {content}
         </span>
     );
 }
