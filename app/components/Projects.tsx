@@ -353,13 +353,14 @@ export default function Projects({ projects, theme }: ProjectsProps) {
 
                                             {/* Project Image */}
                                             {project.imageUrl && (
-                                                <div className="mb-5 -mx-6 md:-mx-8 -mt-6 md:-mt-8 overflow-hidden rounded-t-2xl relative h-48 md:h-56">
+                                                <div className={`mb-5 -mx-6 md:-mx-8 -mt-6 md:-mt-8 overflow-hidden rounded-t-2xl ${isLightMode ? 'bg-zinc-100' : 'bg-zinc-800'}`}>
                                                     <Image
                                                         src={project.imageUrl}
                                                         alt={project.title}
-                                                        fill
+                                                        width={800}
+                                                        height={450}
                                                         sizes="(max-width: 768px) 100vw, 800px"
-                                                        className="object-cover"
+                                                        className="w-full h-auto"
                                                     />
                                                 </div>
                                             )}
