@@ -549,7 +549,7 @@ export default function Hero({ name, title, bio, skills, theme, avatarUrl }: Her
                                 src={avatarUrl}
                                 alt={name || "Profile"}
                                 fill
-                                className="object-cover"
+                                className="object-cover object-top"
                                 priority
                             />
                         </div>
