@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import Image from "next/image";
 import { ThemeConfig } from "../lib/themes";
 import MarkdownRenderer from "./MarkdownRenderer";
 import {
@@ -194,6 +195,7 @@ interface HeroProps {
     bio: string;
     skills: string[];
     theme: ThemeConfig;
+    avatarUrl?: string;
 }
 
 // Map skill names to official Simple Icons
@@ -521,7 +523,7 @@ function TypeWriter({ texts, theme }: { texts: string[]; theme: ThemeConfig }) {
     );
 }
 
-export default function Hero({ name, title, bio, skills, theme }: HeroProps) {
+export default function Hero({ name, title, bio, skills, theme, avatarUrl }: HeroProps) {
     const typingTexts = [
         `Hi, I'm ${name || "Your Name"}`,
         title || "Developer"
@@ -539,6 +541,21 @@ export default function Hero({ name, title, bio, skills, theme }: HeroProps) {
             <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] ${theme.orb1} rounded-full blur-3xl animate-glow pointer-events-none opacity-50`} />
 
             <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 text-center box-border">
+                {/* Profile Picture */}
+                {avatarUrl && (
+                    <div className="mb-8 flex justify-center">
+                        <div className={`relative w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden ring-4 ${isLightMode ? 'ring-zinc-200' : 'ring-zinc-800'} shadow-xl`}>
+                            <Image
+                                src={avatarUrl}
+                                alt={name || "Profile"}
+                                fill
+                                className="object-cover"
+                                priority
+                            />
+                        </div>
+                    </div>
+                )}
+
                 {/* Main Heading with Typewriter */}
                 <h1 className={`font-bold ${theme.textPrimary} mb-8 tracking-tight w-full max-w-full overflow-hidden`}>
                     <TypeWriter texts={typingTexts} theme={theme} />

@@ -167,6 +167,7 @@ export default async function PortfolioPage({ params }: PageProps) {
                         bio={portfolioData.bio}
                         skills={portfolioData.skills}
                         theme={theme}
+                        avatarUrl={portfolio.avatar_url}
                     />
                     <EducationSection education={portfolioData.education} theme={theme} />
                     <ExperienceSection experience={portfolioData.experience} theme={theme} />
