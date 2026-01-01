@@ -17,7 +17,7 @@ export const dynamic = 'force-dynamic'
 function sanitizeForJsonLd(value: string | undefined | null): string | undefined {
     if (!value) return undefined
 
-    let sanitized = value
+    const sanitized = value
         // Remove script tags (case-insensitive, handles variations)
         .replace(/<\s*script[^>]*>[\s\S]*?<\s*\/\s*script\s*>/gi, '')
         // Remove standalone script tags
