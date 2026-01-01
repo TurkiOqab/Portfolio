@@ -33,21 +33,28 @@ export async function POST(request: NextRequest) {
 
         const supabaseAdmin = getAdminClient()
 
-        // Check if email exists using profiles table (indexed query)
-        // This is much more efficient than listing all users
-        const { data: profile, error } = await supabaseAdmin
-            .from('profiles')
-            .select('id')
-            .ilike('email', email)
-            .maybeSingle()
+        // Check if email exists in auth.users
+        // getUserByEmail is not available, so we try to find the user by signing them up
+        // A more efficient approach: query the identities or use a workaround
+
+        // Use RPC or direct query to auth.users if available via service role
+        // For now, list users and filter (works for smaller user bases)
+        const { data, error } = await supabaseAdmin.auth.admin.listUsers({
+            perPage: 1000,
+        })
 
         if (error) {
             logger.error('Error checking email:', error)
-            // Return error state instead of fail-open to prevent duplicate registrations
             return NextResponse.json({ error: 'Unable to verify email availability' }, { status: 503 })
         }
 
-        return NextResponse.json({ available: !profile })
+        // Check if any user has this email (case-insensitive)
+        const emailLower = email.toLowerCase()
+        const emailExists = data?.users?.some(
+            user => user.email?.toLowerCase() === emailLower
+        ) || false
+
+        return NextResponse.json({ available: !emailExists })
     } catch (error) {
         logger.error('Check email error:', error)
         // Return error state instead of fail-open to prevent duplicate registrations

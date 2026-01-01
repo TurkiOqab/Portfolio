@@ -5,7 +5,6 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 const slogans = [
   'Portfolios for Developers',
   'Show Your Code Story',
-  'Your Work, Beautifully Presented',
   'Where Code Meets Design',
   'Stand Out. Get Hired.',
 ]
